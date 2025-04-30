@@ -16,7 +16,6 @@
 #include <jack/jack.h>
 
 #include <array>
-#include <chrono>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -37,10 +36,6 @@ class JackClient {
   std::array<jack_port_t*, NumIns> inPort;
   std::array<jack_port_t*, NumOuts> outPort;
   const char* name;
-
-  // Added for CPU usage tracking
-  std::chrono::time_point<std::chrono::steady_clock> lastCpuLogTime;
-  static constexpr double CPU_LOG_INTERVAL_SECONDS = 3.0;
 
  protected:
   jack_client_t* client{};
@@ -65,18 +60,7 @@ class JackClient {
       sink[i][1] =
           static_cast<float*>(jack_port_get_buffer(outPort[j++], numFrames));
     }
-
-    // Check if it's time to log CPU usage
-    auto now = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsedSeconds = now - lastCpuLogTime;
-
-    if (elapsedSeconds.count() >= CPU_LOG_INTERVAL_SECONDS) {
-      float cpuLoad = jack_cpu_load(client);
-      std::cout << "JACK CPU Load: " << cpuLoad << "%" << std::endl;
-      lastCpuLogTime = now;
-    }
   }
-
   // process using our source and sink pointers.
   // subclasses must implement this!
   virtual void process(jack_nframes_t numFrames) = 0;
@@ -162,8 +146,6 @@ class JackClient {
   // method call setup() will have to be called explicitly after creation
   explicit JackClient(const char* n) : name(n), client(nullptr) {
     std::cout << "constructed Client: " << name << std::endl;
-    // Initialize the CPU usage logging timer
-    lastCpuLogTime = std::chrono::steady_clock::now();
   }
   virtual ~JackClient() = default;
 
