@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install JACK and liblo dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libjack-jackd2-dev liblo-dev libsdl2-dev libsdl2-ttf-dev librtmidi-dev libsndfile1-dev libflac-dev patchelf libfuse-dev cmake
+
+      - name: Build project
+        run: make
+
+
+  # macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         submodules: true
+
+  #     - name: Install dependencies
+  #       run: |
+  #         brew update
+  #         brew install jack liblo sdl2 sdl2_ttf rtmidi libsndfile flac create-dmg
+
+  #     - name: Set PKG_CONFIG_PATH
+  #       run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
+
+  #     - name: Configure waf
+  #       run: |
+  #         chmod +x waf
+  #         ./waf configure
+
+  #     - name: Build project
+  #       run: ./waf build --release
+
+  #     - name: Check otool exists
+  #       run: |
+  #         if ! command -v otool &> /dev/null
+  #         then
+  #             echo "otool could not be found"
+  #             exit 1
+  #         fi
+  #     - name: Check install_name_tool exists
+  #       run: |
+  #         if ! command -v install_name_tool &> /dev/null
+  #         then
+  #             echo "install_name_tool could not be found"
+  #             exit 1
+  #         fi
+
+  #     - name: Build macOS app
+  #       run: |
+  #         chmod +x build-macapp.sh
+  #         ./build-macapp.sh
+      
+  #     - name: Create release artifact 
+  #       run: |
+  #         ls -lSh
+
+  # windows:
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         submodules: true
+
+
+  #     - name: Setup MSYS2
+  #       uses: msys2/setup-msys2@v2
+  #       with:
+  #         msystem: MINGW64
+  #         update: true
+  #         install: >-
+  #           mingw-w64-x86_64-gcc
+  #           mingw-w64-x86_64-pkg-config
+  #           mingw-w64-x86_64-python
+  #           mingw-w64-x86_64-jack2
+  #           mingw-w64-x86_64-liblo
+  #           mingw-w64-x86_64-SDL2
+  #           mingw-w64-x86_64-SDL2_ttf
+  #           mingw-w64-x86_64-rtmidi
+  #           mingw-w64-x86_64-libsndfile
+  #           zip
+
+  #     - name: Check MSYS2 environment
+  #       shell: msys2 {0}
+  #       run: |
+  #         which gcc
+  #         which g++
+  #         ls -la /mingw64/bin/g++*
+  #         echo $PATH
+
+  #     - name: Copy DLLs
+  #       run: |
+  #         cp external/windows/*.dll .
+
+  #     - name: Build in MSYS2 environment
+  #       shell: msys2 {0}
+  #       run: |
+  #         # Print environment info
+  #         echo "PWD: $(pwd)"
+  #         echo "Python: $(which python)"
+  #         export PATH=/mingw64/bin
+
+  #         # Configure and build
+  #         python ./waf configure
+  #         python ./waf build
+
+  #     - name: Create release artifact
+  #       shell: msys2 {0}
+  #       run: |
+  #         mkdir ooooooo
+  #         cp build/ooooooo.exe ooooooo/
+  #         cp external/windows/*.dll ooooooo/
+  #         zip -r ooooooo_${{ github.event.release.name }}.zip ooooooo
+
