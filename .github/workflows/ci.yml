@@ -14,7 +14,7 @@ jobs:
         with:
           submodules: true
 
-      - name: Install JACK and liblo dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libjack-jackd2-dev liblo-dev libsdl2-dev libsdl2-ttf-dev librtmidi-dev libsndfile1-dev libflac-dev patchelf libfuse-dev cmake
@@ -23,20 +23,23 @@ jobs:
         run: make
 
 
-  # macos:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         submodules: true
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
-  #     - name: Install dependencies
-  #       run: |
-  #         brew update
-  #         brew install jack liblo sdl2 sdl2_ttf rtmidi libsndfile flac create-dmg
+      - name: Install dependencies
+        run: |
+          brew update
+          brew install jack liblo sdl2 sdl2_ttf rtmidi libsndfile flac create-dmg fuse cmake
 
-  #     - name: Set PKG_CONFIG_PATH
-  #       run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
+      - name: Set PKG_CONFIG_PATH
+        run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
+      
+      - name: Build project
+        run: make 
 
   #     - name: Configure waf
   #       run: |
