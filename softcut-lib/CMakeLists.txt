@@ -21,3 +21,5 @@ endif()
 add_library(softcut STATIC ${SRC})
 
 target_link_libraries(softcut tapefx)
+
+target_compile_options(softcut PRIVATE -O3)

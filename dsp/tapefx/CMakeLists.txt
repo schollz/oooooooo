@@ -10,3 +10,5 @@ add_library(tapefx STATIC Follower.cpp TapeFX.cpp)
 target_include_directories(tapefx PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_compile_options(tapefx PRIVATE -O3)

@@ -10,3 +10,5 @@ add_library(utilities STATIC Utilities.cpp)
 target_include_directories(utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+target_compile_options(utilities PRIVATE -O3)

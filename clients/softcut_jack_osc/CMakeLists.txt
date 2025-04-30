@@ -29,7 +29,7 @@ if (${APPLE})
     target_include_directories(softcut_jack_osc PUBLIC /opt/local/include)
 endif()
 
-target_compile_options(softcut_jack_osc PRIVATE -Wall -Wextra -pedantic)
+target_compile_options(softcut_jack_osc PRIVATE -Wall -Wextra -pedantic -O3)
 
 target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile)
 

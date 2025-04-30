@@ -20,7 +20,7 @@ class SoftcutClient : public JackClient<2, 2> {
  public:
   enum { MaxBlockFrames = 2048 };
   enum { BufFrames = 16777216 };
-  enum { NumVoices = 6 };
+  enum { NumVoices = 8 };
   typedef enum { SourceAdc = 0 } SourceId;
   typedef Bus<2, MaxBlockFrames> StereoBus;
   typedef Bus<1, MaxBlockFrames> MonoBus;

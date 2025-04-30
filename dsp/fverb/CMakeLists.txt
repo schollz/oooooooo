@@ -14,4 +14,4 @@ target_include_directories(fverb PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../external/faust/architecture
 )
 
-# target_link_libraries(fverb PUBLIC faust)
+target_compile_options(fverb PRIVATE -O3)
