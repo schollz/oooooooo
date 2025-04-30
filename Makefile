@@ -9,5 +9,8 @@ build:
 run: builder
 	./build/clients/softcut_jack_osc/softcut_jack_osc
 
+test:
+	sclang tests/test1.scd
+
 clean:
 	rm -rf build
