@@ -6,3 +6,4 @@ project(dsp)
 # Add the subdirectories
 add_subdirectory(utilities)
 add_subdirectory(fverb)
+add_subdirectory(tapefx)

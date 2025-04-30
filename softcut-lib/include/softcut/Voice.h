@@ -8,153 +8,153 @@
 #include <array>
 #include <atomic>
 
+#include "FadeCurves.h"
 #include "ReadWriteHead.h"
 #include "Svf.h"
+#include "TapeFX.h"
 #include "Utilities.h"
-#include "FadeCurves.h"
 
 namespace softcut {
-    class Voice {
-    public:
-        Voice();
+class Voice {
+ public:
+  Voice();
 
-        void init(FadeCurves *fc);
+  void init(FadeCurves *fc);
 
-        void setBuffer(float *buf, unsigned int numFrames);
+  void setBuffer(float *buf, unsigned int numFrames);
 
-        void setSampleRate(float hz);
+  void setSampleRate(float hz);
 
-        void setRate(float rate);
+  void setRate(float rate);
 
-        void setLoopStart(float sec);
+  void setLoopStart(float sec);
 
-        void setLoopEnd(float sec);
+  void setLoopEnd(float sec);
 
-        void setLoopFlag(bool val);
+  void setLoopFlag(bool val);
 
-        void setFadeTime(float sec);
+  void setFadeTime(float sec);
 
-        void setRecLevel(float amp);
+  void setRecLevel(float amp);
 
-        void setPreLevel(float amp);
+  void setPreLevel(float amp);
 
-        void setRecFlag(bool val);
+  void setRecFlag(bool val);
 
-        void setRecOnceFlag(bool val);
+  void setRecOnceFlag(bool val);
 
-        void setPlayFlag(bool val);
+  void setPlayFlag(bool val);
 
-        void setPreFilterFc(float);
+  void setPreFilterFc(float);
 
-        void setPreFilterRq(float);
+  void setPreFilterRq(float);
 
-        void setPreFilterLp(float);
+  void setPreFilterLp(float);
 
-        void setPreFilterHp(float);
+  void setPreFilterHp(float);
 
-        void setPreFilterBp(float);
+  void setPreFilterBp(float);
 
-        void setPreFilterBr(float);
+  void setPreFilterBr(float);
 
-        void setPreFilterDry(float);
+  void setPreFilterDry(float);
 
-        void setPreFilterFcMod(float x);
+  void setPreFilterFcMod(float x);
 
-        void setPostFilterFc(float);
+  void setPostFilterFc(float);
 
-        void setPostFilterRq(float);
+  void setPostFilterRq(float);
 
-        void setPostFilterLp(float);
+  void setPostFilterLp(float);
 
-        void setPostFilterHp(float);
+  void setPostFilterHp(float);
 
-        void setPostFilterBp(float);
+  void setPostFilterBp(float);
 
-        void setPostFilterBr(float);
+  void setPostFilterBr(float);
 
-        void setPostFilterDry(float);
+  void setPostFilterDry(float);
 
-        void cutToPos(float sec);
+  void cutToPos(float sec);
 
-        // process a single channel
-        void processBlockMono(const float *in, float *out, int numFrames);
+  // process a single channel
+  void processBlockMono(const float *in, float *out, int numFrames);
 
-        void setRecOffset(float d);
+  void setRecOffset(float d);
 
-        void setRecPreSlewTime(float d);
+  void setRecPreSlewTime(float d);
 
-        void setRateSlewTime(float d);
+  void setRateSlewTime(float d);
 
-        void setPhaseQuant(float x);
+  void setPhaseQuant(float x);
 
-        void setPhaseOffset(float x);
+  void setPhaseOffset(float x);
 
-        phase_t getQuantPhase();
+  phase_t getQuantPhase();
 
-        bool getPlayFlag();
+  bool getPlayFlag();
 
-        bool getRecFlag();
+  bool getRecFlag();
 
-	float getActivePosition();
+  float getActivePosition();
 
-	// use this from non-audio threads
-        float getSavedPosition();
+  // use this from non-audio threads
+  float getSavedPosition();
 
-        void reset();
+  void reset();
 
-	// immediately put both subheads in a stopped state
-	void stop();
+  // immediately put both subheads in a stopped state
+  void stop();
 
-    private:
-        void updatePreSvfFc();
+  // tape fx
+  TapeFX tapeFx;
 
-        void updateQuantPhase();
+ private:
+  void updatePreSvfFc();
 
-    private:
-        float *buf;
-        int bufFrames;
-        float sampleRate;
+  void updateQuantPhase();
 
-        // fade curve data
-        FadeCurves fadeCurves;
-        // xfaded read/write head
-        ReadWriteHead sch;
-        // input filter
-        Svf svfPre;
-        // output filter
-        Svf svfPost;
-        // rate ramp
-        LogRamp rateRamp;
-        // pre-level ramp
-        LogRamp preRamp;
-        // record-level ramp
-        LogRamp recRamp;
+ private:
+  float *buf;
+  int bufFrames;
+  float sampleRate;
 
+  // fade curve data
+  FadeCurves fadeCurves;
+  // xfaded read/write head
+  ReadWriteHead sch;
+  // input filter
+  Svf svfPre;
+  // output filter
+  Svf svfPost;
+  // rate ramp
+  LogRamp rateRamp;
+  // pre-level ramp
+  LogRamp preRamp;
+  // record-level ramp
+  LogRamp recRamp;
 
-        // default frequency for SVF
-        // reduced automatically when setting rate
-        float svfPreFcBase;
-        // the amount by which SVF frequency is modulated by rate
-        float svfPreFcMod = 1.0;
-        float svfPreDryLevel = 1.0;
-        float svfPostDryLevel = 1.0;
-        // phase quantization unit, should be in [0,1]
-        phase_t phaseQuant;
-        // phase offset in sec
-        float phaseOffset = 0;
-	
-	//-- these stored phases are for access from non-audio threads,
-	// and are updated once per block:
-	std::atomic<phase_t> rawPhase;
-        std::atomic<phase_t> quantPhase;
+  // default frequency for SVF
+  // reduced automatically when setting rate
+  float svfPreFcBase;
+  // the amount by which SVF frequency is modulated by rate
+  float svfPreFcMod = 1.0;
+  float svfPreDryLevel = 1.0;
+  float svfPostDryLevel = 1.0;
+  // phase quantization unit, should be in [0,1]
+  phase_t phaseQuant;
+  // phase offset in sec
+  float phaseOffset = 0;
 
-    private:
+  //-- these stored phases are for access from non-audio threads,
+  // and are updated once per block:
+  std::atomic<phase_t> rawPhase;
+  std::atomic<phase_t> quantPhase;
 
-        bool playFlag;
-        bool recFlag;
+ private:
+  bool playFlag;
+  bool recFlag;
+};
+}  // namespace softcut
 
-    };
-}
-
-
-#endif //Softcut_SoftcutVOICE_H
+#endif  // Softcut_SoftcutVOICE_H
