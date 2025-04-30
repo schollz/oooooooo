@@ -1,0 +1,3 @@
+[submodule "external/faust"]
+	path = external/faust
+	url = https://github.com/grame-cncm/faust.git
