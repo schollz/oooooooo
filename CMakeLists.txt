@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.17)
 
 add_subdirectory(dsp)
 project(softcut)
