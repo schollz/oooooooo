@@ -21,6 +21,19 @@ static inline void clamp(size_t &x, const size_t a) {
 SoftcutClient::SoftcutClient() : JackClient<2, 2>("softcut") {
   for (unsigned int i = 0; i < NumVoices; ++i) {
     cut.setVoiceBuffer(i, buf[i & 1], BufFrames);
+
+    // Initialize reverb send levels
+    reverbSend[i].setTarget(0.0f);
+    reverbSend[i].setTime(0.001f);
+  }
+
+  // Initialize main reverb parameters
+  reverbMix.setTarget(0.5f);
+  reverbMix.setTime(0.001f);
+  reverbEnabled = false;
+
+  for (unsigned int i = 0; i < NumVoices; ++i) {
+    cut.setVoiceBuffer(i, buf[i & 1], BufFrames);
   }
   bufIdx[0] = BufDiskWorker::registerBuffer(buf[0], BufFrames);
   bufIdx[1] = BufDiskWorker::registerBuffer(buf[1], BufFrames);
@@ -46,6 +59,11 @@ void SoftcutClient::setSampleRate(jack_nframes_t sr) {
   std::cerr << "SoftcutClient::setSampleRate: " << sr << std::endl;
   reverb.Init(static_cast<float>(sr));
   cut.setSampleRate(sr);
+
+  for (int i = 0; i < NumVoices; ++i) {
+    reverbSend[i].setSampleRate(sr);
+  }
+  reverbMix.setSampleRate(sr);
 }
 
 void SoftcutClient::clearBusses(size_t numFrames) {
@@ -71,10 +89,25 @@ void SoftcutClient::mixInput(size_t numFrames) {
 }
 
 void SoftcutClient::mixOutput(size_t numFrames) {
+  reverbBus.clear(numFrames);
+
   for (int v = 0; v < NumVoices; ++v) {
     if (cut.getPlayFlag(v)) {
       mix.panMixEpFrom(output[v], numFrames, outLevel[v], outPan[v]);
+
+      // Send to reverb bus with the same panning as the main output
+      // This preserves the stereo field in the reverb
+      reverbBus.panMixEpFrom(output[v], numFrames, reverbSend[v], outPan[v]);
     }
+  }
+
+  if (reverbEnabled) {
+    // Process reverb (FVerb handles stereo in-place processing)
+    float *reverbInOut[2] = {reverbBus.buf[0], reverbBus.buf[1]};
+    reverb.Process(reverbInOut, numFrames);
+
+    // Mix the processed reverb into the main output
+    mix.addFrom(reverbBus, numFrames);
   }
 }
 
@@ -210,6 +243,10 @@ void SoftcutClient::reset() {
     outPan[v].setTarget(0.5f);
     outPan->setTime(0.001);
 
+    // Reset reverb send levels
+    reverbSend[v].setTarget(0.0f);
+    reverbSend[v].setTime(0.001f);
+
     enabled[v] = false;
 
     setPhaseQuant(v, 1.f);
@@ -231,5 +268,11 @@ void SoftcutClient::reset() {
     output[v].clear();
     input[v].clear();
   }
+
+  // Reset reverb state
+  reverbEnabled = false;
+  reverbMix.setTarget(0.5f);
+  reverbMix.setTime(0.001f);
+  reverbBus.clear();
   cut.reset();
 }

@@ -120,6 +120,8 @@ class SoftcutClient : public JackClient<2, 2> {
   FVerb reverb;
   bool reverbEnabled = false;
   LogRamp reverbMix;
+  LogRamp reverbSend[NumVoices];
+  StereoBus reverbBus;
   void clearBusses(size_t numFrames);
   void mixInput(size_t numFrames);
   void mixOutput(size_t numFrames);
