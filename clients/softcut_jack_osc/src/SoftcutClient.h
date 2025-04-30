@@ -116,6 +116,29 @@ class SoftcutClient : public JackClient<2, 2> {
 
   void reset();
 
+  // Reverb methods
+  void setReverbEnabled(bool enabled) { reverbEnabled = enabled; }
+
+  void setReverbMix(float mix) { reverbMix.setTarget(mix); }
+
+  void setReverbSend(int voice, float level) {
+    if (voice >= 0 && voice < NumVoices) {
+      reverbSend[voice].setTarget(level);
+    }
+  }
+
+  void setReverbDecay(float decay) { reverb.SetDecay(decay); }
+
+  void setReverbTailDensity(float density) { reverb.SetTailDensity(density); }
+
+  void setReverbInputDiffusion1(float diffusion) {
+    reverb.SetInputDiffision1(diffusion);
+  }
+
+  void setReverbInputDiffusion2(float diffusion) {
+    reverb.SetInputDiffision2(diffusion);
+  }
+
  private:
   FVerb reverb;
   bool reverbEnabled = false;

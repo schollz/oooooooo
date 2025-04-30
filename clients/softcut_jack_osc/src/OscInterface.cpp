@@ -653,6 +653,65 @@ void OscInterface::addServerMethods() {
     (void)argc;
     phasePoll->stop();
   });
+
+  //--------------------------------
+  //-- reverb control
+
+  addServerMethod("/set/reverb/enabled", "f", [](lo_arg **argv, int argc) {
+    if (argc < 1) {
+      return;
+    }
+    softCutClient->setReverbEnabled(argv[0]->f > 0.f);
+  });
+
+  addServerMethod("/set/reverb/mix", "f", [](lo_arg **argv, int argc) {
+    if (argc < 1) {
+      return;
+    }
+    softCutClient->setReverbMix(argv[0]->f);
+  });
+
+  addServerMethod("/set/reverb/send", "if", [](lo_arg **argv, int argc) {
+    if (argc < 2) {
+      return;
+    }
+    int voice = argv[0]->i;
+    float level = argv[1]->f;
+    if (voice >= 0 && voice < softCutClient->getNumVoices()) {
+      softCutClient->setReverbSend(voice, level);
+    }
+  });
+
+  addServerMethod("/set/reverb/param/decay", "f", [](lo_arg **argv, int argc) {
+    if (argc < 1) {
+      return;
+    }
+    softCutClient->setReverbDecay(argv[0]->f);
+  });
+
+  addServerMethod("/set/reverb/param/tail_density", "f",
+                  [](lo_arg **argv, int argc) {
+                    if (argc < 1) {
+                      return;
+                    }
+                    softCutClient->setReverbTailDensity(argv[0]->f);
+                  });
+
+  addServerMethod("/set/reverb/param/input_diffusion1", "f",
+                  [](lo_arg **argv, int argc) {
+                    if (argc < 1) {
+                      return;
+                    }
+                    softCutClient->setReverbInputDiffusion1(argv[0]->f);
+                  });
+
+  addServerMethod("/set/reverb/param/input_diffusion2", "f",
+                  [](lo_arg **argv, int argc) {
+                    if (argc < 1) {
+                      return;
+                    }
+                    softCutClient->setReverbInputDiffusion2(argv[0]->f);
+                  });
 }
 
 void OscInterface::printServerMethods() {
