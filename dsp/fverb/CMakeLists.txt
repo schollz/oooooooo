@@ -3,11 +3,15 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(fverb)
 
-# Ensure the source file is included
+
+# Add your own library
 add_library(fverb STATIC FVerb.cpp)
 
-# Make sure the headers are available
+# Include Faust headers and your own headers
 target_include_directories(fverb PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/.. 
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../external/faust/architecture
 )
+
+# target_link_libraries(fverb PUBLIC faust)
