@@ -66,7 +66,8 @@ class Commands {
     SET_CUT_BUFFER,
 
     SET_CUT_REC_ONCE,
-
+    SET_CUT_TAPE_BIAS,
+    SET_CUT_TAPE_PREGAIN,
     NUM_COMMANDS,
   } Id;
 

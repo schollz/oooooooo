@@ -230,6 +230,12 @@ void SoftcutClient::handleCommand(Commands::CommandPacket *p) {
     case Commands::Id::SET_CUT_BUFFER:
       cut.setVoiceBuffer(p->idx_0, buf[p->idx_1], BufFrames);
       break;
+    case Commands::Id::SET_CUT_TAPE_BIAS:
+      cut.setTapeBias(p->idx_0, p->value);
+      break;
+    case Commands::Id::SET_CUT_TAPE_PREGAIN:
+      cut.setTapePregain(p->idx_0, p->value);
+      break;
     default:;
       ;
   }

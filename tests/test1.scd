@@ -39,6 +39,10 @@ s.waitForBoot({
         3.wait;
         "reverb off".postln;
         n.sendMsg("/set/reverb/send", 1, 0.0);
+        3.wait;
+        "tapefx on".postln;
+        n.sendMsg("/set/param/cut/tape_pregain", 0, 8.0);
+        n.sendMsg("/set/param/cut/tape_bias", 0, 1.0);
 
         // n.sendMsg("/set/reverb/param/decay", 2.0);
         // n.sendMsg("/set/reverb/param/tail_density", 0.75);
