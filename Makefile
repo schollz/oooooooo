@@ -1,6 +1,6 @@
 
 builder: build
-	cd build && cmake --build . --config Release
+	cd build && cmake --build . --config Release -- -j$(nproc)
 
 build:
 	mkdir -p build

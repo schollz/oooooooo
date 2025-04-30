@@ -12,7 +12,7 @@ class FVerb {
   FVerb() = default;
   ~FVerb();
 
-  void Init(float sample_rate, size_t block_size);
+  void Init(float sample_rate);
   void Process(float** out, int numSamples);
   void SetDecay(float decay);
   void SetTailDensity(float x);
@@ -21,6 +21,6 @@ class FVerb {
 
  private:
   FVerbDSP* dsp;
-  float** inputs;
-  float** outputs;
+  float** inputs = nullptr;
+  float** outputs = nullptr;
 };

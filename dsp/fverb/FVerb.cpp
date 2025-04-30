@@ -7,18 +7,9 @@
 #include "FVerbDSP.h"                // Include the Faust-generated header
 #include "faust/gui/MapUI.h"         // Include MapUI for parameter control
 
-void FVerb::Init(float sample_rate, size_t block_size) {
+void FVerb::Init(float sample_rate) {
   // Initialize the DSP with the sample rate
   dsp = new FVerbDSP();
-
-  // Allocate input/output buffers (this is the correct way)
-  inputs = new float*[2];   // 2 channels
-  outputs = new float*[2];  // 2 channels
-
-  for (int i = 0; i < 2; i++) {
-    inputs[i] = new float[block_size];
-    outputs[i] = new float[block_size];
-  }
 
   // Initialize the DSP parameters
   dsp->init(sample_rate);
@@ -71,6 +62,17 @@ FVerb::~FVerb() {
 }
 
 void FVerb::Process(float** out, int numSamples) {
+  if (inputs == nullptr || outputs == nullptr) {
+    // Allocate input/output buffers
+    inputs = new float*[2];   // 2 channels
+    outputs = new float*[2];  // 2 channels
+
+    for (int i = 0; i < 2; i++) {
+      inputs[i] = new float[numSamples];
+      outputs[i] = new float[numSamples];
+    }
+  }
+
   // Copy input from out to inputs
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < numSamples; j++) {
