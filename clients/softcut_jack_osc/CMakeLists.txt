@@ -16,6 +16,7 @@ add_executable(softcut_jack_osc ${SRC})
 
 target_include_directories(softcut_jack_osc PUBLIC
         ../../softcut-lib/include
+        ../../
         third-party
 )
 
@@ -30,6 +31,6 @@ endif()
 
 target_compile_options(softcut_jack_osc PRIVATE -Wall -Wextra -pedantic)
 
-target_link_libraries(softcut_jack_osc softcut jack lo pthread sndfile)
+target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile)
 
 

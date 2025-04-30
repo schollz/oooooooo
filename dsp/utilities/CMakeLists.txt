@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.7)
 set(CMAKE_CXX_STANDARD 17)
 
-project(fverb)
+project(utilities)
 
 # Ensure the source file is included
-add_library(fverb STATIC FVerb.cpp)
+add_library(utilities STATIC Utilities.cpp)
 
 # Make sure the headers are available
-target_include_directories(fverb PUBLIC
+target_include_directories(utilities PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/.. 
 )

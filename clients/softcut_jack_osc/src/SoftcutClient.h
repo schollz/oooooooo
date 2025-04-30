@@ -11,6 +11,7 @@
 #include "Bus.h"
 #include "JackClient.h"
 #include "Utilities.h"
+#include "dsp/fverb/FVerb.h"
 #include "softcut/Softcut.h"
 #include "softcut/Types.h"
 
@@ -116,6 +117,9 @@ class SoftcutClient : public JackClient<2, 2> {
   void reset();
 
  private:
+  FVerb reverb;
+  bool reverbEnabled = false;
+  LogRamp reverbMix;
   void clearBusses(size_t numFrames);
   void mixInput(size_t numFrames);
   void mixOutput(size_t numFrames);
