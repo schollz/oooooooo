@@ -55,3 +55,17 @@ if you are integrating softcut into a cmake-based project, you may prefer to inc
 
 
 big TODO here: API reference!
+
+
+## notes
+
+```json
+   "files.exclude": {
+     "**/.git": true,
+     "**/.svn": true,
+     "**/.hg": true,
+     "**/CVS": true,
+     "**/faust": true,
+     "**/.DS_Store": true
+   },
+```

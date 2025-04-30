@@ -1,32 +1,48 @@
 s.waitForBoot({
-    Routine{
+    Routine {
         "running tests".postln;
         n = NetAddr("localhost", 9999);
+
+        // Load audio file
         "load file".postln;
-        f = "/home/zns/Documents/oooooooo/strega.wav";
         n.sendMsg("/softcut/buffer/clear");
-        n.sendMsg("/softcut/buffer/read_mono", f, 0, 0, 10, 0, 0);
+        n.sendMsg("/softcut/buffer/read_mono", "/home/zns/Documents/oooooooo/amen_beats8_bpm172.wav", 0, 0, -1, 0, 0);
+        n.sendMsg("/softcut/buffer/read_mono", "/home/zns/Documents/oooooooo/strega.wav", 0, 30, -1, 0, 0);
         1.wait;
-        n.sendMsg("/set/enabled/cut", 0, 1);
-        n.sendMsg("/set/level/cut", 0, 2.0);
-        n.sendMsg("/set/pan/cut", 0, 0);
 
-        n.sendMsg("/set/param/cut/buffer", 0, 0);
+        // Configure and enable voice 0
+        2.do({
+            arg i;
+            n.sendMsg("/set/enabled/cut", i, 1);
+            n.sendMsg("/set/level/cut", i, 1.0 + (1.0 * i));
+            n.sendMsg("/set/param/cut/rate", i, 41000/48000);
+            n.sendMsg("/set/pan/cut", i, 0);
+            n.sendMsg("/set/param/cut/buffer", i, 0);
+            n.sendMsg("/set/param/cut/loop_start", i, 30*i);
+            n.sendMsg("/set/param/cut/loop_end", i, 60/172*4.0+(30*i));
+            n.sendMsg("/set/param/cut/loop_flag", i, 1);
+            n.sendMsg("/set/param/cut/fade_time", i, 60/172);
+            n.sendMsg("/set/param/cut/post_filter_dry", i, 1);
+            n.sendMsg("/set/param/cut/play_flag", i, 1);
+            n.sendMsg("/set/param/cut/position", i, 0);
 
-        n.sendMsg("/set/param/cut/loop_start", 0, 0);
-        n.sendMsg("/set/param/cut/loop_end", 0, 3);
-        n.sendMsg("/set/param/cut/loop_flag", 0, 1);
+        });
 
-        n.sendMsg("/set/param/cut/fade_time", 0, 1);
-
-        n.sendMsg("/set/param/cut/post_filter_lp", 0, 1);  
-        n.sendMsg("/set/param/cut/post_filter_hp", 0, 0);
-        n.sendMsg("/set/param/cut/post_filter_bp", 0, 0);
-        n.sendMsg("/set/param/cut/post_filter_br", 0, 0);
-        n.sendMsg("/set/param/cut/post_filter_dry", 0, 1);
-        n.sendMsg("/set/param/cut/play_flag", 0, 1);
-    	n.sendMsg("/set/param/cut/position", 0, 0);
         "play_flag".postln;
-    }.play;
 
+        // Reverb test settings
+        3.wait;
+        "reverb on".postln;
+        n.sendMsg("/set/reverb/enabled", 1.0);
+        n.sendMsg("/set/reverb/mix", 1.0);
+        n.sendMsg("/set/reverb/send", 1, 1.0);
+        3.wait;
+        "reverb off".postln;
+        n.sendMsg("/set/reverb/send", 1, 0.0);
+
+        // n.sendMsg("/set/reverb/param/decay", 2.0);
+        // n.sendMsg("/set/reverb/param/tail_density", 0.75);
+        // n.sendMsg("/set/reverb/param/input_diffusion1", 0.3);
+        // n.sendMsg("/set/reverb/param/input_diffusion2", 0.4);
+    }.play;
 });
