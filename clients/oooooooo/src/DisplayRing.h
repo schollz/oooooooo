@@ -29,7 +29,8 @@ class DisplayRing {
     thickness_ = 2.5f;
   }
   void RegisterClick(float mouseX, float mouseY);
-  void HandleDrag(float mouseX, float mouseY, float width, float height);
+  void HandleDrag(float mouseX, float mouseY, float width, float height,
+                  float *new_level, float *new_pan);
   void StopDrag();
   void Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
               float *noiseTimeValue) {

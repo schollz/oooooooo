@@ -9,11 +9,14 @@
 #include "DrawFunctions.h"
 #include "LFO.h"
 #include "Serializable.h"
+#include "Utilities.h"
+
+using namespace softcut_jack_osc;
 
 class Parameter : public Serializable {
  public:
-  Parameter() = default;
-  ~Parameter() = default;
+  Parameter();
+  ~Parameter();
   JSON toJSON() const override;
   void fromJSON(const JSON& json) override;
 
@@ -25,6 +28,12 @@ class Parameter : public Serializable {
   std::string String();
 
   void ValueDelta(float delta);
+  void ValueSet(float value, bool quiet) { set_(value, quiet); }
+  void ValueSetRaw(float value, bool quiet) {
+    value_set_raw_ = fclamp(value, 0.0f, 1.0f);
+    value_set_ = linlin(value_set_raw_, 0.0f, 1.0f, min_, max_);
+    set_(value_set_, quiet);
+  }
   void LFODelta(float min_delta, float max_delta);
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height, bool selected);

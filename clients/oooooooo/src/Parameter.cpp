@@ -8,6 +8,27 @@
 
 using namespace softcut_jack_osc;
 
+Parameter::Parameter() = default;
+Parameter::~Parameter() = default;
+
+JSON Parameter::toJSON() const {
+  JSON json;
+  json["name"] = name_;
+  json["value"] = value_set_;
+  json["lfo_min"] = lfo_min_;
+  json["lfo_max"] = lfo_max_;
+  json["lfo_period"] = lfo_period_;
+  return json;
+}
+void Parameter::fromJSON(const JSON& json) {
+  name_ = json["name"];
+  value_set_ = json["value"];
+  lfo_min_ = json["lfo_min"];
+  lfo_max_ = json["lfo_max"];
+  lfo_period_ = json["lfo_period"];
+  set_(value_set_, true);
+}
+
 void Parameter::Init(float sample_rate, float min, float max, float inc,
                      float default_value, float lfo_min, float lfo_max,
                      float lfo_inc, float lfo_period, std::string name,

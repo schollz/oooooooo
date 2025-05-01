@@ -33,14 +33,7 @@ void SoftcutClient::init() {
     // set buffer to 0/1
     SoftcutClient::handleCommand(new Commands::CommandPacket(
         Commands::Id::SET_CUT_BUFFER, i, i < 4 ? 0 : 1));
-    // set output level db From -32 to +6
-    float outDB =
-        (static_cast<float>(rand()) / RAND_MAX) * 38.0f - 32.0f;  // -32 to +6
-    float outLevel = db2amp(outDB);
-    std::cerr << "SoftcutClient::init: " << i << " outLevel: " << outLevel
-              << std::endl;
-    SoftcutClient::handleCommand(
-        new Commands::CommandPacket(Commands::Id::SET_LEVEL_CUT, i, outLevel));
+
     // set pan to  random number between -0.25 and 0.25
     float pan =
         (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);

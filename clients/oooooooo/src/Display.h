@@ -12,8 +12,10 @@
 
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
+#include "Parameter.h"
 #include "Perlin.h"
 #include "SoftcutClient.h"
+
 using namespace softcut_jack_osc;
 
 class Display {
@@ -68,6 +70,17 @@ class Display {
   bool mouse_dragging = false;
   bool dragging_bar = false;
   int dragged_parameter = -1;
+
+  // Parameters
+  enum ParameterName {
+    PARAM_LEVEL,
+    PARAM_PAN,
+    PARAM_COUNT  // Holds the number of parameters
+  };
+
+  Parameter** param_ = nullptr;
+  int param_count_ = PARAM_COUNT;
+  int selected_parameter_ = 0;
 };
 
 #endif  // DISPLAY_H

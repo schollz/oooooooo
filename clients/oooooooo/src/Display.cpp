@@ -211,8 +211,15 @@ void Display::renderLoop() {
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
             selected_loop < numVoices_) {
-          displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
-                                                  width_, height_);
+          float new_level = 0.0f;
+          float new_pan = 0.0f;
+          displayRings_[selected_loop].HandleDrag(
+              e.button.x, e.button.y, width_, height_, &new_level, &new_pan);
+          std::cout << "Dragging loop " << selected_loop
+                    << " new level: " << new_level << " new pan: " << new_pan
+                    << std::endl;
+          param_[selected_loop][PARAM_LEVEL].ValueSet(new_level, false);
+          param_[selected_loop][PARAM_PAN].ValueSet(new_pan, false);
         }
       } else if (e.type == SDL_MOUSEBUTTONUP) {
         // Stop dragging when mouse is released
@@ -269,6 +276,13 @@ void Display::renderLoop() {
       drawText(renderer_, font, "o", 10 + i * 11, 10,
                selected_loop == i ? 255 : 120);
     }
+
+    // render each parameter
+    for (int i = 0; i < param_count_; i++) {
+      param_[selected_loop][i].Render(renderer_, font, 10, 50 + i * 30, 50, 20,
+                                      selected_parameter_ == i);
+    }
+
     // Update screen
     SDL_RenderPresent(renderer_);
 
@@ -284,4 +298,41 @@ void Display::init(SoftcutClient* sc, int numVoices) {
   softCutClient_ = sc;
   numVoices_ = numVoices;
   displayRings_ = new DisplayRing[numVoices_];
+
+  // setup parameters
+  param_ = new Parameter*[numVoices_];
+  for (int v = 0; v < numVoices_; v++) {
+    param_[v] = new Parameter[PARAM_COUNT];
+  }
+  for (int v = 0; v < numVoices_; v++) {
+    for (int i = 0; i < PARAM_COUNT; i++) {
+      float default_value;  // Declare outDB outside the switch
+      switch (i) {
+        case PARAM_LEVEL:
+          default_value = (static_cast<float>(rand()) / RAND_MAX) * 38.0f -
+                          32.0f;  // -32 to +6
+          param_[v][i].Init(
+              softCutClient_->getSampleRate(), -32.0, 12.0f, 0.5f,
+              default_value, -12.0f, -1.0f, 0.5f, 10.0f, "Level", "dB",
+              [this, v](float value) {
+                std::cout << value << " Level set to: " << db2amp(value)
+                          << std::endl;
+                softCutClient_->handleCommand(new Commands::CommandPacket(
+                    Commands::Id::SET_LEVEL_CUT, v, db2amp(value)));
+              });
+          break;
+        case PARAM_PAN:
+          default_value =
+              (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);
+          param_[v][i].Init(
+              softCutClient_->getSampleRate(), -1.0, 1.0f, 0.05f, default_value,
+              -1.0f, 1.0f, 0.1f, 12.0f, "Pan", "", [this, v](float value) {
+                std::cout << "Pan set to: " << value << std::endl;
+                softCutClient_->handleCommand(new Commands::CommandPacket(
+                    Commands::Id::SET_PAN_CUT, v, value));
+              });
+          break;
+      }
+    }
+  }
 }
