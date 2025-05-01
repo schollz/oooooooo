@@ -13,6 +13,8 @@ set(SRC src/main.cpp
         src/Commands.cpp
         src/OscInterface.cpp
         src/Perlin.cpp
+        src/LFO.cpp
+        src/Parameter.cpp
         src/Display.cpp
         src/DisplayRing.cpp
         src/DrawFunctions.cpp

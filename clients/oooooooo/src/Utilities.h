@@ -1,14 +1,20 @@
 //
 // Created by ezra on 11/10/18.
 //
+#ifndef LIB_UTILITIES_H
+#define LIB_UTILITIES_H
 
 #pragma once
 
 #include <math.h>
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <cstdarg>
+#include <string>
+#include <vector>
 
 namespace softcut_jack_osc {
 
@@ -26,7 +32,34 @@ inline float linlin(float in, float inMin, float inMax, float outMin,
   return outMin + (in - inMin) * (outMax - outMin) / (inMax - inMin);
 }
 
+inline std::string sprintf_str(const char* format, ...) {
+  // First, determine the required buffer size
+  va_list args;
+  va_start(args, format);
+  // Use vsnprintf with a null buffer and 0 size to calculate required size
+  int size = vsnprintf(nullptr, 0, format, args) + 1;  // +1 for null terminator
+  va_end(args);
+
+  // Allocate the buffer
+  char* buffer = new char[size];
+
+  // Format the string into the buffer
+  va_start(args, format);
+  vsnprintf(buffer, size, format, args);
+  va_end(args);
+
+  // Create a string and clean up
+  std::string result(buffer);
+  delete[] buffer;
+
+  return result;
+}
+
 inline float fclamp(float x) { return (x < 0.f) ? 0.f : (x > 1.f) ? 1.f : x; }
+
+inline float fclamp(float x, float min, float max) {
+  return (x < min) ? min : (x > max) ? max : x;
+}
 
 inline float amp2db(float amp) { return log10(amp) * 20.f; }
 inline float db2amp(float db) {
@@ -262,3 +295,5 @@ class LUT {
 };
 
 }  // namespace softcut_jack_osc
+
+#endif
