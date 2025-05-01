@@ -132,6 +132,16 @@ void Display::renderLoop() {
         // Set running flag to false
         running_ = false;
         break;
+      } else if (e.type == SDL_WINDOWEVENT) {
+        // Handle window resize events
+        if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
+            e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+          // Update width and height
+          width_ = e.window.data1;
+          height_ = e.window.data2;
+          std::cout << "Window resized to " << width_ << "x" << height_
+                    << std::endl;
+        }
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Reset drag flags
