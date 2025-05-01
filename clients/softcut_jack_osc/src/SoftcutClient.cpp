@@ -32,10 +32,16 @@ void SoftcutClient::init() {
     // set pan to 0.0
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_PAN_CUT, i, 0.0f));
+    // set loop to on
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_CUT_LOOP_FLAG, i, 1.0f));
 
     // set start and end points
     float start = cutDuration * i;
     float end = start + 2.0f;
+
+    std::cerr << "SoftcutClient::init: " << i << " start: " << start
+              << " end: " << end << std::endl;
     SoftcutClient::handleCommand(new Commands::CommandPacket(
         Commands::Id::SET_CUT_LOOP_START, i, start));
     SoftcutClient::handleCommand(

@@ -18,11 +18,13 @@ class DisplayRing {
     dur_ = softCutClient_->getDuration(i);
     level_ = softCutClient_->getOutLevel(i);
     pan_ = softCutClient_->getPan(i);
+    start_ = softCutClient_->getLoopStart(i);
+    end_ = softCutClient_->getLoopEnd(i);
     id_ = i;
     x_ = linlin(pan_, -1, 1, 0, width_);
     y_ = linlin(amp2db(level_), -64, 24, height_, 0);
     radius_ = linlin(dur_, 0, 1, 0, 20);
-    position_ = pos_ / dur_;
+    position_ = (pos_ - start_) / dur_;
     thickness_ = 2.5f;
   }
   void RegisterClick(float mouseX, float mouseY);
@@ -49,6 +51,7 @@ class DisplayRing {
     }
     return false;
   }
+  float GetClickedRadius() { return clicked_radius_angle_normalized_; }
   bool IsDragging() const { return dragging_; }
   int GetId() const { return id_; }
 
@@ -57,6 +60,8 @@ class DisplayRing {
   int id_;
   float pos_;
   float dur_;
+  float start_;
+  float end_;
   float level_;
   float pan_;
   float x_;
@@ -67,4 +72,5 @@ class DisplayRing {
   bool clicked_ring_ = false;
   bool dragging_ = false;
   bool clicked_radius_ = false;
+  float clicked_radius_angle_normalized_ = 0;
 };

@@ -52,6 +52,10 @@ class ReadWriteHead {
 
   float getDuration() { return (end - start) / sr; }
 
+  float getLoopStart() { return start / sr; }
+
+  float getLoopEnd() { return end / sr; }
+
   void setRecOffsetSamples(int d);
 
   phase_t getActivePhase();

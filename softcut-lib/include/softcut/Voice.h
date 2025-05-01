@@ -103,6 +103,10 @@ class Voice {
 
   float getDuration() { return sch.getDuration(); }
 
+  float getLoopStart() { return sch.getLoopStart(); }
+
+  float getLoopEnd() { return sch.getLoopEnd(); }
+
   void reset();
 
   // immediately put both subheads in a stopped state

@@ -196,12 +196,17 @@ void Display::renderLoop() {
 
     // Draw the display rings, highlight the selected one
     if (softCutClient_) {
+      // process unselected rings first
       for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
-        SDL_SetRenderDrawColor(renderer_, 100, 100, 100, 0);
-        // Highlight the selected ring somehow (this would depend on your
-        // rendering code)
+        if (i == selected_loop) {
+          continue;  // Skip the selected ring
+        }
+        SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
         displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
       }
+      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
+      displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
+                                          &noiseTimeValue);
     }
 
     // Update screen

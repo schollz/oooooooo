@@ -125,6 +125,10 @@ class Softcut {
 
   float getDuration(int i) { return scv[i].getDuration(); }
 
+  float getLoopStart(int i) { return scv[i].getLoopStart(); }
+
+  float getLoopEnd(int i) { return scv[i].getLoopEnd(); }
+
   void stopVoice(int i) { scv[i].stop(); }
 
  private:
