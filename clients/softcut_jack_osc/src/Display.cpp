@@ -139,6 +139,19 @@ void Display::renderLoop() {
           mouse_dragging = false;
           dragging_bar = false;
           dragged_parameter = -1;
+
+          for (int i = 0; i < numVoices_; i++) {
+            displayRings_[i].RegisterClick(e.button.x, e.button.y);
+            if (displayRings_[i].ClickedRing()) {
+              std::cout << "Clicked ring " << i << std::endl;
+              selected_loop = i;
+              break;
+            } else if (displayRings_[i].ClickedRadius()) {
+              std::cout << "Clicked radius " << i << std::endl;
+              selected_loop = i;
+              break;
+            }
+          }
         }
       }
     }

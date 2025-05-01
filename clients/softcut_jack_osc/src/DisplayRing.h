@@ -27,9 +27,24 @@ class DisplayRing {
   void RegisterClick(float mouseX, float mouseY);
   void Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
               float *noiseTimeValue) {
-    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 0);
     drawRing(renderer, perlinGenerator, id_, x_, y_, radius_, position_,
              thickness_, noiseTimeValue, true, true);
+  }
+  bool ClickedRing() {
+    if (clicked_ring_) {
+      clicked_ring_ = false;
+      dragging_ = true;
+      return true;
+    }
+    return false;
+  }
+  bool ClickedRadius() {
+    if (clicked_radius_) {
+      clicked_radius_ = false;
+      dragging_ = false;
+      return true;
+    }
+    return false;
   }
 
  private:
@@ -43,4 +58,7 @@ class DisplayRing {
   float radius_;
   float position_;
   float thickness_;
+  bool clicked_ring_ = false;
+  bool dragging_ = false;
+  bool clicked_radius_ = false;
 };
