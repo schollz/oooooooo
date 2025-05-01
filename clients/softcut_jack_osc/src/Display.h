@@ -10,6 +10,7 @@
 #include <string>
 #include <thread>
 
+#include "DisplayRing.h"
 #include "DrawFunctions.h"
 #include "Perlin.h"
 #include "SoftcutClient.h"
@@ -24,7 +25,7 @@ class Display {
   Display(int width = 800, int height = 600);
   ~Display();
 
-  void init(SoftcutClient* sc);
+  void init(SoftcutClient* sc, int numVoices);
 
   void start();
   void stop();
@@ -54,11 +55,19 @@ class Display {
   QuitCallback quitCallback_;
 
   // SofcutClient
+  int numVoices_;
   SoftcutClient* softCutClient_ = nullptr;
+  DisplayRing* displayRings_;
 
   TTF_Font* font = nullptr;
   PerlinNoise perlinGenerator;
   float noiseTimeValue = 0.0f;
+
+  // Display
+  bool mouse_dragging = false;
+  bool dragging_bar = false;
+  float dragged_parameter = -1;
+  int selected_loop = 0;
 };
 
 #endif  // DISPLAY_H

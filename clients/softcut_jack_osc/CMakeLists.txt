@@ -13,6 +13,7 @@ set(SRC src/main.cpp
         src/OscInterface.cpp
         src/Perlin.cpp
         src/Display.cpp
+        src/DisplayRing.cpp
         src/DrawFunctions.cpp
         src/BufDiskWorker.cpp
         src/Window.cpp)

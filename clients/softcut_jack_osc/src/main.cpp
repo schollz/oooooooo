@@ -74,7 +74,7 @@ int main() {
 
     // Create and start the display
     g_display = std::make_unique<Display>(800, 600);
-    g_display->init(g_sc.get());
+    g_display->init(g_sc.get(), SoftcutClient::NumVoices);
     g_display->setQuitCallback(onDisplayQuit);
     g_display->start();
 

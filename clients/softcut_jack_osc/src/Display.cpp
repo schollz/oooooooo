@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "DisplayFont.h"
+#include "DisplayRing.h"
 #include "DrawFunctions.h"
 #include "SoftcutClient.h"
 
@@ -132,6 +133,13 @@ void Display::renderLoop() {
         // Set running flag to false
         running_ = false;
         break;
+      } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+        if (e.button.button == SDL_BUTTON_LEFT) {
+          // Reset drag flags
+          mouse_dragging = false;
+          dragging_bar = false;
+          dragged_parameter = -1;
+        }
       }
     }
 
@@ -151,30 +159,18 @@ void Display::renderLoop() {
     SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
     SDL_RenderClear(renderer_);
 
+    // Update all the display rings
+    if (softCutClient_) {
+      for (int i = 0; i < numVoices_; i++) {
+        displayRings_[i].Update(softCutClient_, i, width_, height_);
+      }
+    }
+
     // Print out the position of the first voice
     if (softCutClient_) {
       for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
-        float pos = softCutClient_->getSavedPosition(i);
-        float dur = softCutClient_->getDuration(i);
-        float level = softCutClient_->getOutLevel(i);
-        float pan = softCutClient_->getPan(i);
-        float id = i;
-        float x = linlin(pan, -1, 1, 0, width_);
-        float y = linlin(amp2db(level), -64, 24, height_, 0);
-        float radius = linlin(dur, 0, 1, 0, 20);
-        float position = pos / dur;
-        float thickness = 2.5f;
-        bool show_notch = true;
-        bool sketchy = true;
-        // change color to white
-        // if (i == 0) {
-        //   std::cout << "Voice " << i << ": " << pos << " / " << dur
-        //             << " (level: " << level << ", pan: " << pan << ")"
-        //             << std::endl;
-        // }
         SDL_SetRenderDrawColor(renderer_, 100, 100, 100, 0);
-        drawRing(renderer_, &perlinGenerator, id, x, y, radius, position,
-                 thickness, &noiseTimeValue, show_notch, sketchy);
+        displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
       }
     }
 
@@ -189,4 +185,8 @@ void Display::renderLoop() {
   std::cout << "Render loop ended" << std::endl;
 }
 
-void Display::init(SoftcutClient* sc) { softCutClient_ = sc; }
+void Display::init(SoftcutClient* sc, int numVoices) {
+  softCutClient_ = sc;
+  numVoices_ = numVoices;
+  displayRings_ = new DisplayRing[numVoices_];
+}
