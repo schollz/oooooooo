@@ -15,6 +15,7 @@ set(SRC src/main.cpp
         src/Perlin.cpp
         src/LFO.cpp
         src/Parameter.cpp
+        src/Parameters.cpp
         src/Display.cpp
         src/DisplayRing.cpp
         src/DrawFunctions.cpp

@@ -12,7 +12,7 @@
 
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
-#include "Parameter.h"
+#include "Parameters.h"
 #include "Perlin.h"
 #include "SoftcutClient.h"
 
@@ -72,14 +72,8 @@ class Display {
   int dragged_parameter = -1;
 
   // Parameters
-  enum ParameterName {
-    PARAM_LEVEL,
-    PARAM_PAN,
-    PARAM_COUNT  // Holds the number of parameters
-  };
-
-  Parameter** param_ = nullptr;
-  int param_count_ = PARAM_COUNT;
+  Parameters* params_ = nullptr;
+  int param_count_ = Parameters::PARAM_COUNT;
   int selected_parameter_ = 0;
 };
 

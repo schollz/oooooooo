@@ -26,7 +26,7 @@ class Parameter : public Serializable {
             std::function<void(float)> set_callback);
 
   std::string String();
-
+  std::string Name() const { return name_; }
   void ValueDelta(float delta);
   void ValueSet(float value, bool quiet) { set_(value, quiet); }
   void ValueSetRaw(float value, bool quiet) {
