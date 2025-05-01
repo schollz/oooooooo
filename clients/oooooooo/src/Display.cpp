@@ -209,6 +209,8 @@ void Display::renderLoop() {
                                           &noiseTimeValue);
     }
 
+    // write ooooo at the top left
+    drawText(renderer_, font, "ooooo", 10, 10, 255);
     // Update screen
     SDL_RenderPresent(renderer_);
 

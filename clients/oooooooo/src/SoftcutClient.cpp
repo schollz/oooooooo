@@ -22,16 +22,25 @@ void SoftcutClient::init() {
   // set each loop to be 2 seconds long, equally spaced across the buffer
   float totalSeconds = static_cast<float>(BufFrames) / sampleRate;
   float cutDuration = totalSeconds / (NumVoices + 1);
+  // initialize seed
+  srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < NumVoices; ++i) {
     // enable
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_ENABLED_CUT, i, 1.0f));
-    // set output level to 1.0
+    // set output level db From -32 to +6
+    float outDB =
+        (static_cast<float>(rand()) / RAND_MAX) * 38.0f - 32.0f;  // -32 to +6
+    float outLevel = db2amp(outDB);
+    std::cerr << "SoftcutClient::init: " << i << " outLevel: " << outLevel
+              << std::endl;
     SoftcutClient::handleCommand(
-        new Commands::CommandPacket(Commands::Id::SET_LEVEL_CUT, i, 1.0f));
-    // set pan to 0.0
+        new Commands::CommandPacket(Commands::Id::SET_LEVEL_CUT, i, outLevel));
+    // set pan to  random number between -0.25 and 0.25
+    float pan =
+        (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);
     SoftcutClient::handleCommand(
-        new Commands::CommandPacket(Commands::Id::SET_PAN_CUT, i, 0.0f));
+        new Commands::CommandPacket(Commands::Id::SET_PAN_CUT, i, pan));
     // set loop to on
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_CUT_LOOP_FLAG, i, 1.0f));
