@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.17)
 
 set(CMAKE_CXX_STANDARD 17)
 
-
 project(softcut_jack_osc)
+
+# Add the display subdirectory
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../display ${CMAKE_CURRENT_BINARY_DIR}/display)
 
 set(SRC src/main.cpp
         src/SoftcutClient.cpp
@@ -31,6 +33,5 @@ endif()
 
 target_compile_options(softcut_jack_osc PRIVATE -Wall -Wextra -pedantic -O3)
 
-target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile)
-
-
+# Link against the display library
+target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile display)
