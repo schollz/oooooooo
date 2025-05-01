@@ -29,6 +29,9 @@ void SoftcutClient::init() {
     // set output level to 1.0
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_LEVEL_CUT, i, 1.0f));
+    // set pan to 0.0
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_PAN_CUT, i, 0.0f));
 
     // set start and end points
     float start = cutDuration * i;
@@ -144,12 +147,7 @@ void SoftcutClient::handleCommand(Commands::CommandPacket *p) {
       enabled[p->idx_0] = p->value > 0.f;
       break;
     case Commands::Id::SET_LEVEL_CUT:
-      std::cerr << "set level cut: " << p->idx_0 << " " << p->value
-                << std::endl;
       outLevel[p->idx_0].setTarget(p->value);
-      // print level
-      std::cerr << "outLevel[" << p->idx_0
-                << "] = " << outLevel[p->idx_0].getTarget() << std::endl;
       break;
     case Commands::Id::SET_PAN_CUT:
       outPan[p->idx_0].setTarget((p->value / 2) + 0.5);  // map -1,1 to 0,1

@@ -11,8 +11,9 @@ class DisplayRing {
  public:
   DisplayRing() = default;
   ~DisplayRing() = default;
-  void Update(SoftcutClient *softCutClient_, int i, float width_,
+  void Update(SoftcutClient *softCutClient, int i, float width_,
               float height_) {
+    softCutClient_ = softCutClient;
     pos_ = softCutClient_->getSavedPosition(i);
     dur_ = softCutClient_->getDuration(i);
     level_ = softCutClient_->getOutLevel(i);
@@ -25,6 +26,8 @@ class DisplayRing {
     thickness_ = 2.5f;
   }
   void RegisterClick(float mouseX, float mouseY);
+  void HandleDrag(float mouseX, float mouseY, float width, float height);
+  void StopDrag();
   void Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
               float *noiseTimeValue) {
     drawRing(renderer, perlinGenerator, id_, x_, y_, radius_, position_,
@@ -46,8 +49,11 @@ class DisplayRing {
     }
     return false;
   }
+  bool IsDragging() const { return dragging_; }
+  int GetId() const { return id_; }
 
  private:
+  SoftcutClient *softCutClient_ = nullptr;
   int id_;
   float pos_;
   float dur_;

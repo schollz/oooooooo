@@ -112,7 +112,6 @@ void Display::stop() {
 
   std::cout << "SDL Display stopped" << std::endl;
 }
-
 void Display::renderLoop() {
   std::cout << "Render loop started" << std::endl;
 
@@ -145,12 +144,28 @@ void Display::renderLoop() {
             if (displayRings_[i].ClickedRing()) {
               std::cout << "Clicked ring " << i << std::endl;
               selected_loop = i;
+              mouse_dragging = true;
               break;
             } else if (displayRings_[i].ClickedRadius()) {
               std::cout << "Clicked radius " << i << std::endl;
               selected_loop = i;
               break;
             }
+          }
+        }
+      } else if (e.type == SDL_MOUSEMOTION) {
+        // Handle dragging
+        if (mouse_dragging && selected_loop >= 0 &&
+            selected_loop < numVoices_) {
+          displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
+                                                  width_, height_);
+        }
+      } else if (e.type == SDL_MOUSEBUTTONUP) {
+        // Stop dragging when mouse is released
+        if (e.button.button == SDL_BUTTON_LEFT) {
+          mouse_dragging = false;
+          if (selected_loop >= 0 && selected_loop < numVoices_) {
+            displayRings_[selected_loop].StopDrag();
           }
         }
       }
@@ -179,10 +194,12 @@ void Display::renderLoop() {
       }
     }
 
-    // Print out the position of the first voice
+    // Draw the display rings, highlight the selected one
     if (softCutClient_) {
       for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
         SDL_SetRenderDrawColor(renderer_, 100, 100, 100, 0);
+        // Highlight the selected ring somehow (this would depend on your
+        // rendering code)
         displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
       }
     }

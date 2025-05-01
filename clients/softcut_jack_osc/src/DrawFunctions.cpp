@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <string>
 
 #include "DisplayUtils.h"
 #include "Perlin.h"
@@ -106,10 +107,13 @@ void drawBar(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
   }
 }
 
-void drawRing(SDL_Renderer* renderer, PerlinNoise* perlin, float id, int x,
-              int y, int radius, float position, float thickness,
+void drawRing(SDL_Renderer* renderer, PerlinNoise* perlin, float id, float x0,
+              float y0, int radius, float position, float thickness,
               float* noiseTimeValue, bool show_notch, bool sketchy) {
   if (!perlin) return;
+
+  int x = static_cast<int>(round(x0));
+  int y = static_cast<int>(round(y0));
 
   // Draw outer circle with optional sketchy effect
   for (int w = -radius - thickness; w <= radius + thickness; w++) {

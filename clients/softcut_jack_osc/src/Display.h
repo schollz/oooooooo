@@ -64,10 +64,10 @@ class Display {
   float noiseTimeValue = 0.0f;
 
   // Display
+  int selected_loop = -1;
   bool mouse_dragging = false;
   bool dragging_bar = false;
-  float dragged_parameter = -1;
-  int selected_loop = 0;
+  int dragged_parameter = -1;
 };
 
 #endif  // DISPLAY_H

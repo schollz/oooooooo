@@ -23,8 +23,8 @@ void drawBar(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
              const std::string& label, bool selected);
 
 // Draw a ring with a position indicator
-void drawRing(SDL_Renderer* renderer, PerlinNoise* perlin, float id, int x,
-              int y, int radius, float position, float thickness,
+void drawRing(SDL_Renderer* renderer, PerlinNoise* perlin, float id, float x,
+              float y, int radius, float position, float thickness,
               float* noiseTimeValue, bool show_notch = true,
               bool sketchy = false);
 
