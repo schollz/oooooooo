@@ -101,6 +101,8 @@ class Voice {
   // use this from non-audio threads
   float getSavedPosition();
 
+  float getDuration() { return sch.getDuration(); }
+
   void reset();
 
   // immediately put both subheads in a stopped state

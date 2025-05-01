@@ -123,6 +123,8 @@ class Softcut {
   // can be called from non-audio threads
   float getSavedPosition(int i) { return scv[i].getSavedPosition(); }
 
+  float getDuration(int i) { return scv[i].getDuration(); }
+
   void stopVoice(int i) { scv[i].stop(); }
 
  private:
