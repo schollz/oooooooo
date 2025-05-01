@@ -150,6 +150,12 @@ void Display::renderLoop() {
                     << ", Channels: " << audioFile.getChannelCount()
                     << ", Frames: " << audioFile.getFrameCount()
                     << ", Seconds: " << totalSeconds << std::endl;
+
+          // fix the sample rate mismatch
+          float baseRate =
+              audioFile.getSampleRate() / softCutClient_->getSampleRate();
+          softCutClient_->setBaseRate(selected_loop, baseRate);
+
           // load in the file
           float startTimeDest = softCutClient_->getLoopStart(selected_loop);
 

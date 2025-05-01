@@ -35,6 +35,10 @@ class SoftcutClient : public JackClient<2, 2> {
   float getDuration(int i) { return cut.getDuration(i); }
   float getLoopStart(int i) { return cut.getLoopStart(i); }
   float getLoopEnd(int i) { return cut.getLoopEnd(i); }
+  void setBaseRate(int i, float rate) {
+    rateBase[i] = rate;
+    cut.setRate(i, rate * rateSet[i]);
+  }
 
  private:
   // processors
@@ -152,6 +156,8 @@ class SoftcutClient : public JackClient<2, 2> {
   bool reverbEnabled = false;
   LogRamp reverbMix;
   LogRamp reverbSend[NumVoices];
+  float rateBase[NumVoices];
+  float rateSet[NumVoices];
   StereoBus reverbBus;
   void clearBusses(size_t numFrames);
   void mixInput(size_t numFrames);
