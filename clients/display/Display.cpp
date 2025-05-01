@@ -24,21 +24,17 @@ Display::~Display() {
 }
 
 void Display::start() {
-  if (running_) {
-    return;
-  }
+  if (running_) return;
 
-  // Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
     std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError()
               << std::endl;
     return;
   }
 
-  // Create window
-  window_ = SDL_CreateWindow("Softcut Display", SDL_WINDOWPOS_UNDEFINED,
-                             SDL_WINDOWPOS_UNDEFINED, width_, height_,
-                             SDL_WINDOW_SHOWN);
+  window_ = SDL_CreateWindow("oooooooo", SDL_WINDOWPOS_CENTERED,
+                             SDL_WINDOWPOS_CENTERED, width_, height_,
+                             SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
 
   if (!window_) {
     std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError()
@@ -47,7 +43,6 @@ void Display::start() {
     return;
   }
 
-  // Create renderer
   renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
   if (!renderer_) {
     std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError()
@@ -57,11 +52,12 @@ void Display::start() {
     return;
   }
 
-  // Set the running flag and start the thread
   running_ = true;
-  displayThread_ = std::make_unique<std::thread>(&Display::renderLoop, this);
 
   std::cout << "SDL Display started successfully" << std::endl;
+
+  // 👇 RUN DIRECTLY IN MAIN THREAD
+  renderLoop();
 }
 
 void Display::stop() {
@@ -141,12 +137,6 @@ void Display::renderLoop() {
 
     // Update screen
     SDL_RenderPresent(renderer_);
-
-    // OSC message (less frequent)
-    static int frameCount = 0;
-    if (oscAddress_ && (++frameCount % 60 == 0)) {
-      lo_send(oscAddress_, "/display/update", "i", frameCount);
-    }
 
     // Cap at ~60 FPS
     SDL_Delay(16);
