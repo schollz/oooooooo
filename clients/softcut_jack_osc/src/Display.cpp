@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "DisplayFont.h"
+#include "DrawFunctions.h"
 #include "SoftcutClient.h"
 
 using namespace softcut_jack_osc;
@@ -11,10 +13,34 @@ Display::Display(int width, int height)
       window_(nullptr),
       renderer_(nullptr),
       running_(false),
-      quitCallback_(nullptr) {}
+      quitCallback_(nullptr) {
+  if (TTF_Init() == -1) {
+    std::cerr << "TTF_Init: " << TTF_GetError() << std::endl;
+  } else {
+    SDL_RWops* rw = SDL_RWFromConstMem(DisplayFont_ttf, DisplayFont_ttf_len);
+    if (rw) {
+      font =
+          TTF_OpenFontRW(rw, 1, 16);  // 1 = auto-free rw after TTF_OpenFontRW
+      if (!font) {
+        std::cerr << "TTF_OpenFontRW: " << TTF_GetError() << std::endl;
+      }
+    } else {
+      std::cerr << "SDL_RWFromConstMem: " << SDL_GetError() << std::endl;
+    }
+
+    if (!font) {
+      std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+    } else if (TTF_GetFontStyle(font) != TTF_STYLE_NORMAL) {
+      std::cerr << "Font style is not normal: " << TTF_GetError() << std::endl;
+    } else if (TTF_GetFontKerning(font) != 0) {
+      std::cerr << "Font kerning is not zero: " << TTF_GetError() << std::endl;
+    }
+  }
+}
 
 Display::~Display() {
   // Make sure we're properly stopped
+
   stop();
 }
 
@@ -133,11 +159,12 @@ void Display::renderLoop() {
     // Update screen
     SDL_RenderPresent(renderer_);
 
-    // Print out the position of the first voice
-    if (softCutClient_) {
-      std::cout << "Voice 0 position: " << softCutClient_->getSavedPosition(0)
-                << " dur " << softCutClient_->getDuration(0) << std::endl;
-    }
+    // // Print out the position of the first voice
+    // if (softCutClient_) {
+    //   std::cout << "Voice 0 position: " <<
+    //   softCutClient_->getSavedPosition(0)
+    //             << " dur " << softCutClient_->getDuration(0) << std::endl;
+    // }
 
     // Cap at ~60 FPS
     SDL_Delay(16);

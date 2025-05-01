@@ -10,6 +10,8 @@
 #include <string>
 #include <thread>
 
+#include "DrawFunctions.h"
+#include "Perlin.h"
 #include "SoftcutClient.h"
 using namespace softcut_jack_osc;
 
@@ -53,6 +55,10 @@ class Display {
 
   // SofcutClient
   SoftcutClient* softCutClient_ = nullptr;
+
+  TTF_Font* font = nullptr;
+  PerlinNoise perlinGenerator;
+  float noiseTimeValue = 0.0f;
 };
 
 #endif  // DISPLAY_H
