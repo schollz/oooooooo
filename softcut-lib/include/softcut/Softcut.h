@@ -129,6 +129,8 @@ class Softcut {
 
   float getLoopEnd(int i) { return scv[i].getLoopEnd(); }
 
+  float getPreGain(int i) { return scv[i].tapeFx.GetPregain(); }
+
   void stopVoice(int i) { scv[i].stop(); }
 
  private:

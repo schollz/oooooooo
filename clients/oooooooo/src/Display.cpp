@@ -157,13 +157,13 @@ void Display::renderLoop() {
           softCutClient_->setBaseRate(selected_loop, baseRate);
 
           // load in the file
+          int bufNum = selected_loop < 4 ? 0 : 1;
           float startTimeDest = softCutClient_->getLoopStart(selected_loop);
-
           softCutClient_->readBufferMono(e.drop.file, 0.f, startTimeDest, -1.f,
-                                         0, 0);
+                                         0, bufNum);
           // read 1 second of audio extra into the postroll
           softCutClient_->readBufferMono(
-              e.drop.file, 0.f, startTimeDest + totalSeconds, 1.f, 0, 0);
+              e.drop.file, 0.f, startTimeDest + totalSeconds, 1.f, 0, bufNum);
 
           // total time in seconds
           // set the loop end to the total time

@@ -14,6 +14,7 @@ class DisplayRing {
   void Update(SoftcutClient *softCutClient, int i, float width_,
               float height_) {
     softCutClient_ = softCutClient;
+    pregain_ = softCutClient_->getPreGain(i);
     pos_ = softCutClient_->getSavedPosition(i);
     dur_ = softCutClient_->getDuration(i);
     level_ = softCutClient_->getOutLevel(i);
@@ -60,6 +61,7 @@ class DisplayRing {
   int id_;
   float pos_;
   float dur_;
+  float pregain_;
   float start_;
   float end_;
   float level_;

@@ -21,7 +21,7 @@ static inline void clamp(size_t &x, const size_t a) {
 void SoftcutClient::init() {
   // set each loop to be 2 seconds long, equally spaced across the buffer
   float totalSeconds = static_cast<float>(BufFrames) / sampleRate;
-  float cutDuration = totalSeconds / (NumVoices + 1);
+  float cutDuration = totalSeconds / static_cast<float>(NumVoices / 2);
   // initialize seed
   srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < NumVoices; ++i) {
@@ -30,6 +30,9 @@ void SoftcutClient::init() {
     // enable
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_ENABLED_CUT, i, 1.0f));
+    // set buffer to 0/1
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_BUFFER, i, i < 4 ? 0 : 1));
     // set output level db From -32 to +6
     float outDB =
         (static_cast<float>(rand()) / RAND_MAX) * 38.0f - 32.0f;  // -32 to +6
@@ -49,6 +52,9 @@ void SoftcutClient::init() {
 
     // set start and end points
     float start = cutDuration * i;
+    if (i >= 4) {
+      start = cutDuration * (i - 4);
+    }
     float end = start + 2.0f;
 
     std::cerr << "SoftcutClient::init: " << i << " start: " << start

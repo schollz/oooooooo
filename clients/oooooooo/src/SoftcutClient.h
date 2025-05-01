@@ -19,7 +19,7 @@ namespace softcut_jack_osc {
 class SoftcutClient : public JackClient<2, 2> {
  public:
   enum { MaxBlockFrames = 2048 };
-  enum { BufFrames = 67108864 };
+  enum { BufFrames = 16777216 };
   enum { NumVoices = 8 };
   typedef enum { SourceAdc = 0 } SourceId;
   typedef Bus<2, MaxBlockFrames> StereoBus;
@@ -35,6 +35,7 @@ class SoftcutClient : public JackClient<2, 2> {
   float getDuration(int i) { return cut.getDuration(i); }
   float getLoopStart(int i) { return cut.getLoopStart(i); }
   float getLoopEnd(int i) { return cut.getLoopEnd(i); }
+  float getPreGain(int i) { return cut.getPreGain(i); }
   void setBaseRate(int i, float rate) {
     rateBase[i] = rate;
     cut.setRate(i, rate * rateSet[i]);
