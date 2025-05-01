@@ -79,6 +79,7 @@ void Display::start() {
   std::cout << "SDL Display started successfully" << std::endl;
 
   // 👇 RUN DIRECTLY IN MAIN THREAD
+  SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
   renderLoop();
 }
 
@@ -132,6 +133,10 @@ void Display::renderLoop() {
         // Set running flag to false
         running_ = false;
         break;
+      } else if (e.type == SDL_DROPFILE) {
+        // Handle file drop events
+        std::cout << "File dropped: " << e.drop.file << std::endl;
+        SDL_free(e.drop.file);  // Free the dropped file string
       } else if (e.type == SDL_WINDOWEVENT) {
         // Handle window resize events
         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
