@@ -1,2 +1,5 @@
 build/*
 *.wav
+AppDir/*
+*.AppImage
+appimagetool*

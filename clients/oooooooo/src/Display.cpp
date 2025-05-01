@@ -210,7 +210,11 @@ void Display::renderLoop() {
     }
 
     // write ooooo at the top left
-    drawText(renderer_, font, "ooooo", 10, 10, 255);
+    // draw each "o" separately
+    for (int i = 0; i < numVoices_; i++) {
+      drawText(renderer_, font, "o", 10 + i * 11, 10,
+               selected_loop == i ? 255 : 120);
+    }
     // Update screen
     SDL_RenderPresent(renderer_);
 
