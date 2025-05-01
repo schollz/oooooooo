@@ -21,6 +21,15 @@ inline float zapgremlins(float x) {
 }
 #endif
 
+inline float linlin(float in, float inMin, float inMax, float outMin,
+                    float outMax) {
+  return outMin + (in - inMin) * (outMax - outMin) / (inMax - inMin);
+}
+
+inline float amp2db(float amp) { return log10(amp) * 20.f; }
+inline float db2amp(float db) {
+  return std::isinf(db) ? 0.f : powf(10.f, db * 0.05);
+}
 // convert a time-to-convergence to a pole coefficient
 // "ref" argument defines the amount of convergence
 // target ratio is e^ref.

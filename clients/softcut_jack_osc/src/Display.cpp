@@ -148,26 +148,42 @@ void Display::renderLoop() {
     }
 
     // Clear screen
-    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
     SDL_RenderClear(renderer_);
 
-    // Draw a white rectangle
-    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
-    SDL_Rect rect = {width_ / 4, height_ / 4, width_ / 2, height_ / 2};
-    SDL_RenderFillRect(renderer_, &rect);
+    // Print out the position of the first voice
+    if (softCutClient_) {
+      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+        float pos = softCutClient_->getSavedPosition(i);
+        float dur = softCutClient_->getDuration(i);
+        float level = softCutClient_->getOutLevel(i);
+        float pan = softCutClient_->getPan(i);
+        float id = i;
+        float x = linlin(pan, -1, 1, 0, width_);
+        float y = linlin(amp2db(level), -64, 24, height_, 0);
+        float radius = linlin(dur, 0, 1, 0, 20);
+        float position = pos / dur;
+        float thickness = 2.5f;
+        bool show_notch = true;
+        bool sketchy = true;
+        // change color to white
+        // if (i == 0) {
+        //   std::cout << "Voice " << i << ": " << pos << " / " << dur
+        //             << " (level: " << level << ", pan: " << pan << ")"
+        //             << std::endl;
+        // }
+        SDL_SetRenderDrawColor(renderer_, 100, 100, 100, 0);
+        drawRing(renderer_, &perlinGenerator, id, x, y, radius, position,
+                 thickness, &noiseTimeValue, show_notch, sketchy);
+      }
+    }
 
     // Update screen
     SDL_RenderPresent(renderer_);
 
-    // // Print out the position of the first voice
-    // if (softCutClient_) {
-    //   std::cout << "Voice 0 position: " <<
-    //   softCutClient_->getSavedPosition(0)
-    //             << " dur " << softCutClient_->getDuration(0) << std::endl;
-    // }
-
     // Cap at ~60 FPS
     SDL_Delay(16);
+    noiseTimeValue += 0.01f;
   }
 
   std::cout << "Render loop ended" << std::endl;

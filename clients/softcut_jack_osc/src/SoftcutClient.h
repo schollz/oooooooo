@@ -27,6 +27,7 @@ class SoftcutClient : public JackClient<2, 2> {
 
  public:
   SoftcutClient();
+  void init();
   float getSavedPosition(int i) { return cut.getSavedPosition(i); }
   float getPan(int i) { return outPan[i].getValue(); }
   float getInLevel(int i) { return inLevel[0][i].getValue(); }

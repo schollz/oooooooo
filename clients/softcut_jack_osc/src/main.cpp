@@ -65,6 +65,7 @@ int main() {
     g_sc->setup();
     BufDiskWorker::init(static_cast<float>(g_sc->getSampleRate()));
     g_sc->start();
+    g_sc->init();
     g_sc->connectAdcPorts();
     g_sc->connectDacPorts();
 
@@ -78,6 +79,8 @@ int main() {
     g_display->start();
 
     std::cout << "Entering main loop..." << std::endl;
+
+    // Setup loops
 
     // Main application loop
     while (true) {

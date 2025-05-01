@@ -18,6 +18,32 @@ static inline void clamp(size_t &x, const size_t a) {
   }
 }
 
+void SoftcutClient::init() {
+  // set each loop to be 2 seconds long, equally spaced across the buffer
+  float totalSeconds = static_cast<float>(BufFrames) / sampleRate;
+  float cutDuration = totalSeconds / (NumVoices + 1);
+  for (int i = 0; i < NumVoices; ++i) {
+    // enable
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_ENABLED_CUT, i, 1.0f));
+    // set output level to 1.0
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_LEVEL_CUT, i, 1.0f));
+
+    // set start and end points
+    float start = cutDuration * i;
+    float end = start + 2.0f;
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_LOOP_START, i, start));
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_CUT_LOOP_END, i, end));
+
+    // set play flag on
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_CUT_PLAY_FLAG, i, 1.0f));
+  }
+}
+
 SoftcutClient::SoftcutClient() : JackClient<2, 2>("softcut") {
   for (unsigned int i = 0; i < NumVoices; ++i) {
     cut.setVoiceBuffer(i, buf[i & 1], BufFrames);
@@ -118,9 +144,13 @@ void SoftcutClient::handleCommand(Commands::CommandPacket *p) {
       enabled[p->idx_0] = p->value > 0.f;
       break;
     case Commands::Id::SET_LEVEL_CUT:
+      std::cerr << "set level cut: " << p->idx_0 << " " << p->value
+                << std::endl;
       outLevel[p->idx_0].setTarget(p->value);
+      // print level
+      std::cerr << "outLevel[" << p->idx_0
+                << "] = " << outLevel[p->idx_0].getTarget() << std::endl;
       break;
-      ;
     case Commands::Id::SET_PAN_CUT:
       outPan[p->idx_0].setTarget((p->value / 2) + 0.5);  // map -1,1 to 0,1
       break;
