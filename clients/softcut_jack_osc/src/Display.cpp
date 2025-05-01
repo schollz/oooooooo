@@ -133,12 +133,11 @@ void Display::renderLoop() {
     // Update screen
     SDL_RenderPresent(renderer_);
 
-    // // Print out the position of the first voice
-    // if (softCutClient_) {
-    //   std::cout << "Voice 0 position: " <<
-    //   softCutClient_->getSavedPosition(0)
-    //             << std::endl;
-    // }
+    // Print out the position of the first voice
+    if (softCutClient_) {
+      std::cout << "Voice 0 position: " << softCutClient_->getSavedPosition(0)
+                << " dur " << softCutClient_->getDuration(0) << std::endl;
+    }
 
     // Cap at ~60 FPS
     SDL_Delay(16);
