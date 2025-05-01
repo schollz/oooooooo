@@ -23,7 +23,7 @@ class DisplayRing {
     id_ = i;
     x_ = linlin(pan_, -1, 1, 0, width_);
     y_ = linlin(amp2db(level_), -64, 24, height_, 0);
-    radius_ = linlin(dur_, 0, 1, 0, 20);
+    radius_ = linlin(dur_, 0, 30, 10, 200);
     position_ = (pos_ - start_) / dur_;
     thickness_ = 2.5f;
   }

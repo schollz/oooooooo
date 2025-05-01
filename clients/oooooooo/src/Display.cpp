@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "AudioFile.h"
+#include "Commands.h"
 #include "DisplayFont.h"
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
@@ -136,6 +138,37 @@ void Display::renderLoop() {
       } else if (e.type == SDL_DROPFILE) {
         // Handle file drop events
         std::cout << "File dropped: " << e.drop.file << std::endl;
+        // the number of channels, and sample rate of the file using libsndfile
+        AudioFile audioFile(e.drop.file);
+        if (!audioFile.isValid()) {
+          std::cerr << "Error loading file: " << audioFile.getError()
+                    << std::endl;
+        } else {
+          float totalSeconds = static_cast<float>(audioFile.getFrameCount()) /
+                               audioFile.getSampleRate();
+          std::cout << "Sample rate: " << audioFile.getSampleRate()
+                    << ", Channels: " << audioFile.getChannelCount()
+                    << ", Frames: " << audioFile.getFrameCount()
+                    << ", Seconds: " << totalSeconds << std::endl;
+          // load in the file
+          float startTimeDest = softCutClient_->getLoopStart(selected_loop);
+
+          softCutClient_->readBufferMono(e.drop.file, 0.f, startTimeDest, -1.f,
+                                         0, 0);
+          // read 1 second of audio extra into the postroll
+          softCutClient_->readBufferMono(
+              e.drop.file, 0.f, startTimeDest + totalSeconds, 1.f, 0, 0);
+
+          // total time in seconds
+          // set the loop end to the total time
+          float endTime = startTimeDest + totalSeconds;
+          softCutClient_->handleCommand(new Commands::CommandPacket(
+              Commands::Id::SET_CUT_LOOP_END, selected_loop, endTime));
+          // cut to the start
+          softCutClient_->handleCommand(new Commands::CommandPacket(
+              Commands::Id::SET_CUT_POSITION, selected_loop, startTimeDest));
+        }
+
         SDL_free(e.drop.file);  // Free the dropped file string
       } else if (e.type == SDL_WINDOWEVENT) {
         // Handle window resize events

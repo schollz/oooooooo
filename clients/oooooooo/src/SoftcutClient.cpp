@@ -59,6 +59,10 @@ void SoftcutClient::init() {
     // set play flag on
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_CUT_PLAY_FLAG, i, 1.0f));
+
+    // cut to the beginning
+    SoftcutClient::handleCommand(
+        new Commands::CommandPacket(Commands::Id::SET_CUT_POSITION, i, start));
   }
 }
 

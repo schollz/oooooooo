@@ -26,6 +26,8 @@ inline float linlin(float in, float inMin, float inMax, float outMin,
   return outMin + (in - inMin) * (outMax - outMin) / (inMax - inMin);
 }
 
+inline float fclamp(float x) { return (x < 0.f) ? 0.f : (x > 1.f) ? 1.f : x; }
+
 inline float amp2db(float amp) { return log10(amp) * 20.f; }
 inline float db2amp(float db) {
   return std::isinf(db) ? 0.f : powf(10.f, db * 0.05);

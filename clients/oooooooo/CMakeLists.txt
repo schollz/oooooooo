@@ -8,6 +8,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED) # Add this line to find SDL2_ttf
 
 set(SRC src/main.cpp
+        src/AudioFile.cpp
         src/SoftcutClient.cpp
         src/Commands.cpp
         src/OscInterface.cpp
