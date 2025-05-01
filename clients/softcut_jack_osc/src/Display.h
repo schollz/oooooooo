@@ -10,13 +10,19 @@
 #include <string>
 #include <thread>
 
+#include "SoftcutClient.h"
+using namespace softcut_jack_osc;
+
 class Display {
  public:
+  void requestShutdown() { running_ = false; }
   // Define a callback type for quit notification
   using QuitCallback = std::function<void()>;
 
   Display(int width = 800, int height = 600);
   ~Display();
+
+  void init(SoftcutClient* sc);
 
   void start();
   void stop();
@@ -42,11 +48,11 @@ class Display {
   // Thread
   std::unique_ptr<std::thread> displayThread_;
 
-  // OSC client
-  lo_address oscAddress_;
-
   // Quit callback
   QuitCallback quitCallback_;
+
+  // SofcutClient
+  SoftcutClient* softCutClient_ = nullptr;
 };
 
 #endif  // DISPLAY_H

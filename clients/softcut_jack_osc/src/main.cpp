@@ -34,6 +34,11 @@ static void signalHandler(int sig) {
 
   // Set quit flag to exit main loop
   g_shouldQuit = true;
+
+  // Request display shutdown
+  if (g_display) {
+    g_display->requestShutdown();
+  }
 }
 
 // Function to set the quit flag when window is closed
@@ -68,6 +73,7 @@ int main() {
 
     // Create and start the display
     g_display = std::make_unique<Display>(800, 600);
+    g_display->init(g_sc.get());
     g_display->setQuitCallback(onDisplayQuit);
     g_display->start();
 

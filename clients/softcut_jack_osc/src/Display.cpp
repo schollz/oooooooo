@@ -2,25 +2,20 @@
 
 #include <iostream>
 
+#include "SoftcutClient.h"
+
+using namespace softcut_jack_osc;
 Display::Display(int width, int height)
     : width_(width),
       height_(height),
       window_(nullptr),
       renderer_(nullptr),
       running_(false),
-      quitCallback_(nullptr) {
-  // Create OSC address (default to localhost:9999)
-  oscAddress_ = lo_address_new("127.0.0.1", "9999");
-}
+      quitCallback_(nullptr) {}
 
 Display::~Display() {
   // Make sure we're properly stopped
   stop();
-
-  if (oscAddress_) {
-    lo_address_free(oscAddress_);
-    oscAddress_ = nullptr;
-  }
 }
 
 void Display::start() {
@@ -138,9 +133,18 @@ void Display::renderLoop() {
     // Update screen
     SDL_RenderPresent(renderer_);
 
+    // // Print out the position of the first voice
+    // if (softCutClient_) {
+    //   std::cout << "Voice 0 position: " <<
+    //   softCutClient_->getSavedPosition(0)
+    //             << std::endl;
+    // }
+
     // Cap at ~60 FPS
     SDL_Delay(16);
   }
 
   std::cout << "Render loop ended" << std::endl;
 }
+
+void Display::init(SoftcutClient* sc) { softCutClient_ = sc; }

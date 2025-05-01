@@ -4,13 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(softcut_jack_osc)
 
-# Add the display subdirectory
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../display ${CMAKE_CURRENT_BINARY_DIR}/display)
+find_package(SDL2 REQUIRED)
 
 set(SRC src/main.cpp
         src/SoftcutClient.cpp
         src/Commands.cpp
         src/OscInterface.cpp
+        src/Display.cpp
         src/BufDiskWorker.cpp
         src/Window.cpp)
 
@@ -34,4 +34,4 @@ endif()
 target_compile_options(softcut_jack_osc PRIVATE -Wall -Wextra -pedantic -O3)
 
 # Link against the display library
-target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile display)
+target_link_libraries(softcut_jack_osc fverb utilities softcut jack lo pthread sndfile ${SDL2_LIBRARIES})
