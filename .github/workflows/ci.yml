@@ -47,92 +47,45 @@ jobs:
           make
 
 
-  #     - name: Configure waf
-  #       run: |
-  #         chmod +x waf
-  #         ./waf configure
 
-  #     - name: Build project
-  #       run: ./waf build --release
-
-  #     - name: Check otool exists
-  #       run: |
-  #         if ! command -v otool &> /dev/null
-  #         then
-  #             echo "otool could not be found"
-  #             exit 1
-  #         fi
-  #     - name: Check install_name_tool exists
-  #       run: |
-  #         if ! command -v install_name_tool &> /dev/null
-  #         then
-  #             echo "install_name_tool could not be found"
-  #             exit 1
-  #         fi
-
-  #     - name: Build macOS app
-  #       run: |
-  #         chmod +x build-macapp.sh
-  #         ./build-macapp.sh
-      
-  #     - name: Create release artifact 
-  #       run: |
-  #         ls -lSh
-
-  # windows:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         submodules: true
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
 
-  #     - name: Setup MSYS2
-  #       uses: msys2/setup-msys2@v2
-  #       with:
-  #         msystem: MINGW64
-  #         update: true
-  #         install: >-
-  #           mingw-w64-x86_64-gcc
-  #           mingw-w64-x86_64-pkg-config
-  #           mingw-w64-x86_64-python
-  #           mingw-w64-x86_64-jack2
-  #           mingw-w64-x86_64-liblo
-  #           mingw-w64-x86_64-SDL2
-  #           mingw-w64-x86_64-SDL2_ttf
-  #           mingw-w64-x86_64-rtmidi
-  #           mingw-w64-x86_64-libsndfile
-  #           zip
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-jack2
+            mingw-w64-x86_64-liblo
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-rtmidi
+            mingw-w64-x86_64-libsndfile
+            mingw-w64-x86_64-flac
+            mingw-w64-x86_64-cmake
+            zip
 
-  #     - name: Check MSYS2 environment
-  #       shell: msys2 {0}
-  #       run: |
-  #         which gcc
-  #         which g++
-  #         ls -la /mingw64/bin/g++*
-  #         echo $PATH
+      - name: Check MSYS2 environment
+        shell: msys2 {0}
+        run: |
+          which gcc
+          which g++
+          ls -la /mingw64/bin/g++*
+          echo $PATH
+          cmake --version
 
-  #     - name: Copy DLLs
-  #       run: |
-  #         cp external/windows/*.dll .
-
-  #     - name: Build in MSYS2 environment
-  #       shell: msys2 {0}
-  #       run: |
-  #         # Print environment info
-  #         echo "PWD: $(pwd)"
-  #         echo "Python: $(which python)"
-  #         export PATH=/mingw64/bin
-
-  #         # Configure and build
-  #         python ./waf configure
-  #         python ./waf build
-
-  #     - name: Create release artifact
-  #       shell: msys2 {0}
-  #       run: |
-  #         mkdir ooooooo
-  #         cp build/ooooooo.exe ooooooo/
-  #         cp external/windows/*.dll ooooooo/
-  #         zip -r ooooooo_${{ github.event.release.name }}.zip ooooooo
+      - name: Build in MSYS2 environment
+        shell: msys2 {0}
+        run: |
+          make
 
