@@ -34,6 +34,18 @@ void SoftcutClient::init() {
     SoftcutClient::handleCommand(new Commands::CommandPacket(
         Commands::Id::SET_CUT_BUFFER, i, i < 4 ? 0 : 1));
 
+    // set post filter dry to 0
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_POST_FILTER_DRY, i, 0.0f));
+
+    // set lp filter to 1
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_POST_FILTER_LP, i, 1.0f));
+
+    // set lp fc to 19kHz
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_POST_FILTER_FC, i, 19000.0f));
+
     // set pan to  random number between -0.25 and 0.25
     float pan =
         (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);

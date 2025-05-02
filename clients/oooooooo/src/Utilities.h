@@ -61,6 +61,12 @@ inline float fclamp(float x, float min, float max) {
   return (x < min) ? min : (x > max) ? max : x;
 }
 
+inline float midi2freq(float midi) {
+  // convert midi note to frequency
+  // 440Hz is MIDI note 69
+  return powf(2.f, (midi - 69.f) / 12.f) * 440.f;
+}
+
 inline float amp2db(float amp) { return log10(amp) * 20.f; }
 inline float db2amp(float db) {
   return std::isinf(db) ? 0.f : powf(10.f, db * 0.05);

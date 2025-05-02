@@ -1,5 +1,7 @@
 #include "Parameters.h"
 
+#include "Utilities.h"
+
 void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
   softCutClient_ = sc;
   sample_rate_ = sample_rate;
@@ -44,6 +46,26 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_PAN_CUT, voice, value));
             });
+        break;
+      case PARAM_LPF:
+        default_value = 135.0f;
+        param_[i].Init(
+            sample_rate_, 20.0f, 135.0f, 0.1f, default_value, 125.0f, 140.0f,
+            0.5f, 10.0f, "LPF", "", [this, voice](float value) {
+              float freq = midi2freq(value);
+              std::cout << "Parameters::Init " << "LPF set to: " << freq
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_POST_FILTER_FC, voice, freq));
+            });
+        param_[i].SetStringFunc([](float value) {
+          float freq = midi2freq(value);
+          if (freq > 1000) {
+            return sprintf_str("%2.1f kHz", freq / 1000.0f);
+          } else {
+            return sprintf_str("%2.0f Hz", freq);
+          }
+        });
         break;
       case PARAM_REVERB:
         default_value = 0;
