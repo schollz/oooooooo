@@ -143,7 +143,7 @@ void Display::renderLoop() {
         // Handle key down events
         keyboardHandler_.handleKeyDown(
             e.key.keysym.sym, e.key.repeat,
-            static_cast<SDL_Keymod>(e.key.keysym.mod), selected_loop);
+            static_cast<SDL_Keymod>(e.key.keysym.mod), &selected_loop);
       } else if (e.type == SDL_KEYUP) {
         // Handle key up events
         keyboardHandler_.handleKeyUp(e.key.keysym.sym, selected_loop);

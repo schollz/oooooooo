@@ -23,7 +23,7 @@ class KeyboardHandler {
   }
 
   void handleKeyDown(SDL_Keycode key, bool isRepeat, SDL_Keymod modifiers,
-                     int selectedLoop);
+                     int* selectedLoop);
   void handleKeyUp(SDL_Keycode key, int selectedLoop);
 
  private:

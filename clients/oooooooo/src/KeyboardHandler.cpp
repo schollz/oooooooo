@@ -6,7 +6,7 @@
 using namespace softcut_jack_osc;
 
 void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
-                                    SDL_Keymod modifiers, int selectedLoop) {
+                                    SDL_Keymod modifiers, int *selectedLoop) {
   keysHeld_[key] = true;
 
   std::cerr << "KeyboardHandler::handleKeyDown Key pressed: "
@@ -14,10 +14,10 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
 
   switch (key) {
     case SDLK_p:
-      params_[selectedLoop].ValueToggle(Parameters::PARAM_PLAY);
+      params_[*selectedLoop].ValueToggle(Parameters::PARAM_PLAY);
       break;
     case SDLK_l:
-      params_[selectedLoop].ToggleLFO();
+      params_[*selectedLoop].ToggleLFO();
       break;
     case SDLK_m:
       for (int i = 0; i < numVoices_; i++) {
@@ -36,22 +36,59 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       break;
     case SDLK_LEFT:
       if (keysHeld_[SDLK_LALT] || keysHeld_[SDLK_RALT]) {
-        params_[selectedLoop].LFODelta(0, isRepeat ? -2.0f : -1.0f);
+        params_[*selectedLoop].LFODelta(0, isRepeat ? -2.0f : -1.0f);
       } else if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
-        params_[selectedLoop].LFODelta(isRepeat ? 2.0f : 1.0f, 0);
+        params_[*selectedLoop].LFODelta(isRepeat ? 2.0f : 1.0f, 0);
       } else {
-        params_[selectedLoop].ValueDelta(isRepeat ? -2.0f : -1.0f);
+        params_[*selectedLoop].ValueDelta(isRepeat ? -2.0f : -1.0f);
       }
       break;
     case SDLK_RIGHT:
       if (keysHeld_[SDLK_LALT] || keysHeld_[SDLK_RALT]) {
-        params_[selectedLoop].LFODelta(0, isRepeat ? 2.0f : 1.0f);
+        params_[*selectedLoop].LFODelta(0, isRepeat ? 2.0f : 1.0f);
       } else if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
-        params_[selectedLoop].LFODelta(isRepeat ? -2.0f : -1.0f, 0);
+        params_[*selectedLoop].LFODelta(isRepeat ? -2.0f : -1.0f, 0);
       } else {
-        params_[selectedLoop].ValueDelta(isRepeat ? 2.0f : 1.0f);
+        params_[*selectedLoop].ValueDelta(isRepeat ? 2.0f : 1.0f);
       }
       break;
+    case SDLK_1:
+    case SDLK_KP_1:
+      *selectedLoop = 0;
+      break;
+    case SDLK_2:
+    case SDLK_KP_2:
+      *selectedLoop = 1;
+      break;
+    case SDLK_3:
+    case SDLK_KP_3:
+      *selectedLoop = 2;
+      break;
+    case SDLK_4:
+    case SDLK_KP_4:
+      *selectedLoop = 3;
+      break;
+    case SDLK_5:
+    case SDLK_KP_5:
+      *selectedLoop = 4;
+      break;
+    case SDLK_6:
+    case SDLK_KP_6:
+      *selectedLoop = 5;
+      break;
+    case SDLK_7:
+    case SDLK_KP_7:
+      *selectedLoop = 6;
+      break;
+    case SDLK_8:
+    case SDLK_KP_8:
+      *selectedLoop = 7;
+      break;
+      // TODO, select all loops?
+    // case SDLK_9:
+    // case SDLK_KP_9:
+    //   *selectedLoop = 8;
+    //   break;
     default:
       break;
   }
