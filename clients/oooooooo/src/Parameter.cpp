@@ -194,3 +194,25 @@ void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
     }
   }
 }
+
+bool Parameter::RegisterClick(float mouseX, float mouseY, bool dragging) {
+  // Check if the click is within the bounds of the parameter bar
+  if (mouseX >= x_ && mouseX <= x_ + width_ &&
+      (dragging || (mouseY >= y_ && mouseY <= y_ + height_))) {
+    // Calculate the raw value (0.0-1.0) based on relative position within the
+    // bar
+    float relativeX = mouseX - x_;
+    float rawValue = fclamp(relativeX / width_, 0.0f, 1.0f);
+
+    // Update the parameter's value using ValueSetRaw
+    ValueSetRaw(rawValue, false);
+    return true;
+  }
+  return false;
+}
+
+void Parameter::ValueSetRaw(float value, bool quiet) {
+  value_set_raw_ = fclamp(value, 0.0f, 1.0f);
+  value_set_ = linlin(value_set_raw_, 0.0f, 1.0f, min_, max_);
+  set_(value_set_, quiet);
+}

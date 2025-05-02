@@ -89,6 +89,19 @@ class Parameters : public Serializable {
     }
   }
 
+  bool RegisterClick(float mouseX, float mouseY, bool dragging) {
+    for (int i = 0; i < PARAM_COUNT; i++) {
+      if (param_[i].IsHidden() || (dragging && i != selected_)) {
+        continue;
+      }
+      if (param_[i].RegisterClick(mouseX, mouseY, dragging)) {
+        selected_ = i;
+        return true;
+      }
+    }
+    return false;
+  }
+
  private:
   SoftcutClient* softCutClient_ = nullptr;
   int selected_ = 0;

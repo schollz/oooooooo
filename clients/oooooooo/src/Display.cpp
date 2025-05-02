@@ -218,6 +218,11 @@ void Display::renderLoop() {
               break;
             }
           }
+          // Check if any parameter was clicked
+          if (params_[selected_loop].RegisterClick(e.button.x, e.button.y,
+                                                   dragging_bar)) {
+            dragging_bar = true;
+          }
         }
       } else if (e.type == SDL_MOUSEMOTION) {
         // Handle dragging
@@ -225,11 +230,15 @@ void Display::renderLoop() {
             selected_loop < numVoices_) {
           displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
                                                   width_, height_);
+        } else if (dragging_bar) {
+          params_[selected_loop].RegisterClick(e.button.x, e.button.y,
+                                               dragging_bar);
         }
       } else if (e.type == SDL_MOUSEBUTTONUP) {
         // Stop dragging when mouse is released
         if (e.button.button == SDL_BUTTON_LEFT) {
           mouse_dragging = false;
+          dragging_bar = false;
           if (selected_loop >= 0 && selected_loop < numVoices_) {
             displayRings_[selected_loop].StopDrag();
           }
@@ -290,7 +299,7 @@ void Display::renderLoop() {
     }
 
     // render each parameter
-    params_[selected_loop].Render(renderer_, font, 10, 30, 100, 20);
+    params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20);
 
     // Update screen
     SDL_RenderPresent(renderer_);

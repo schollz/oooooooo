@@ -32,11 +32,9 @@ class Parameter : public Serializable {
   }
   void ValueDelta(float delta);
   void ValueSet(float value, bool quiet) { set_(value, quiet); }
-  void ValueSetRaw(float value, bool quiet) {
-    value_set_raw_ = fclamp(value, 0.0f, 1.0f);
-    value_set_ = linlin(value_set_raw_, 0.0f, 1.0f, min_, max_);
-    set_(value_set_, quiet);
-  }
+  void ValueSetRaw(float value, bool quiet);
+  bool RegisterClick(float mouseX, float mouseY, bool dragging);
+
   void LFODelta(float min_delta, float max_delta);
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height, bool selected);
