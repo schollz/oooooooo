@@ -32,6 +32,17 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                   Commands::Id::SET_PAN_CUT, voice, value));
             });
         break;
+      case PARAM_REVERB:
+        default_value = 0;
+        param_[i].Init(sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f,
+                       0.2f, 0.1f, 10.0f, "Reverb", "",
+                       [this, voice](float value) {
+                         std::cout << "Parameters::Init "
+                                   << "Reverb set to: " << value << std::endl;
+                         softCutClient_->setReverbEnabled(true);
+                         softCutClient_->setReverbSend(voice, value);
+                       });
+        break;
     }
   }
 }

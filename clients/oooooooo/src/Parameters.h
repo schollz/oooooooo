@@ -15,6 +15,7 @@ class Parameters : public Serializable {
   enum ParameterName {
     PARAM_LEVEL,
     PARAM_PAN,
+    PARAM_REVERB,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

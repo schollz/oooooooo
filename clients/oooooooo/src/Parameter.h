@@ -44,7 +44,11 @@ class Parameter : public Serializable {
   float GetRawMin() { return lfo_min_raw_; }
   float GetRawMax() { return lfo_max_raw_; }
 
-  void ToggleLFO() { lfo_active_ = !lfo_active_; }
+  void ToggleLFO() {
+    lfo_active_ = !lfo_active_;
+    Update();
+    Bang();
+  }
 
  private:
   void set_(float value, bool quiet);
