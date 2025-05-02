@@ -14,12 +14,13 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_PLAY_FLAG, voice, value));
             });
+        param_[i].Hide(true);
         break;
       case PARAM_LEVEL:
         default_value = (static_cast<float>(rand()) / RAND_MAX) * 38.0f -
                         32.0f;  // -32 to +6
         param_[i].Init(
-            sample_rate_, -32.0, 12.0f, 0.5f, default_value,
+            sample_rate_, -32.0, 12.0f, 0.1f, default_value,
             default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "Level",
             "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
@@ -27,13 +28,16 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_LEVEL_CUT, voice, db2amp(value)));
             });
+        param_[i].SetStringFunc(
+            [](float value) { return sprintf_str("%2.1f", value); });
         break;
       case PARAM_PAN:
         default_value =
             (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);
         param_[i].Init(
-            sample_rate_, -1.0, 1.0f, 0.05f, default_value, default_value - 0.1,
-            default_value + 0.1, 0.1f, 12.0f, "Pan", "",
+            sample_rate_, -1.0, 1.0f, 0.01f, default_value,
+            fclamp(default_value - 1.0f, -1.0f, 1.0f),
+            fclamp(default_value + 1.0f, -1.0f, 1.0f), 0.1f, 12.0f, "Pan", "",
             [this, voice](float value) {
               std::cout << "Parameters::Init " << "Pan set to: " << value
                         << std::endl;
@@ -44,13 +48,16 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_REVERB:
         default_value = 0;
         param_[i].Init(sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f,
-                       0.2f, 0.1f, 10.0f, "Reverb", "",
+                       0.2f, 0.1f, 10.0f, "Reverb", "%",
                        [this, voice](float value) {
                          std::cout << "Parameters::Init "
                                    << "Reverb set to: " << value << std::endl;
                          softCutClient_->setReverbEnabled(true);
                          softCutClient_->setReverbSend(voice, value);
                        });
+        param_[i].SetStringFunc([](float value) {
+          return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));
+        });
         break;
     }
   }

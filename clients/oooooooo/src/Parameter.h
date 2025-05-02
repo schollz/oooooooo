@@ -27,6 +27,9 @@ class Parameter : public Serializable {
 
   std::string String();
   std::string Name() const { return name_; }
+  void SetStringFunc(std::function<std::string(float)> string_func) {
+    string_func_ = string_func;
+  }
   void ValueDelta(float delta);
   void ValueSet(float value, bool quiet) { set_(value, quiet); }
   void ValueSetRaw(float value, bool quiet) {
@@ -46,6 +49,8 @@ class Parameter : public Serializable {
       set_(max_, false);
     }
   }
+  bool IsHidden() { return hide_; }
+  void Hide(bool hide) { hide_ = hide; }
 
   float GetRaw() { return value_compute_raw_; }
   float GetRawMin() { return lfo_min_raw_; }
@@ -59,6 +64,7 @@ class Parameter : public Serializable {
 
  private:
   void set_(float value, bool quiet);
+  bool hide_ = false;
   std::string name_;
   std::string unit_;
 

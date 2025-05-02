@@ -56,9 +56,12 @@ class Parameters : public Serializable {
 
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height) {
+    int j = 0;
     for (int i = 0; i < PARAM_COUNT; i++) {
-      param_[i].Render(renderer, font, x, y + i * (height + 5), width, height,
+      if (param_[i].IsHidden()) continue;
+      param_[i].Render(renderer, font, x, y + j * (height + 5), width, height,
                        selected_ == i);
+      j++;
     }
   }
 
@@ -74,10 +77,16 @@ class Parameters : public Serializable {
 
   void SetSelected(int selected) { selected_ = selected; }
   int GetSelected() const { return selected_; }
-  void SelectedDelta(int delta) {
+  void SelectedDelta_(int delta) {
     selected_ += delta;
     while (selected_ < 0) selected_ += PARAM_COUNT;
     while (selected_ >= PARAM_COUNT) selected_ -= PARAM_COUNT;
+  }
+  void SelectedDelta(int delta) {
+    SelectedDelta_(delta);
+    while (param_[selected_].IsHidden()) {
+      SelectedDelta_(delta);
+    }
   }
 
  private:
