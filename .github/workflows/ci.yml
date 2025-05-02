@@ -27,8 +27,8 @@ jobs:
 
       - name: Create release artifact
         run: |
-          cp ooooooo.AppImage ooooooo_${{ github.event.release.name }}.AppImage
-          ls -lSh ooooooo_${{ github.event.release.name }}.AppImage
+          cp oooooooo.AppImage oooooooo_${{ github.event.release.name }}.AppImage
+          ls -lSh oooooooo_${{ github.event.release.name }}.AppImage
 
   macos:
     runs-on: macos-latest
