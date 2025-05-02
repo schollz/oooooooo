@@ -88,5 +88,8 @@ jobs:
       - name: Build in MSYS2 environment
         shell: msys2 {0}
         run: |
-          make
+          mkdir -p build
+          cd build 
+          cmake -DCMAKE_BUILD_TYPE=Release ..
+          cmake --build . --config Release
 
