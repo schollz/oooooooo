@@ -1,31 +1,37 @@
-// KeyboardHandler.h
 #ifndef KEYBOARD_HANDLER_H
 #define KEYBOARD_HANDLER_H
+#pragma once
 
 #include <SDL2/SDL.h>
 
+#include <iostream>
+#include <memory>
 #include <unordered_map>
 
-// Forward declarations
-class TapeLoops;
-typedef void (*LoggerFunc)(const char* format, ...);
+#include "Parameters.h"
+#include "SoftcutClient.h"
 
-// Initialize keyboard handler with needed pointers
-void initializeKeyboardHandler(TapeLoops* tape_loops_ptr,
-                               LoggerFunc info_logger, LoggerFunc debug_logger);
+class KeyboardHandler {
+ public:
+  KeyboardHandler() = default;
+  ~KeyboardHandler() = default;
 
-// Cleanup keyboard handler resources
-void cleanupKeyboardHandler();
+  void Init(SoftcutClient* sc, Parameters* params, int numVoices) {
+    softcut_ = sc;
+    params_ = params;
+    numVoices_ = numVoices;
+  }
 
-// Key handling functions
-void handle_key_down(SDL_Keycode key, bool is_repeat, SDL_Keymod modifiers);
-void handle_key_up(SDL_Keycode key);
+  void handleKeyDown(SDL_Keycode key, bool isRepeat, SDL_Keymod modifiers,
+                     int selectedLoop);
+  void handleKeyUp(SDL_Keycode key, int selectedLoop);
 
-// Get/set the current parameter
-int getCurrentParameter();
-void setCurrentParameter(int param);
+ private:
+  SoftcutClient* softcut_;
+  Parameters* params_;
+  int numVoices_;
 
-// Adjust parameter based on currently selected parameter
-void adjustParameter(int direction);
+  std::unordered_map<SDL_Keycode, bool> keysHeld_;
+};
 
-#endif  // KEYBOARD_HANDLER_H
+#endif

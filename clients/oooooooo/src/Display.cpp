@@ -1,5 +1,7 @@
 #include "Display.h"
 
+#include <SDL2/SDL.h>
+
 #include <iostream>
 
 #include "AudioFile.h"
@@ -7,6 +9,7 @@
 #include "DisplayFont.h"
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
+#include "KeyboardHandler.h"
 #include "Parameters.h"
 #include "SoftcutClient.h"
 
@@ -136,6 +139,14 @@ void Display::renderLoop() {
         // Set running flag to false
         running_ = false;
         break;
+      } else if (e.type == SDL_KEYDOWN) {
+        // Handle key down events
+        keyboardHandler_.handleKeyDown(
+            e.key.keysym.sym, e.key.repeat,
+            static_cast<SDL_Keymod>(e.key.keysym.mod), selected_loop);
+      } else if (e.type == SDL_KEYUP) {
+        // Handle key up events
+        keyboardHandler_.handleKeyUp(e.key.keysym.sym, selected_loop);
       } else if (e.type == SDL_DROPFILE) {
         // Handle file drop events
         std::cout << "File dropped: " << e.drop.file << std::endl;
@@ -301,4 +312,7 @@ void Display::init(SoftcutClient* sc, int numVoices) {
     displayRings_[i].Init(softCutClient_, &params_[i], i);
     displayRings_[i].Update(width_, height_);
   }
+
+  // setup keyboard handler
+  keyboardHandler_.Init(softCutClient_, params_, numVoices_);
 }

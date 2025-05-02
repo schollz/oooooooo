@@ -87,7 +87,15 @@ void Parameter::Update() {
 }
 
 void Parameter::set_(float value, bool quiet) {
+  // compute current lfo delts
+  float lfo_min_delta = value_set_ - lfo_min_set_;
+  float lfo_max_delta = value_set_ - lfo_max_set_;
   value_set_ = fclamp(value, min_, max_);
+  // update lfo min max
+  lfo_min_set_ = fclamp(value_set_ - lfo_min_delta, min_, max_);
+  lfo_max_set_ = fclamp(value_set_ - lfo_max_delta, min_, max_);
+  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0, 1);
+  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0, 1);
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
   if (!lfo_active_) {
     value_compute_ = value_set_;

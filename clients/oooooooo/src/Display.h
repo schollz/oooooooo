@@ -12,6 +12,7 @@
 
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
+#include "KeyboardHandler.h"
 #include "Parameters.h"
 #include "Perlin.h"
 #include "SoftcutClient.h"
@@ -61,11 +62,13 @@ class Display {
   SoftcutClient* softCutClient_ = nullptr;
   DisplayRing* displayRings_;
 
+  // Keyboard
+  KeyboardHandler keyboardHandler_;
+
+  // Display
   TTF_Font* font = nullptr;
   PerlinNoise perlinGenerator;
   float noiseTimeValue = 0.0f;
-
-  // Display
   int selected_loop = 0;
   bool mouse_dragging = false;
   bool dragging_bar = false;
