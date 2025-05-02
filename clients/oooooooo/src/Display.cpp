@@ -283,10 +283,18 @@ void Display::renderLoop() {
         if (i == selected_loop) {
           continue;  // Skip the selected ring
         }
-        SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
+        if (softCutClient_->IsRecording(i)) {
+          SDL_SetRenderDrawColor(renderer_, 176, 97, 97, 0);
+        } else {
+          SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
+        }
         displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
       }
-      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
+      if (softCutClient_->IsRecording(selected_loop)) {
+        SDL_SetRenderDrawColor(renderer_, 176, 50, 2, 0);
+      } else {
+        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
+      }
       displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
                                           &noiseTimeValue);
     }
