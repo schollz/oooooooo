@@ -44,8 +44,17 @@ class Parameters : public Serializable {
     param_[p].LFODelta(min_delta, max_delta);
   }
 
+  void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
+              int height) {
+    for (int i = 0; i < PARAM_COUNT; i++) {
+      param_[i].Render(renderer, font, x, y + i * (height + 2), width, height,
+                       selected_ == i);
+    }
+  }
+
  private:
   SoftcutClient* softCutClient_ = nullptr;
+  int selected_ = 0;
 };
 
 #endif

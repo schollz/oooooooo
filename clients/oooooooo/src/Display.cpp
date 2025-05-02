@@ -219,10 +219,10 @@ void Display::renderLoop() {
           std::cout << "Dragging loop " << selected_loop
                     << " new level: " << new_level << " new pan: " << new_pan
                     << std::endl;
-          params_[selected_loop].param_[Parameters::PARAM_LEVEL].ValueSet(
-              new_level, false);
-          params_[selected_loop].param_[Parameters::PARAM_PAN].ValueSet(new_pan,
-                                                                        false);
+          params_[selected_loop].ValueSet(Parameters::PARAM_LEVEL, new_level,
+                                          false);
+          params_[selected_loop].ValueSet(Parameters::PARAM_PAN, new_pan,
+                                          false);
         }
       } else if (e.type == SDL_MOUSEBUTTONUP) {
         // Stop dragging when mouse is released
@@ -281,11 +281,7 @@ void Display::renderLoop() {
     }
 
     // render each parameter
-    // for (int i = 0; i < param_count_; i++) {
-    //   param_[selected_loop][i].Render(renderer_, font, 10, 50 + i * 30, 50,
-    //   20,
-    //                                   selected_parameter_ == i);
-    // }
+    params_[selected_loop].Render(renderer_, font, 10, 30, 100, 20);
 
     // Update screen
     SDL_RenderPresent(renderer_);

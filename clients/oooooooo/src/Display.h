@@ -74,7 +74,6 @@ class Display {
   // Parameters
   Parameters* params_ = nullptr;
   int param_count_ = Parameters::PARAM_COUNT;
-  int selected_parameter_ = 0;
 };
 
 #endif  // DISPLAY_H
