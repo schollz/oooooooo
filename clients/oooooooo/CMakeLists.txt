@@ -2,8 +2,14 @@ cmake_minimum_required(VERSION 3.17)
 set(CMAKE_CXX_STANDARD 17)
 project(oooooooo)
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+# Find SDL2 - handle Windows properly
+if(WIN32)
+  find_package(SDL2 REQUIRED)
+  find_package(SDL2_ttf REQUIRED)
+else()
+  find_package(SDL2 REQUIRED)
+  find_package(SDL2_ttf REQUIRED)
+endif()
 
 # Find JACK library - handle Windows naming difference
 if(WIN32)
@@ -62,6 +68,11 @@ set(SRC
 
 add_executable(oooooooo ${SRC})
 
+# CRITICAL: Tell SDL2 we handle our own main function
+if(WIN32)
+  target_compile_definitions(oooooooo PRIVATE SDL_MAIN_HANDLED)
+endif()
+
 target_include_directories(oooooooo PUBLIC
   ../../softcut-lib/include
   ../../
@@ -73,6 +84,7 @@ if(WIN32)
   target_include_directories(oooooooo PRIVATE ${JACK_INCLUDE_DIRS})
   target_include_directories(oooooooo PRIVATE ${LO_INCLUDE_DIRS})
   target_include_directories(oooooooo PRIVATE ${SNDFILE_INCLUDE_DIRS})
+  target_include_directories(oooooooo PRIVATE ${SDL2_INCLUDE_DIRS})
 elseif(APPLE)
   message("is apple")
   # need to support macports or homebrew
@@ -94,7 +106,7 @@ if(WIN32)
     ${LO_LIBRARIES}
     ${SNDFILE_LIBRARIES}
     pthread
-    ${SDL2_LIBRARIES} 
+    ${SDL2_LIBRARIES}
     SDL2_ttf::SDL2_ttf
   )
 else()
