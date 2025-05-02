@@ -212,17 +212,8 @@ void Display::renderLoop() {
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
             selected_loop < numVoices_) {
-          float new_level = 0.0f;
-          float new_pan = 0.0f;
-          displayRings_[selected_loop].HandleDrag(
-              e.button.x, e.button.y, width_, height_, &new_level, &new_pan);
-          std::cout << "Dragging loop " << selected_loop
-                    << " new level: " << new_level << " new pan: " << new_pan
-                    << std::endl;
-          params_[selected_loop].ValueSet(Parameters::PARAM_LEVEL, new_level,
-                                          false);
-          params_[selected_loop].ValueSet(Parameters::PARAM_PAN, new_pan,
-                                          false);
+          displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
+                                                  width_, height_);
         }
       } else if (e.type == SDL_MOUSEBUTTONUP) {
         // Stop dragging when mouse is released
@@ -253,8 +244,8 @@ void Display::renderLoop() {
 
     // Update all the display rings
     if (softCutClient_) {
-      for (int i = 0; i < numVoices_; i++) {
-        displayRings_[i].Update(softCutClient_, i, width_, height_);
+      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+        displayRings_[i].Update(width_, height_);
       }
     }
 
@@ -297,11 +288,17 @@ void Display::renderLoop() {
 void Display::init(SoftcutClient* sc, int numVoices) {
   softCutClient_ = sc;
   numVoices_ = numVoices;
-  displayRings_ = new DisplayRing[numVoices_];
 
   // setup parameters
   params_ = new Parameters[numVoices_];
   for (int v = 0; v < numVoices_; v++) {
     params_[v].Init(softCutClient_, v);
+  }
+
+  // setup display rings
+  displayRings_ = new DisplayRing[numVoices_];
+  for (int i = 0; i < numVoices_; i++) {
+    displayRings_[i].Init(softCutClient_, &params_[i], i);
+    displayRings_[i].Update(width_, height_);
   }
 }

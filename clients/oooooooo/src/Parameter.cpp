@@ -89,6 +89,10 @@ void Parameter::Update() {
 void Parameter::set_(float value, bool quiet) {
   value_set_ = fclamp(value, min_, max_);
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
+  if (!lfo_active_) {
+    value_compute_ = value_set_;
+    value_compute_raw_ = value_set_raw_;
+  }
   if (set_callback_ && !lfo_active_ && !quiet) {
     set_callback_(value_set_);
   }

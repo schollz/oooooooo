@@ -40,10 +40,7 @@ class Parameter : public Serializable {
   void Update();
   void Bang();
 
- private:
-  void set_(float value, bool quiet);
-  std::string name_;
-  std::string unit_;
+ public:
   float value_set_ = 0.0f;
   float value_set_raw_ = 0.0f;
   float value_compute_ = 0.0f;
@@ -58,6 +55,12 @@ class Parameter : public Serializable {
   float lfo_max_raw_ = 1.0f;
   float lfo_inc_ = 0.01f;
   float lfo_period_ = 10.0f;
+
+ private:
+  void set_(float value, bool quiet);
+  std::string name_;
+  std::string unit_;
+
   uint8_t lfo_waveform_ = LFO::WAVE_SIN;
   bool lfo_active_ = false;
   std::function<void(float)> set_callback_ = nullptr;

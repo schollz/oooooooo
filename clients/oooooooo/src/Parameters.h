@@ -40,6 +40,9 @@ class Parameters : public Serializable {
   void ValueSet(ParameterName p, float value, bool quiet) {
     param_[p].ValueSet(value, quiet);
   }
+  void ValueSetRaw(ParameterName p, float value, bool quiet) {
+    param_[p].ValueSetRaw(value, quiet);
+  }
   void LFODelta(ParameterName p, float min_delta, float max_delta) {
     param_[p].LFODelta(min_delta, max_delta);
   }
@@ -51,6 +54,13 @@ class Parameters : public Serializable {
                        selected_ == i);
     }
   }
+
+  float GetRaw(ParameterName p) { return param_[p].value_compute_raw_; }
+  float GetRawMin(ParameterName p) { return param_[p].lfo_min_raw_; }
+  float GetRawMax(ParameterName p) { return param_[p].lfo_max_raw_; }
+
+  void SetSelected(int selected) { selected_ = selected; }
+  int GetSelected() const { return selected_; }
 
  private:
   SoftcutClient* softCutClient_ = nullptr;
