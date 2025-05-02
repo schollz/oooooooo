@@ -14,7 +14,10 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
 
   switch (key) {
     case SDLK_p:
-      params_[*selectedLoop].ValueToggle(Parameters::PARAM_PLAY);
+      if (!isRepeat) softcut_->TogglePlay(*selectedLoop);
+      break;
+    case SDLK_r:
+      if (!isRepeat) softcut_->ToggleRecord(*selectedLoop);
       break;
     case SDLK_l:
       params_[*selectedLoop].ToggleLFO();

@@ -8,16 +8,6 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
   for (int i = 0; i < PARAM_COUNT; i++) {
     float default_value = 0.0f;
     switch (i) {
-      case PARAM_PLAY:
-        default_value = 0.0f;
-        param_[i].Init(
-            sample_rate_, 0.0, 1.0f, 1.0f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "Play", "", [this, voice](float value) {
-              softCutClient_->handleCommand(new Commands::CommandPacket(
-                  Commands::Id::SET_CUT_PLAY_FLAG, voice, value));
-            });
-        param_[i].Hide(true);
-        break;
       case PARAM_LEVEL:
         default_value = (static_cast<float>(rand()) / RAND_MAX) * 38.0f -
                         32.0f;  // -32 to +6

@@ -40,6 +40,10 @@ class SoftcutClient : public JackClient<2, 2> {
     rateBase[i] = rate;
     cut.setRate(i, rate * rateSet[i]);
   }
+  bool IsRecording(int i) { return cut.getRecFlag(i); }
+  bool IsPlaying(int i) { return cut.getPlayFlag(i); }
+  void ToggleRecord(int i) { cut.setRecFlag(i, !IsRecording(i)); }
+  void TogglePlay(int i) { cut.setPlayFlag(i, !IsPlaying(i)); }
 
  private:
   // processors

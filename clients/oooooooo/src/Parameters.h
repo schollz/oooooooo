@@ -13,7 +13,6 @@ class Parameters : public Serializable {
  public:
   // Parameters
   enum ParameterName {
-    PARAM_PLAY,
     PARAM_LEVEL,
     PARAM_PAN,
     PARAM_LPF,
