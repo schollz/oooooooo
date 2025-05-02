@@ -122,7 +122,7 @@ void Parameter::lfo_min_max_update() {
 }
 
 void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
-                       int width, int height, bool selected) {
+                       int width, int height, bool selected, float brightness) {
   x_ = x;
   y_ = y;
   width_ = width;
@@ -132,22 +132,33 @@ void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
   float lfo_min = lfo_min_raw_;
   float lfo_max = lfo_max_raw_;
   std::string label = String();
+
+  // Apply brightness to all colors
+  auto applyBrightness = [brightness](int color) {
+    return static_cast<int>(color * brightness);
+  };
+
   // Draw the entire bar as dim gray or brighter if selected
   if (selected) {
-    SDL_SetRenderDrawColor(renderer, 100, 100, 100,
+    SDL_SetRenderDrawColor(renderer, applyBrightness(100), applyBrightness(100),
+                           applyBrightness(100),
                            0);  // Brighter gray when selected
   } else {
-    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 0);  // Dim gray
+    SDL_SetRenderDrawColor(renderer, applyBrightness(50), applyBrightness(50),
+                           applyBrightness(50),
+                           0);  // Dim gray
   }
   SDL_Rect barRect = {x, y, width, height};
   SDL_RenderFillRect(renderer, &barRect);
 
   // Draw the filled area as white or brighter white if selected
   if (selected) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255,
+    SDL_SetRenderDrawColor(renderer, applyBrightness(255), applyBrightness(255),
+                           applyBrightness(255),
                            0);  // Bright white for selected
   } else {
-    SDL_SetRenderDrawColor(renderer, 200, 200, 200,
+    SDL_SetRenderDrawColor(renderer, applyBrightness(200), applyBrightness(200),
+                           applyBrightness(200),
                            0);  // Slightly dimmer white
   }
   SDL_Rect fillRect = {x, y, static_cast<int>(std::round(width * lfo)), height};
@@ -156,28 +167,31 @@ void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
   // Draw a white line for the LFO position
   int lfo_x = static_cast<int>(std::round(x + width * lfo));
   if (lfo_x > fill) {
-    SDL_SetRenderDrawColor(renderer, 64, 64, 64, 0);  // White for LFO line
+    SDL_SetRenderDrawColor(renderer, applyBrightness(64), applyBrightness(64),
+                           applyBrightness(64),
+                           0);  // White for LFO line
   } else {
-    SDL_SetRenderDrawColor(renderer, 205, 205, 205,
+    SDL_SetRenderDrawColor(renderer, applyBrightness(205), applyBrightness(205),
+                           applyBrightness(205),
                            0);  // Dimmer white for LFO line
   }
   SDL_Rect lfoRect = {lfo_x, y, 4, height};
   SDL_RenderFillRect(renderer, &lfoRect);  // Vertical line for LFO
 
   // Draw a thin horizontal line for the LFO min max
-  SDL_SetRenderDrawColor(renderer, 205, 205, 205,
+  SDL_SetRenderDrawColor(renderer, applyBrightness(205), applyBrightness(205),
+                         applyBrightness(205),
                          0);  // Dimmer white for LFO line
-                              // first draw from min to current set point
 
-  // Draw a thin horizontal line from start_x to end_x
-  SDL_SetRenderDrawColor(renderer, 205, 205, 205,
-                         0);  // Dimmer white for LFO line
   SDL_Rect lfoMinRect = {static_cast<int>(std::round(x + width * lfo_min)),
                          static_cast<int>(std::round(y + height / 2) - 2),
                          static_cast<int>(std::round(width * (lfo - lfo_min))),
                          5};
   SDL_RenderFillRect(renderer, &lfoMinRect);
-  SDL_SetRenderDrawColor(renderer, 64, 64, 64, 0);  // Dimmer white for LFO line
+
+  SDL_SetRenderDrawColor(renderer, applyBrightness(64), applyBrightness(64),
+                         applyBrightness(64),
+                         0);  // Dimmer white for LFO line
   SDL_Rect lfoMaxRect = {static_cast<int>(std::round(x + width * lfo)),
                          static_cast<int>(std::round(y + height / 2) - 2),
                          static_cast<int>(std::round(width * (lfo_max - lfo))),
@@ -186,12 +200,9 @@ void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
 
   // Render the label to the right of the bar
   if (!label.empty()) {
-    // highlight text if selected
-    if (selected) {
-      drawText(renderer, font, label, x + width + 10, y, 175);
-    } else {
-      drawText(renderer, font, label, x + width + 10, y, 100);
-    }
+    // Apply brightness to text as well
+    int textBrightness = selected ? applyBrightness(175) : applyBrightness(100);
+    drawText(renderer, font, label, x + width + 10, y, textBrightness);
   }
 }
 

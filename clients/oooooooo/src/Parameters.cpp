@@ -62,3 +62,47 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
     }
   }
 }
+
+void Parameters::ToggleView() {
+  view_visible_ = !view_visible_;
+  fade_target_ = view_visible_ ? 1.0f : 0.0f;
+}
+
+void Parameters::Update() {
+  UpdateFade();  // Add this line
+  for (int i = 0; i < PARAM_COUNT; i++) {
+    param_[i].Update();
+  }
+}
+
+void Parameters::UpdateFade() {
+  if (fade_amount_ != fade_target_) {
+    if (fade_amount_ < fade_target_) {
+      fade_amount_ = std::min(fade_amount_ + fade_speed_, fade_target_);
+    } else {
+      fade_amount_ = std::max(fade_amount_ - fade_speed_, fade_target_);
+    }
+  }
+}
+
+void Parameters::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
+                        int width, int height, float brightness) {
+  // Update fade animation
+  UpdateFade();
+
+  // Apply overall brightness (modified from original function)
+  float effective_brightness = brightness * fade_amount_;
+
+  // Don't render if completely faded out
+  if (effective_brightness <= 0.0f) {
+    return;
+  }
+
+  int j = 0;
+  for (int i = 0; i < PARAM_COUNT; i++) {
+    if (param_[i].IsHidden()) continue;
+    param_[i].Render(renderer, font, x, y + j * (height + 5), width, height,
+                     selected_ == i, effective_brightness);  // Pass brightness
+    j++;
+  }
+}

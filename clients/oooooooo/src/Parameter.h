@@ -37,7 +37,7 @@ class Parameter : public Serializable {
 
   void LFODelta(float min_delta, float max_delta);
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
-              int height, bool selected);
+              int height, bool selected, float brightness = 1.0f);
   void Update();
   void Bang();
   void Toggle() {

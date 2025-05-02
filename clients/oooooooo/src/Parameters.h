@@ -54,22 +54,14 @@ class Parameters : public Serializable {
 
   void ToggleLFO() { param_[selected_].ToggleLFO(); }
 
-  void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
-              int height) {
-    int j = 0;
-    for (int i = 0; i < PARAM_COUNT; i++) {
-      if (param_[i].IsHidden()) continue;
-      param_[i].Render(renderer, font, x, y + j * (height + 5), width, height,
-                       selected_ == i);
-      j++;
-    }
-  }
+  void ToggleView();  // Add this method
 
-  void Update() {
-    for (int i = 0; i < PARAM_COUNT; i++) {
-      param_[i].Update();
-    }
-  }
+  void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
+              int height, float brightness = 1.0f);  // Add brightness parameter
+
+  void UpdateFade();  // Add this method to update fade animation
+
+  void Update();
 
   float GetRaw(ParameterName p) { return param_[p].GetRaw(); }
   float GetRawMin(ParameterName p) { return param_[p].GetRawMin(); }
@@ -90,6 +82,9 @@ class Parameters : public Serializable {
   }
 
   bool RegisterClick(float mouseX, float mouseY, bool dragging) {
+    if (!view_visible_) {
+      return false;
+    }
     for (int i = 0; i < PARAM_COUNT; i++) {
       if (param_[i].IsHidden() || (dragging && i != selected_)) {
         continue;
@@ -103,6 +98,11 @@ class Parameters : public Serializable {
   }
 
  private:
+  bool view_visible_ = true;
+  float fade_amount_ = 1.0f;
+  float fade_target_ = 1.0f;
+  float fade_speed_ = 0.05f;  // Adjust this for faster/slower fade
+
   SoftcutClient* softCutClient_ = nullptr;
   int selected_ = 0;
   float sample_rate_ = 0.0f;
