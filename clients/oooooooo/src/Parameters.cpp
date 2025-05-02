@@ -10,8 +10,8 @@ void Parameters::Init(SoftcutClient* sc, int voice) {
                         32.0f;  // -32 to +6
         param_[i].Init(
             softCutClient_->getSampleRate(), -32.0, 12.0f, 0.5f, default_value,
-            -12.0f, -1.0f, 0.5f, 10.0f, "Level", "dB",
-            [this, voice](float value) {
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "Level",
+            "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
                         << " Level set to: " << db2amp(value) << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -23,7 +23,8 @@ void Parameters::Init(SoftcutClient* sc, int voice) {
             (static_cast<float>(rand()) / RAND_MAX) * 1.25f - (1.25f / 2.0f);
         param_[i].Init(
             softCutClient_->getSampleRate(), -1.0, 1.0f, 0.05f, default_value,
-            -1.0f, 1.0f, 0.1f, 12.0f, "Pan", "", [this, voice](float value) {
+            default_value - 0.1, default_value + 0.1, 0.1f, 12.0f, "Pan", "",
+            [this, voice](float value) {
               std::cout << "Parameters::Init " << "Pan set to: " << value
                         << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(

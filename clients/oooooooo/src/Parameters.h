@@ -43,8 +43,8 @@ class Parameters : public Serializable {
   void ValueSetRaw(ParameterName p, float value, bool quiet) {
     param_[p].ValueSetRaw(value, quiet);
   }
-  void LFODelta(ParameterName p, float min_delta, float max_delta) {
-    param_[p].LFODelta(min_delta, max_delta);
+  void LFODelta(float min_delta, float max_delta) {
+    param_[selected_].LFODelta(min_delta, max_delta);
   }
 
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
@@ -55,9 +55,9 @@ class Parameters : public Serializable {
     }
   }
 
-  float GetRaw(ParameterName p) { return param_[p].value_compute_raw_; }
-  float GetRawMin(ParameterName p) { return param_[p].lfo_min_raw_; }
-  float GetRawMax(ParameterName p) { return param_[p].lfo_max_raw_; }
+  float GetRaw(ParameterName p) { return param_[p].GetRaw(); }
+  float GetRawMin(ParameterName p) { return param_[p].GetRawMin(); }
+  float GetRawMax(ParameterName p) { return param_[p].GetRawMax(); }
 
   void SetSelected(int selected) { selected_ = selected; }
   int GetSelected() const { return selected_; }

@@ -40,7 +40,15 @@ class Parameter : public Serializable {
   void Update();
   void Bang();
 
- public:
+  float GetRaw() { return value_compute_raw_; }
+  float GetRawMin() { return lfo_min_raw_; }
+  float GetRawMax() { return lfo_max_raw_; }
+
+ private:
+  void set_(float value, bool quiet);
+  std::string name_;
+  std::string unit_;
+
   float value_set_ = 0.0f;
   float value_set_raw_ = 0.0f;
   float value_compute_ = 0.0f;
@@ -49,20 +57,17 @@ class Parameter : public Serializable {
   float max_ = 1.0f;
   float inc_ = 0.01f;
   float inc_raw_ = 0.01f;
+  float lfo_min_delta_ = 0.0f;
+  float lfo_max_delta_ = 0.0f;
   float lfo_min_set_ = 0.0f;
   float lfo_max_set_ = 1.0f;
   float lfo_min_raw_ = 0.0f;
   float lfo_max_raw_ = 1.0f;
   float lfo_inc_ = 0.01f;
   float lfo_period_ = 10.0f;
-
- private:
-  void set_(float value, bool quiet);
-  std::string name_;
-  std::string unit_;
-
   uint8_t lfo_waveform_ = LFO::WAVE_SIN;
   bool lfo_active_ = false;
+  void lfo_min_max_update();
   std::function<void(float)> set_callback_ = nullptr;
   std::function<std::string(float)> string_func_ = nullptr;
 

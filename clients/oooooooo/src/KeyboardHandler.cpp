@@ -24,10 +24,22 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       }
       break;
     case SDLK_LEFT:
-      params_[selectedLoop].ValueDelta(isRepeat ? -2.0f : -1.0f);
+      if (keysHeld_[SDLK_LALT] || keysHeld_[SDLK_RALT]) {
+        params_[selectedLoop].LFODelta(0, isRepeat ? -2.0f : -1.0f);
+      } else if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+        params_[selectedLoop].LFODelta(isRepeat ? 2.0f : 1.0f, 0);
+      } else {
+        params_[selectedLoop].ValueDelta(isRepeat ? -2.0f : -1.0f);
+      }
       break;
     case SDLK_RIGHT:
-      params_[selectedLoop].ValueDelta(isRepeat ? 2.0f : 1.0f);
+      if (keysHeld_[SDLK_LALT] || keysHeld_[SDLK_RALT]) {
+        params_[selectedLoop].LFODelta(0, isRepeat ? 2.0f : 1.0f);
+      } else if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+        params_[selectedLoop].LFODelta(isRepeat ? -2.0f : -1.0f, 0);
+      } else {
+        params_[selectedLoop].ValueDelta(isRepeat ? 2.0f : 1.0f);
+      }
       break;
     default:
       break;

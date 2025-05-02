@@ -35,11 +35,6 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
   min_ = min;
   max_ = max;
   inc_ = inc;
-  lfo_min_set_ = lfo_min;
-  lfo_max_set_ = lfo_max;
-  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0.0f, 1.0f);
-  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0.0f, 1.0f);
-  lfo_inc_ = lfo_inc;
 
   value_set_ = default_value;
   value_compute_ = value_set_;
@@ -47,6 +42,10 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
   value_compute_raw_ = value_set_raw_;
   inc_raw_ = linlin(inc_, min_, max_, 0.0f, 1.0f);
 
+  lfo_min_delta_ = std::abs(default_value - lfo_min);
+  lfo_max_delta_ = std::abs(default_value - lfo_max);
+  lfo_min_max_update();
+  lfo_inc_ = lfo_inc;
   lfo_.Init(sample_rate);
   lfo_.SetFreq(1.0f / lfo_period);
 
@@ -87,20 +86,13 @@ void Parameter::Update() {
 }
 
 void Parameter::set_(float value, bool quiet) {
-  // compute current lfo delts
-  float lfo_min_delta = value_set_ - lfo_min_set_;
-  float lfo_max_delta = value_set_ - lfo_max_set_;
   value_set_ = fclamp(value, min_, max_);
-  // update lfo min max
-  lfo_min_set_ = fclamp(value_set_ - lfo_min_delta, min_, max_);
-  lfo_max_set_ = fclamp(value_set_ - lfo_max_delta, min_, max_);
-  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0, 1);
-  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0, 1);
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
   if (!lfo_active_) {
     value_compute_ = value_set_;
     value_compute_raw_ = value_set_raw_;
   }
+  lfo_min_max_update();
   if (set_callback_ && !lfo_active_ && !quiet) {
     set_callback_(value_set_);
   }
@@ -111,10 +103,22 @@ void Parameter::ValueDelta(float delta) {
 }
 
 void Parameter::LFODelta(float min_delta, float max_delta) {
-  lfo_min_set_ = fclamp(lfo_min_set_ + min_delta * lfo_inc_, min_, max_);
-  lfo_max_set_ = fclamp(lfo_max_set_ + max_delta * lfo_inc_, min_, max_);
-  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0.0f, 1.0f);
-  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0.0f, 1.0f);
+  lfo_min_delta_ += min_delta * lfo_inc_;
+  lfo_max_delta_ += max_delta * lfo_inc_;
+  if (lfo_min_delta_ < 0.0f) {
+    lfo_min_delta_ = 0.0f;
+  }
+  if (lfo_max_delta_ < 0.0f) {
+    lfo_max_delta_ = 0.0f;
+  }
+  lfo_min_max_update();
+}
+
+void Parameter::lfo_min_max_update() {
+  lfo_min_set_ = fclamp(value_set_ - lfo_min_delta_, min_, max_);
+  lfo_max_set_ = fclamp(value_set_ + lfo_max_delta_, min_, max_);
+  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0, 1);
+  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0, 1);
 }
 
 void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
