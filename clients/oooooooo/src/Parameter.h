@@ -68,6 +68,10 @@ class Parameter : public Serializable {
   std::string name_;
   std::string unit_;
 
+  float x_ = 0.0f;
+  float y_ = 0.0f;
+  float width_ = 0.0f;
+  float height_ = 0.0f;
   float value_set_ = 0.0f;
   float value_set_raw_ = 0.0f;
   float value_compute_ = 0.0f;

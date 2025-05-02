@@ -123,6 +123,10 @@ void Parameter::lfo_min_max_update() {
 
 void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
                        int width, int height, bool selected) {
+  x_ = x;
+  y_ = y;
+  width_ = width;
+  height_ = height;
   float fill = value_set_raw_;
   float lfo = value_compute_raw_;
   float lfo_min = lfo_min_raw_;
