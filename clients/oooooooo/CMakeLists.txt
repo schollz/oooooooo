@@ -4,8 +4,37 @@ project(oooooooo)
 
 # Find SDL2 - handle Windows properly
 if(WIN32)
-  find_package(SDL2 REQUIRED)
-  find_package(SDL2_ttf REQUIRED)
+  # On Windows, find SDL2 components manually to avoid SDL2main
+  find_path(SDL2_INCLUDE_DIR 
+    NAMES SDL.h
+    PATH_SUFFIXES SDL2
+    PATHS 
+      /mingw64/include
+      $ENV{MINGW_PREFIX}/include
+  )
+  
+  find_library(SDL2_LIBRARY
+    NAMES SDL2
+    PATHS 
+      /mingw64/lib
+      $ENV{MINGW_PREFIX}/lib
+  )
+  
+  find_library(SDL2_TTF_LIBRARY
+    NAMES SDL2_ttf
+    PATHS 
+      /mingw64/lib
+      $ENV{MINGW_PREFIX}/lib
+  )
+  
+  if(SDL2_INCLUDE_DIR AND SDL2_LIBRARY AND SDL2_TTF_LIBRARY)
+    set(SDL2_FOUND TRUE)
+    set(SDL2_INCLUDE_DIRS ${SDL2_INCLUDE_DIR})
+    set(SDL2_LIBRARIES ${SDL2_LIBRARY})
+    set(SDL2_TTF_LIBRARIES ${SDL2_TTF_LIBRARY})
+  else()
+    message(FATAL_ERROR "SDL2 not found")
+  endif()
 else()
   find_package(SDL2 REQUIRED)
   find_package(SDL2_ttf REQUIRED)
@@ -107,7 +136,7 @@ if(WIN32)
     ${SNDFILE_LIBRARIES}
     pthread
     ${SDL2_LIBRARIES}
-    SDL2_ttf::SDL2_ttf
+    ${SDL2_TTF_LIBRARIES}
   )
 else()
   target_link_libraries(oooooooo 

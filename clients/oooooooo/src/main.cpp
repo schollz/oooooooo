@@ -1,9 +1,6 @@
 //
 // Created by emb on 1/20/20.
 //
-#ifdef _WIN32
-#define SDL_MAIN_HANDLED
-#endif
 
 #include <chrono>
 #include <csignal>
