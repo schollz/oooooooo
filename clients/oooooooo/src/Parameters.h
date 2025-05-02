@@ -37,6 +37,12 @@ class Parameters : public Serializable {
   void Init(SoftcutClient* sc, int voice);
 
   void ValueDelta(ParameterName p, float delta) { param_[p].ValueDelta(delta); }
+  void ValueSet(ParameterName p, float value, bool quiet) {
+    param_[p].ValueSet(value, quiet);
+  }
+  void LFODelta(ParameterName p, float min_delta, float max_delta) {
+    param_[p].LFODelta(min_delta, max_delta);
+  }
 
  private:
   SoftcutClient* softCutClient_ = nullptr;

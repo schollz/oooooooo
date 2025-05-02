@@ -42,7 +42,6 @@ class Parameter : public Serializable {
 
  private:
   void set_(float value, bool quiet);
-  void lfo_minmax_update();
   std::string name_;
   std::string unit_;
   float value_set_ = 0.0f;
@@ -53,13 +52,11 @@ class Parameter : public Serializable {
   float max_ = 1.0f;
   float inc_ = 0.01f;
   float inc_raw_ = 0.01f;
-  float lfo_min_ = 0.0f;
-  float lfo_max_ = 1.0f;
-  float lfo_inc_ = 0.01f;
+  float lfo_min_set_ = 0.0f;
+  float lfo_max_set_ = 1.0f;
   float lfo_min_raw_ = 0.0f;
   float lfo_max_raw_ = 1.0f;
-  float lfo_min_raw_set_ = 0.0f;
-  float lfo_max_raw_set_ = 1.0f;
+  float lfo_inc_ = 0.01f;
   float lfo_period_ = 10.0f;
   uint8_t lfo_waveform_ = LFO::WAVE_SIN;
   bool lfo_active_ = false;

@@ -15,16 +15,12 @@ JSON Parameter::toJSON() const {
   JSON json;
   json["name"] = name_;
   json["value"] = value_set_;
-  json["lfo_min"] = lfo_min_;
-  json["lfo_max"] = lfo_max_;
   json["lfo_period"] = lfo_period_;
   return json;
 }
 void Parameter::fromJSON(const JSON& json) {
   name_ = json["name"];
   value_set_ = json["value"];
-  lfo_min_ = json["lfo_min"];
-  lfo_max_ = json["lfo_max"];
   lfo_period_ = json["lfo_period"];
   set_(value_set_, true);
 }
@@ -39,10 +35,11 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
   min_ = min;
   max_ = max;
   inc_ = inc;
-  lfo_min_ = lfo_min;
-  lfo_max_ = lfo_max;
+  lfo_min_set_ = lfo_min;
+  lfo_max_set_ = lfo_max;
+  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0.0f, 1.0f);
+  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0.0f, 1.0f);
   lfo_inc_ = lfo_inc;
-  lfo_minmax_update();
 
   value_set_ = default_value;
   value_compute_ = value_set_;
@@ -81,25 +78,17 @@ void Parameter::Update() {
     return;
   }
   lfo_.Process();
-  value_compute_raw_ =
-      linlin(lfo_.Value(), -1.0f, 1.0f, lfo_min_raw_, lfo_max_raw_);
-  value_compute_ = linlin(value_compute_raw_, 0.0f, 1.0f, min_, max_);
+  value_compute_ =
+      linlin(lfo_.Value(), -1.0f, 1.0f, lfo_min_set_, lfo_max_set_);
+  value_compute_raw_ = linlin(value_compute_, min_, max_, 0.0f, 1.0f);
   if (set_callback_) {
     set_callback_(value_compute_);
   }
 }
 
-void Parameter::lfo_minmax_update() {
-  lfo_min_raw_set_ = linlin(lfo_min_, min_, max_, 0.0f, 1.0f);
-  lfo_max_raw_set_ = linlin(lfo_max_, min_, max_, 0.0f, 1.0f);
-  lfo_min_raw_ = fclamp(value_set_raw_ - lfo_min_raw_set_, 0.0f, 1.0f);
-  lfo_max_raw_ = fclamp(value_set_raw_ + lfo_max_raw_set_, 0.0f, 1.0f);
-}
-
 void Parameter::set_(float value, bool quiet) {
   value_set_ = fclamp(value, min_, max_);
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
-  lfo_minmax_update();
   if (set_callback_ && !lfo_active_ && !quiet) {
     set_callback_(value_set_);
   }
@@ -110,9 +99,10 @@ void Parameter::ValueDelta(float delta) {
 }
 
 void Parameter::LFODelta(float min_delta, float max_delta) {
-  lfo_min_ = fclamp(lfo_min_ + min_delta * lfo_inc_, min_, max_);
-  lfo_max_ = fclamp(lfo_max_ + max_delta * lfo_inc_, min_, max_);
-  lfo_minmax_update();
+  lfo_min_set_ = fclamp(lfo_min_set_ + min_delta * lfo_inc_, min_, max_);
+  lfo_max_set_ = fclamp(lfo_max_set_ + max_delta * lfo_inc_, min_, max_);
+  lfo_min_raw_ = linlin(lfo_min_set_, min_, max_, 0.0f, 1.0f);
+  lfo_max_raw_ = linlin(lfo_max_set_, min_, max_, 0.0f, 1.0f);
 }
 
 void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
