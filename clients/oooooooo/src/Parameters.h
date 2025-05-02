@@ -34,7 +34,7 @@ class Parameters : public Serializable {
     }
   }
 
-  void Init(SoftcutClient* sc, int voice);
+  void Init(SoftcutClient* sc, int voice, float sample_rate);
 
   void ValueDelta(float delta) { param_[selected_].ValueDelta(delta); }
   void ValueSet(ParameterName p, float value, bool quiet) {
@@ -47,11 +47,19 @@ class Parameters : public Serializable {
     param_[selected_].LFODelta(min_delta, max_delta);
   }
 
+  void ToggleLFO() { param_[selected_].ToggleLFO(); }
+
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height) {
     for (int i = 0; i < PARAM_COUNT; i++) {
       param_[i].Render(renderer, font, x, y + i * (height + 2), width, height,
                        selected_ == i);
+    }
+  }
+
+  void Update() {
+    for (int i = 0; i < PARAM_COUNT; i++) {
+      param_[i].Update();
     }
   }
 
@@ -70,6 +78,7 @@ class Parameters : public Serializable {
  private:
   SoftcutClient* softCutClient_ = nullptr;
   int selected_ = 0;
+  float sample_rate_ = 0.0f;
 };
 
 #endif

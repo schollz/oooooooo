@@ -13,6 +13,9 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             << SDL_GetKeyName(key) << " " << modifiers << std::endl;
 
   switch (key) {
+    case SDLK_l:
+      params_[selectedLoop].ToggleLFO();
+      break;
     case SDLK_UP:
       for (int i = 0; i < numVoices_; i++) {
         params_[i].SelectedDelta(isRepeat ? 2 : 1);

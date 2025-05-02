@@ -253,6 +253,13 @@ void Display::renderLoop() {
     SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
     SDL_RenderClear(renderer_);
 
+    // Update all the parameters
+    if (softCutClient_) {
+      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+        params_[i].Update();
+      }
+    }
+
     // Update all the display rings
     if (softCutClient_) {
       for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
@@ -303,7 +310,7 @@ void Display::init(SoftcutClient* sc, int numVoices) {
   // setup parameters
   params_ = new Parameters[numVoices_];
   for (int v = 0; v < numVoices_; v++) {
-    params_[v].Init(softCutClient_, v);
+    params_[v].Init(softCutClient_, v, 1000.0f / 16.0f);
   }
 
   // setup display rings
