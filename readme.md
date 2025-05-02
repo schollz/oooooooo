@@ -1,6 +1,6 @@
 # oooooooo
 
-[![build workflow](https://github.com/schollz/oooooooo/actions/workflows/build.yml/badge.svg)](https://github.com/schollz/oooooooo/actions/workflows/build.yml) [![GitHub Release](https://img.shields.io/github/v/release/schollz/oooooooo)](https://github.com/schollz/oooooooo/releases/latest)
+[![build workflow](https://github.com/schollz/oooooooo/actions/workflows/ci.yml/badge.svg)](https://github.com/schollz/oooooooo/actions/workflows/ci.yml) [![GitHub Release](https://img.shields.io/github/v/release/schollz/oooooooo)](https://github.com/schollz/oooooooo/releases/latest)
 
 ### introduction
 
