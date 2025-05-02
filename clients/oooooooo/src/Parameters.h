@@ -17,6 +17,8 @@ class Parameters : public Serializable {
     PARAM_LEVEL,
     PARAM_PAN,
     PARAM_LPF,
+    PARAM_PREGAIN,
+    PARAM_BIAS,
     PARAM_REVERB,
     PARAM_COUNT  // Holds the number of parameters
   };

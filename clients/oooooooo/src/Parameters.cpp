@@ -30,8 +30,12 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_LEVEL_CUT, voice, db2amp(value)));
             });
-        param_[i].SetStringFunc(
-            [](float value) { return sprintf_str("%2.1f", value); });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
+        });
         break;
       case PARAM_PAN:
         default_value =
@@ -65,6 +69,42 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
           } else {
             return sprintf_str("%2.0f Hz", freq);
           }
+        });
+        break;
+      case PARAM_PREGAIN:
+        default_value = 0.0f;
+        param_[i].Init(
+            sample_rate_, -32.0, 36.0f, 0.1f, default_value,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "PreGain",
+            "dB", [this, voice](float value) {
+              std::cout << "Parameters::Init " << value
+                        << " PreGain set to: " << db2amp(value) << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_TAPE_PREGAIN, voice, db2amp(value)));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
+        });
+        break;
+      case PARAM_BIAS:
+        default_value = -24.0f;
+        param_[i].Init(
+            sample_rate_, -32.0, 12.0f, 0.1f, default_value,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "Bias",
+            "dB", [this, voice](float value) {
+              std::cout << "Parameters::Init " << value
+                        << " Bias set to: " << db2amp(value) << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_TAPE_BIAS, voice, db2amp(value)));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
         });
         break;
       case PARAM_REVERB:
