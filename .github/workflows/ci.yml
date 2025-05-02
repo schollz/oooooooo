@@ -72,6 +72,7 @@ jobs:
             mingw-w64-x86_64-rtmidi
             mingw-w64-x86_64-libsndfile
             mingw-w64-x86_64-flac
+            mingw-w64-x86_64-make
             mingw-w64-x86_64-cmake
             zip
 
