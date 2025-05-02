@@ -6,7 +6,7 @@
 APPNAME="oooooooo"
 
 # Paths
-BUILD_DIR="build"
+BUILD_DIR="build/clients/oooooooo"
 APP_BUNDLE="$APPNAME.app"
 CONTENTS_DIR="$APP_BUNDLE/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
