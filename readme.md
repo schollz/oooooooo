@@ -13,7 +13,6 @@ it provides a relatively low-level but robust interface for commonly needed func
 
 this library was developed at the behest of [monome](https://monome.org), originally for use with the [norns](https://monome.org/norns/) sound computer.
 
-
 ### project structure
 
 `./CMakeLists.txt` builds the library and the sample client(s).
@@ -31,13 +30,14 @@ this library was developed at the behest of [monome](https://monome.org), origin
 #### requirements:
 
 - [cmake]() version 3.7 or greater
-- C++ compiler supporting C++14 standard 
+- C++ compiler supporting C++14 standard
 - [boost](https://www.boost.org/)
 - [liblo](https://github.com/radarsat1/liblo)
 
 #### steps:
 
-standard CMake procedure: 
+standard CMake procedure:
+
 ```
 cd softcut/softcut
 mkdir build-release
@@ -50,12 +50,9 @@ this creates a static library at `build-release/libsoftcut.a`
 
 if you are integrating softcut into a cmake-based project, you may prefer to include the softcut project as a subdirectory in your `CMakeLists.txt`.
 
-
 ### usage
 
-
 big TODO here: API reference!
-
 
 ## notes
 
@@ -68,4 +65,14 @@ big TODO here: API reference!
      "**/faust": true,
      "**/.DS_Store": true
    },
+```
+
+### building on windows mys2
+
+```
+export PATH=/mingw64/bin:$PATH
+export PKG_CONFIG_PATH="/mingw64/lib/pkgconfig:$PKG_CONFIG_PATH"
+export MINGW_PREFIX="/mingw64"
+rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/mingw64 -G "Unix Makefiles" .. && cmake --build . --config Release -- -j$(nproc)
+``
 ```

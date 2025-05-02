@@ -22,6 +22,13 @@ jobs:
       - name: Build project
         run: make
 
+      - name: Create release
+        run: ./build-appimage.sh
+
+      - name: Create release artifact
+        run: |
+          cp ooooooo.AppImage ooooooo_${{ github.event.release.name }}.AppImage
+          ls -lSh ooooooo_${{ github.event.release.name }}.AppImage
 
   macos:
     runs-on: macos-latest
@@ -37,15 +44,21 @@ jobs:
 
       - name: Set PKG_CONFIG_PATH
         run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
-      
+
       - name: Build project
-        run: | 
+        run: |
           export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
           export CXXFLAGS="-I/opt/homebrew/include -I/usr/local/include"
           export LDFLAGS="-L/opt/homebrew/lib -L/usr/local/lib"
           export PATH="/opt/homebrew/bin:$PATH"
           make
-
+      - name: Build macOS app
+        run: |
+          chmod +x build-macapp.sh
+          ./build-macapp.sh
+      - name: Create release artifact
+        run: |
+          ls -lSh
   windows:
     runs-on: windows-latest
     steps:
@@ -92,3 +105,11 @@ jobs:
                 -DCMAKE_PREFIX_PATH=/mingw64 \
                 ..
           cmake --build . --config Release
+      - name: Create release artifact
+        shell: msys2 {0}
+        run: |
+          mkdir oooooooo
+          cp build/clients/oooooooo/oooooooo.exe oooooooo/
+          cp external/windows/*.dll oooooooo/
+          zip -r oooooooo_${{ github.event.release.name }}.zip oooooooo
+          ls -lSh oooooooo_${{ github.event.release.name }}.zip
