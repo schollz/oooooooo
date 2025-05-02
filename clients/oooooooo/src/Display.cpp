@@ -290,7 +290,7 @@ void Display::renderLoop() {
     }
 
     // render each parameter
-    params_[selected_loop].Render(renderer_, font, 10, 30, 100, 20);
+    params_[selected_loop].Render(renderer_, font, 10, 30, 100, 15);
 
     // Update screen
     SDL_RenderPresent(renderer_);

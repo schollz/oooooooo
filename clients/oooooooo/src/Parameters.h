@@ -13,6 +13,7 @@ class Parameters : public Serializable {
  public:
   // Parameters
   enum ParameterName {
+    PARAM_PLAY,
     PARAM_LEVEL,
     PARAM_PAN,
     PARAM_REVERB,
@@ -38,12 +39,15 @@ class Parameters : public Serializable {
   void Init(SoftcutClient* sc, int voice, float sample_rate);
 
   void ValueDelta(float delta) { param_[selected_].ValueDelta(delta); }
+  void ValueToggle(ParameterName p) { param_[p].Toggle(); }
+
   void ValueSet(ParameterName p, float value, bool quiet) {
     param_[p].ValueSet(value, quiet);
   }
   void ValueSetRaw(ParameterName p, float value, bool quiet) {
     param_[p].ValueSetRaw(value, quiet);
   }
+
   void LFODelta(float min_delta, float max_delta) {
     param_[selected_].LFODelta(min_delta, max_delta);
   }
@@ -53,7 +57,7 @@ class Parameters : public Serializable {
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height) {
     for (int i = 0; i < PARAM_COUNT; i++) {
-      param_[i].Render(renderer, font, x, y + i * (height + 2), width, height,
+      param_[i].Render(renderer, font, x, y + i * (height + 5), width, height,
                        selected_ == i);
     }
   }

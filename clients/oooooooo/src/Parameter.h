@@ -39,6 +39,13 @@ class Parameter : public Serializable {
               int height, bool selected);
   void Update();
   void Bang();
+  void Toggle() {
+    if (value_set_raw_ > 0.5f) {
+      set_(min_, false);
+    } else {
+      set_(max_, false);
+    }
+  }
 
   float GetRaw() { return value_compute_raw_; }
   float GetRawMin() { return lfo_min_raw_; }
