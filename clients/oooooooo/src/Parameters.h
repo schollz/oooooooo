@@ -20,6 +20,7 @@ class Parameters : public Serializable {
     PARAM_PREGAIN,
     PARAM_BIAS,
     PARAM_REVERB,
+    PARAM_RATE,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

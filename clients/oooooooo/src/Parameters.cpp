@@ -121,6 +121,17 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
           return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));
         });
         break;
+      case PARAM_RATE:
+        default_value = 1.0f;
+        param_[i].Init(
+            sample_rate_, 0.0, 2.0f, 0.01f, default_value, 0.99f, 1.01f, 0.1f,
+            10.0f, "Rate", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Rate set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_RATE, voice, value));
+            });
+        break;
     }
   }
 }
