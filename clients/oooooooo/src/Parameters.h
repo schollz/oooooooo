@@ -23,6 +23,12 @@ class Parameters : public Serializable {
     PARAM_DIRECTION,
     PARAM_START,
     PARAM_DURATION,
+    PARAM_REC_LEVEL,
+    PARAM_PRE_LEVEL,
+    PARAM_REC_SLEW,
+    PARAM_LEVEL_SLEW,
+    PARAM_RATE_SLEW,
+    PARAM_PAN_SLEW,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

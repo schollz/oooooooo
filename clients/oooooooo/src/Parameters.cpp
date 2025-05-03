@@ -140,7 +140,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
-            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "Start", "",
+            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "Start", "s",
             [this, voice](float value) {
               std::cout << "Parameters::Init " << "Start set to: " << value
                         << std::endl;
@@ -158,7 +158,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, 0.0, 30.0f, 0.01f, default_value,
             default_value - 1.0f, default_value + 1.0f, 0.1f, 10.0f, "Duration",
-            "", [this, voice](float value) {
+            "s", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Duration set to: " << value
                         << std::endl;
               float start = softCutClient_->getLoopStart(voice);
@@ -166,6 +166,116 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                   Commands::Id::SET_CUT_LOOP_END, voice, value + start));
               param_[PARAM_START].SetMax(value);
             });
+        break;
+      case PARAM_REC_LEVEL:
+        default_value = 0.0f;
+        param_[i].Init(
+            sample_rate_, -48.0, 12.0f, 0.1f, default_value,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
+            "Rec Level", "dB", [this, voice](float value) {
+              std::cout << "Parameters::Init " << value
+                        << " Rec Level set to: " << db2amp(value) << std::endl;
+              float amp = db2amp(value);
+              if (value <= -42.0f) {
+                amp = 0.0f;
+              }
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_REC_LEVEL, voice, amp));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
+        });
+        break;
+      case PARAM_PRE_LEVEL:
+        default_value = -48.0f;
+        param_[i].Init(
+            sample_rate_, -48.0, 12.0f, 0.1f, default_value,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
+            "Pre Level", "dB", [this, voice](float value) {
+              float amp = db2amp(value);
+              if (value <= -42.0f) {
+                amp = 0.0f;
+              }
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_PRE_LEVEL, voice, amp));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
+        });
+        break;
+      case PARAM_REC_SLEW:
+        default_value = 0.2f;  // seconds
+        param_[i].Init(
+            sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, "Rec Slew", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Rec Slew set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_RECPRE_SLEW_TIME, voice, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 1.0f)
+            return sprintf_str("%2.1f s", value);
+          else
+            return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
+        break;
+      case PARAM_LEVEL_SLEW:
+        default_value = 0.2f;  // seconds
+        param_[i].Init(
+            sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, "Level Slew", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Level Slew set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_LEVEL_SLEW_TIME, voice, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 1.0f)
+            return sprintf_str("%2.1f s", value);
+          else
+            return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
+        break;
+      case PARAM_RATE_SLEW:
+        default_value = 0.2f;  // seconds
+        param_[i].Init(
+            sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, "Rate Slew", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Rate Slew set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_RATE_SLEW_TIME, voice, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 1.0f)
+            return sprintf_str("%2.1f s", value);
+          else
+            return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
+        break;
+      case PARAM_PAN_SLEW:
+        default_value = 0.2f;  // seconds
+        param_[i].Init(
+            sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, "Pan Slew", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Pan Slew set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_PAN_SLEW_TIME, voice, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 1.0f)
+            return sprintf_str("%2.1f s", value);
+          else
+            return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
         break;
     }
   }
