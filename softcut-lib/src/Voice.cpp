@@ -218,7 +218,7 @@ void Voice::setRecOnceFlag(bool val) {
   }
 }
 
-void Voice::setBuffer(float* b, unsigned int nf) {
+void Voice::setBuffer(sample_t* b, unsigned int nf) {
   buf = b;
   bufFrames = nf;
   sch.setBuffer(buf, bufFrames);
