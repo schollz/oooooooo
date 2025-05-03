@@ -171,6 +171,7 @@ class SoftcutClient : public JackClient<2, 2> {
   LogRamp reverbSend[NumVoices];
   float rateBase[NumVoices];
   float rateSet[NumVoices];
+  float loopMin[NumVoices];
   bool rateForward[NumVoices];
   StereoBus reverbBus;
   void clearBusses(size_t numFrames);

@@ -28,6 +28,11 @@ void SoftcutClient::init() {
     rateBase[i] = 1.0f;
     rateSet[i] = 1.0f;
     rateForward[i] = true;
+    loopMin[i] = cutDuration * i;
+    if (i >= 4) {
+      loopMin[i] = cutDuration * (i - 4);
+    }
+
     // enable
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_ENABLED_CUT, i, 1.0f));
@@ -56,27 +61,18 @@ void SoftcutClient::init() {
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_CUT_LOOP_FLAG, i, 1.0f));
 
-    // set start and end points
-    float start = cutDuration * i;
-    if (i >= 4) {
-      start = cutDuration * (i - 4);
-    }
-    float end = start + 2.0f;
-
-    std::cerr << "SoftcutClient::init: " << i << " start: " << start
-              << " end: " << end << std::endl;
     SoftcutClient::handleCommand(new Commands::CommandPacket(
-        Commands::Id::SET_CUT_LOOP_START, i, start));
-    SoftcutClient::handleCommand(
-        new Commands::CommandPacket(Commands::Id::SET_CUT_LOOP_END, i, end));
+        Commands::Id::SET_CUT_LOOP_START, i, loopMin[i]));
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_LOOP_END, i, loopMin[i] + 2.0f));
 
     // set play flag on
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_CUT_PLAY_FLAG, i, 0.0f));
 
     // cut to the beginning
-    SoftcutClient::handleCommand(
-        new Commands::CommandPacket(Commands::Id::SET_CUT_POSITION, i, start));
+    SoftcutClient::handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_CUT_POSITION, i, loopMin[i]));
   }
 }
 
