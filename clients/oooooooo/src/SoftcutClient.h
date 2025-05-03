@@ -58,7 +58,7 @@ class SoftcutClient : public JackClient<2, 2> {
   // processors
   softcut::Softcut<NumVoices> cut;
   // main buffer
-  float buf[2][BufFrames];
+  sample_t buf[2][BufFrames];
   // buffer index for use with BufDiskWorker
   int bufIdx[2];
   // busses

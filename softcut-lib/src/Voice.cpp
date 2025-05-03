@@ -75,7 +75,7 @@ void Voice::processBlockMono(const float* in, float* out, int numFrames) {
       sampleFunc = [](float in, float* out) {
         (void)in;
         // makes sure the output bus is zeroed
-        *out = 0.f;
+        *out = static_cast<sample_t>(0);
       };
     }
   }

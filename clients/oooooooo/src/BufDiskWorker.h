@@ -23,6 +23,9 @@
 #include <queue>
 #include <thread>
 
+#include "softcut/Types.h"
+using namespace softcut;
+
 namespace softcut_jack_osc {
 
 // class for asynchronous management of mono audio buffers
@@ -38,7 +41,7 @@ class BufDiskWorker {
     int chan;
   };
   struct BufDesc {
-    float *data;
+    sample_t *data;
     size_t frames;
   };
   static std::queue<Job> jobQ;
