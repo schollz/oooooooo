@@ -7,16 +7,15 @@
 
 #include <cstddef>
 
-namespace  softcut_jack_osc {
+namespace softcut_jack_osc {
 
-    class Window {
-    public:
-    // raised-cosine window
-        static constexpr size_t raisedCosShortLen = 48 * 50;
-        static const float raisedCosShort[raisedCosShortLen];
+class Window {
+ public:
+  // raised-cosine window
+  static constexpr size_t raisedCosShortLen = 48 * 50;
+  static const float raisedCosShort[raisedCosShortLen];
+};
 
-    };
+}  // namespace softcut_jack_osc
 
-}
-
-#endif //CRONE_WINDOW_H
+#endif  // CRONE_WINDOW_H

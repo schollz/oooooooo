@@ -11,70 +11,65 @@
 
 namespace softcut {
 
-    // two-stage quadratic soft clipper with variable gain
-    // nice odd harmonics, kinda carbon-mic sound
-    class SoftClip {
+// two-stage quadratic soft clipper with variable gain
+// nice odd harmonics, kinda carbon-mic sound
+class SoftClip {
+ private:
+  float t;  // threshold (beginning of knee)
+  float g;  // gain multiplier
+  float a;  // parabolic coefficient
+  float b;  // parabolic offset ( = max level)
+  // update quad multiplier from current settings
+  void calcCoeffs() {
+    // match derivative at knee point
+    // FIXME: should be able to factor this such that b=1 always, user sets g
+    // only
+    float t_1 = t - 1.f;
+    if (t_1 < 0.f) {
+      a = g / (2.f * t_1);
+      b = g * t - (a * t_1 * t_1);
+    } else {
+      a = 0.f;
+      b = 1.f;
+    }
+  }
 
-    private:
+ public:
+  SoftClip(float t_ = 0.68f, float g_ = 1.2f) : t(t_), g(g_) { calcCoeffs(); }
 
-        float t; // threshold (beginning of knee)
-        float g;  // gain multiplier
-        float a;  // parabolic coefficient
-        float b;  // parabolic offset ( = max level)
-        // update quad multiplier from current settings
-        void calcCoeffs() {
-            // match derivative at knee point
-            // FIXME: should be able to factor this such that b=1 always, user sets g only
-            float t_1 = t - 1.f;
-            if (t_1 < 0.f) {
-                a = g / (2.f * t_1);
-                b = g * t - (a * t_1 * t_1);
-            } else {
-                a = 0.f;
-                b = 1.f;
-            }
-        }
+  float processSample(float x) {
+    float ax = fabs(x);
+    const float sx = fsign(x);
 
-    public:
-        SoftClip(float t_ = 0.68f, float g_ = 1.2f)
-        : t(t_), g(g_) {
-            calcCoeffs();
-        }
+    if (ax > 1.f) {
+      ax = 1.f;
+    }
 
-        float processSample(float x) {
-            float ax = fabs(x);
-            const float sx = fsign(x);
+    if (ax < t) {
+      return x * g;
+    } else {
+      const float q = ax - 1.f;
+      const float y = (a * q * q) + b;
+      return sx * y;
+    }
+  }
 
-            if (ax > 1.f) {
-                ax = 1.f;
-            }
+  void setGain(float r) {
+    g = r;
+    calcCoeffs();
+  }
 
-            if (ax < t) {
-                return x * g;
-            } else {
-                const float q = ax - 1.f;
-                const float y = (a * q * q) + b;
-                return sx * y;
-            }
-        }
+  void setLowThresh(float amp) {
+    t = amp;
+    calcCoeffs();
+  }
 
-        void setGain(float r) {
-            g = r;
-            calcCoeffs();
-        }
+  float getGain() { return g; }
 
-        void setLowThresh(float amp) {
-            t = amp;
-            calcCoeffs();
-        }
+  float getLowThresh() { return t; }
 
-        float getGain() { return g; }
+  float getHighThreshDb() { return b; }
+};
+}  // namespace softcut
 
-        float getLowThresh() { return t; }
-
-        float getHighThreshDb() { return b; }
-
-    };
-}
-
-#endif //Softcut_SOFTCLIP_H
+#endif  // Softcut_SOFTCLIP_H
