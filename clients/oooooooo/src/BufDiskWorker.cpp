@@ -32,7 +32,7 @@ static inline void clamp(size_t &x, const size_t a) {
   }
 }
 
-int BufDiskWorker::registerBuffer(float *data, size_t frames) {
+int BufDiskWorker::registerBuffer(sample_t *data, size_t frames) {
   int n = numBufs++;
   bufs[n].data = data;
   bufs[n].frames = frames;
@@ -362,7 +362,7 @@ void BufDiskWorker::writeBufferMono(const std::string &path, BufDesc &buf,
   size_t nf = 0;
   // std::cout << "writing " << numBlocks << " blocks and " << rem << "
   // remainder frames..." << std::endl;
-  float *pbuf = buf.data + frSrc;
+  sample_t *pbuf = buf.data + frSrc;
   for (size_t block = 0; block < numBlocks; ++block) {
     size_t n = file.writef(pbuf, ioBufFrames);
     pbuf += ioBufFrames;
@@ -424,11 +424,11 @@ void BufDiskWorker::writeBufferStereo(const std::string &path, BufDesc &buf0,
   // std::cout << "writing " << numBlocks << " blocks and " << rem << "
   // remainder frames..." << std::endl;
 
-  float ioBuf[ioBufFrames * 2];
-  float *pbuf0 = buf0.data;
-  float *pbuf1 = buf1.data;
+  sample_t ioBuf[ioBufFrames * 2];
+  sample_t *pbuf0 = buf0.data;
+  sample_t *pbuf1 = buf1.data;
   for (size_t block = 0; block < numBlocks; ++block) {
-    float *pio = ioBuf;
+    sample_t *pio = ioBuf;
     for (size_t fr = 0; fr < ioBufFrames; ++fr) {
       *pio++ = *pbuf0++;
       *pio++ = *pbuf1++;

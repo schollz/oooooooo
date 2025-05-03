@@ -182,7 +182,7 @@ void ReadWriteHead::calcFadeInc() {
   fadeInc = std::max(0.f, std::min(fadeInc, 1.f));
 }
 
-void ReadWriteHead::setBuffer(float *b, uint32_t bf) {
+void ReadWriteHead::setBuffer(sample_t *b, uint32_t bf) {
   buf = b;
   head[0].setBuffer(b, bf);
   head[1].setBuffer(b, bf);

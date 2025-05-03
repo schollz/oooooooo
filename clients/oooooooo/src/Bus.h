@@ -8,6 +8,8 @@
 #include <cassert>
 
 #include "Utilities.h"
+#include "softcut/Types.h"
+using namespace softcut;
 
 namespace softcut_jack_osc {
 
@@ -17,7 +19,7 @@ class Bus {
   typedef Bus<NumChannels, BlockSize> BusT;
 
  public:
-  float buf[NumChannels][BlockSize];
+  sample_t buf[NumChannels][BlockSize];
 
   // clear the entire bus
   void clear() {

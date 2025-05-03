@@ -26,7 +26,7 @@ void TapeFX::SetBias(float bias) { bias_ = bias; }
 
 void TapeFX::SetPregain(float pregain) { pregain_ = pregain; }
 
-void TapeFX::ProcessMono(float *out, unsigned int numFrames) {
+void TapeFX::ProcessMono(sample_t *out, unsigned int numFrames) {
   for (size_t i = 0; i < numFrames; i++) {
     // pregain
     out[i] *= pregain_;
@@ -34,7 +34,7 @@ void TapeFX::ProcessMono(float *out, unsigned int numFrames) {
     // dc bias with follower
     out[i] = tanhf(out[i] + (follow_ * bias_));
     // DC blocking
-    float in = out[i];
+    sample_t in = out[i];
     out[i] = in - dc_input_l_ + (dc_gain_ * dc_output_l_);
     dc_output_l_ = out[i];
     dc_input_l_ = in;
@@ -43,7 +43,7 @@ void TapeFX::ProcessMono(float *out, unsigned int numFrames) {
   }
 }
 
-void TapeFX::Process(float **out, unsigned int numFrames) {
+void TapeFX::Process(sample_t **out, unsigned int numFrames) {
   for (size_t i = 0; i < numFrames; i++) {
     // pregain
     out[0][i] *= pregain_;
@@ -56,7 +56,7 @@ void TapeFX::Process(float **out, unsigned int numFrames) {
     out[1][i] = tanhf(out[1][i] + (follow_ * bias_));
 
     // DC blocking
-    float in = out[0][i];
+    sample_t in = out[0][i];
     out[0][i] = in - dc_input_l_ + (dc_gain_ * dc_output_l_);
     dc_output_l_ = out[0][i];
     dc_input_l_ = in;
