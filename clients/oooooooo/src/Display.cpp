@@ -182,8 +182,13 @@ void Display::renderLoop() {
 
           // total time in seconds
           // set the loop end to the total time
+          params_[selected_loop].ValueSet(Parameters::PARAM_START,
+                                          startTimeDest, false);
+          params_[selected_loop].SetMax(Parameters::PARAM_DURATION,
+                                        totalSeconds);
           params_[selected_loop].ValueSet(Parameters::PARAM_DURATION,
                                           totalSeconds, false);
+
           // cut to the start
           softCutClient_->handleCommand(new Commands::CommandPacket(
               Commands::Id::SET_CUT_POSITION, selected_loop, startTimeDest));

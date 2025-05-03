@@ -22,6 +22,10 @@ void DisplayRing::Update(float width_, float height_) {
   x_ = params_->GetRaw(Parameters::PARAM_PAN) * width_;
   y_ = (1 - params_->GetRaw(Parameters::PARAM_LEVEL)) * height_;
   radius_ = linlin(dur_, 0, 30, 10, 200);
+  // limit radius to 75% width of screen
+  if (radius_ > width_ / 3) {
+    radius_ = width_ / 3;
+  }
   position_ = (pos_ - start_) / dur_;
   thickness_ = 2.5f;
 }
