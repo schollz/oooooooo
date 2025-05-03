@@ -122,6 +122,20 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                   Commands::Id::SET_CUT_RATE, voice, value));
             });
         break;
+      case PARAM_DIRECTION:
+        default_value = 0.0f;
+        param_[i].Init(sample_rate_, -1.0, 1.0f, 0.1f, default_value, -0.5f,
+                       0.5f, 0.1f, 10.0f, "Direction", "",
+                       [this, voice](float value) {
+                         softCutClient_->setRateDirection(voice, value >= 0);
+                       });
+        param_[i].SetStringFunc([](float value) {
+          if (value >= 0)
+            return "fwd";
+          else
+            return "rev";
+        });
+        break;
     }
   }
 }

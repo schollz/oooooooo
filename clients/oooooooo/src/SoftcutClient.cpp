@@ -27,6 +27,7 @@ void SoftcutClient::init() {
   for (int i = 0; i < NumVoices; ++i) {
     rateBase[i] = 1.0f;
     rateSet[i] = 1.0f;
+    rateForward[i] = true;
     // enable
     SoftcutClient::handleCommand(
         new Commands::CommandPacket(Commands::Id::SET_ENABLED_CUT, i, 1.0f));
@@ -193,7 +194,7 @@ void SoftcutClient::handleCommand(Commands::CommandPacket *p) {
       //-- softcut commands
     case Commands::Id::SET_CUT_RATE:
       rateSet[p->idx_0] = p->value;
-      cut.setRate(p->idx_0, p->value * rateBase[p->idx_0]);
+      updateRate(p->idx_0);
       break;
     case Commands::Id::SET_CUT_LOOP_START:
       cut.setLoopStart(p->idx_0, p->value);

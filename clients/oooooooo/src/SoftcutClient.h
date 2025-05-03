@@ -36,9 +36,17 @@ class SoftcutClient : public JackClient<2, 2> {
   float getLoopStart(int i) { return cut.getLoopStart(i); }
   float getLoopEnd(int i) { return cut.getLoopEnd(i); }
   float getPreGain(int i) { return cut.getPreGain(i); }
+  float getRate(int i) { return rateSet[i]; }
   void setBaseRate(int i, float rate) {
     rateBase[i] = rate;
-    cut.setRate(i, rate * rateSet[i]);
+    updateRate(i);
+  }
+  void setRateDirection(int i, bool forward) {
+    rateForward[i] = forward;
+    updateRate(i);
+  }
+  void updateRate(int i) {
+    cut.setRate(i, rateSet[i] * rateBase[i] * (rateForward[i] ? 1.f : -1.f));
   }
   bool IsRecording(int i) { return cut.getRecFlag(i); }
   bool IsPlaying(int i) { return cut.getPlayFlag(i); }
@@ -163,6 +171,7 @@ class SoftcutClient : public JackClient<2, 2> {
   LogRamp reverbSend[NumVoices];
   float rateBase[NumVoices];
   float rateSet[NumVoices];
+  bool rateForward[NumVoices];
   StereoBus reverbBus;
   void clearBusses(size_t numFrames);
   void mixInput(size_t numFrames);
