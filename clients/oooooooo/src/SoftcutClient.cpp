@@ -161,8 +161,20 @@ void SoftcutClient::mixOutput(size_t numFrames) {
 
   if (reverbEnabled) {
     // Process reverb (FVerb handles stereo in-place processing)
-    float *reverbInOut[2] = {reverbBus.buf[0], reverbBus.buf[1]};
+    float reverbFloat[2][MaxBlockFrames];
+    for (size_t ch = 0; ch < 2; ch++) {
+      for (size_t i = 0; i < numFrames; i++) {
+        reverbFloat[ch][i] = static_cast<float>(reverbBus.buf[ch][i]);
+      }
+    }
+    float *reverbInOut[2] = {reverbFloat[0], reverbFloat[1]};
     reverb.Process(reverbInOut, numFrames);
+    // Convert back to double
+    for (size_t ch = 0; ch < 2; ch++) {
+      for (size_t i = 0; i < numFrames; i++) {
+        reverbBus.buf[ch][i] = static_cast<sample_t>(reverbFloat[ch][i]);
+      }
+    }
 
     // Mix the processed reverb into the main output
     mix.addFrom(reverbBus, numFrames);

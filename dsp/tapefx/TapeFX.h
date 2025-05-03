@@ -3,12 +3,14 @@
 
 #include "Follower.h"
 
+typedef double sample_t;
+
 class TapeFX {
  public:
   TapeFX();
   void Init(float sample_rate);
-  void Process(float **out, unsigned int numFrames);
-  void ProcessMono(float *out, unsigned int numFrames);
+  void Process(sample_t **out, unsigned int numFrames);
+  void ProcessMono(sample_t *out, unsigned int numFrames);
   void SetBias(float bias);
   void SetPregain(float pregain);
   float getFollowerValue() { return follow_; }
@@ -16,8 +18,8 @@ class TapeFX {
   float GetPregain() { return pregain_; }
 
  private:
-  float dc_input_l_, dc_output_l_, dc_gain_;
-  float dc_input_r_, dc_output_r_;
+  sample_t dc_input_l_, dc_output_l_, dc_gain_;
+  sample_t dc_input_r_, dc_output_r_;
   float bias_, pregain_;
   Follower follower;
   float follow_;

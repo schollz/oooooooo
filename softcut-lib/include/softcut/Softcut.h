@@ -24,7 +24,7 @@ class Softcut {
   }
 
   // assumption: channel count is equal to voice count!
-  void processBlock(int v, const float *in, float *out, int numFrames) {
+  void processBlock(int v, const sample_t *in, sample_t *out, int numFrames) {
     scv[v].processBlockMono(in, out, numFrames);
   }
 
@@ -110,7 +110,7 @@ class Softcut {
     scv[follow].cutToPos(scv[lead].getActivePosition() + offset);
   }
 
-  void setVoiceBuffer(int id, float *buf, size_t bufFrames) {
+  void setVoiceBuffer(int id, sample_t *buf, size_t bufFrames) {
     scv[id].setBuffer(buf, bufFrames);
   }
 

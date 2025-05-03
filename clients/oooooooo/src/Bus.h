@@ -11,19 +11,19 @@
 
 namespace softcut_jack_osc {
 
-template <size_t NumChannels, size_t BlockSize>
+template <size_t NumChannels, size_t BlockSize, typename SampleType = float>
 class Bus {
  private:
-  typedef Bus<NumChannels, BlockSize> BusT;
+  typedef Bus<NumChannels, BlockSize, SampleType> BusT;
 
  public:
-  float buf[NumChannels][BlockSize];
+  SampleType buf[NumChannels][BlockSize];
 
   // clear the entire bus
   void clear() {
     for (size_t ch = 0; ch < NumChannels; ++ch) {
       for (size_t fr = 0; fr < BlockSize; ++fr) {
-        buf[ch][fr] = 0.f;
+        buf[ch][fr] = static_cast<SampleType>(0);
       }
     }
   }
@@ -206,8 +206,8 @@ class Bus {
   }
 
   // mix from mono->stereo bus, with level and pan (equal power)
-  void panMixEpFrom(Bus<1, BlockSize> a, size_t numFrames, LogRamp &level,
-                    LogRamp &pan) {
+  void panMixEpFrom(Bus<1, BlockSize, SampleType> a, size_t numFrames,
+                    LogRamp &level, LogRamp &pan) {
     assert(numFrames < BlockSize);
     static_assert(NumChannels > 1, "using panMixFrom() on mono bus");
     float l, c, x;

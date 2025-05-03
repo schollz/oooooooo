@@ -122,7 +122,7 @@ class Voice {
   void updateQuantPhase();
 
  private:
-  float *buf;
+  sample_t *buf;
   int bufFrames;
   float sampleRate;
 
