@@ -28,9 +28,9 @@ void SoftcutClient::init() {
     rateBase[i] = 1.0f;
     rateSet[i] = 1.0f;
     rateForward[i] = true;
-    loopMin[i] = cutDuration * i;
+    loopMin[i] = cutDuration * static_cast<float>(i);
     if (i >= 4) {
-      loopMin[i] = cutDuration * (i - 4);
+      loopMin[i] = cutDuration * static_cast<float>(i - 4);
     }
 
     // enable

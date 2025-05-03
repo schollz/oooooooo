@@ -180,8 +180,8 @@ void Display::renderLoop() {
           // total time in seconds
           // set the loop end to the total time
           float endTime = startTimeDest + totalSeconds;
-          softCutClient_->handleCommand(new Commands::CommandPacket(
-              Commands::Id::SET_CUT_LOOP_END, selected_loop, endTime));
+          params_[selected_loop].ValueSet(Parameters::PARAM_DURATION,
+                                          totalSeconds, false);
           // cut to the start
           softCutClient_->handleCommand(new Commands::CommandPacket(
               Commands::Id::SET_CUT_POSITION, selected_loop, startTimeDest));

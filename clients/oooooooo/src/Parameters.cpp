@@ -136,6 +136,37 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             return "rev";
         });
         break;
+      case PARAM_START:
+        default_value = 0.0f;
+        param_[i].Init(
+            sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
+            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "Start", "",
+            [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Start set to: " << value
+                        << std::endl;
+              float loop_duration = softCutClient_->getDuration(voice);
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_LOOP_START, voice,
+                  value + softCutClient_->getLoopMin(voice)));
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_LOOP_END, voice,
+                  value + softCutClient_->getLoopMin(voice) + loop_duration));
+            });
+        break;
+      case PARAM_DURATION:
+        default_value = 2.0f;
+        param_[i].Init(
+            sample_rate_, 0.0, 30.0f, 0.01f, default_value,
+            default_value - 1.0f, default_value + 1.0f, 0.1f, 10.0f, "Duration",
+            "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Duration set to: " << value
+                        << std::endl;
+              float start = softCutClient_->getLoopStart(voice);
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_LOOP_END, voice, value + start));
+              param_[PARAM_START].SetMax(value);
+            });
+        break;
     }
   }
 }

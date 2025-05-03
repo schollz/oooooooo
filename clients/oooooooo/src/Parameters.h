@@ -21,6 +21,8 @@ class Parameters : public Serializable {
     PARAM_REVERB,
     PARAM_RATE,
     PARAM_DIRECTION,
+    PARAM_START,
+    PARAM_DURATION,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

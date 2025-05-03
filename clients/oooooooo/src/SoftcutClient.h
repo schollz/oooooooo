@@ -34,6 +34,7 @@ class SoftcutClient : public JackClient<2, 2> {
   float getOutLevel(int i) { return outLevel[i].getValue(); }
   float getDuration(int i) { return cut.getDuration(i); }
   float getLoopStart(int i) { return cut.getLoopStart(i); }
+  float getLoopMin(int i) { return loopMin[i]; }
   float getLoopEnd(int i) { return cut.getLoopEnd(i); }
   float getPreGain(int i) { return cut.getPreGain(i); }
   float getRate(int i) { return rateSet[i]; }

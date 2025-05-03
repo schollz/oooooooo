@@ -49,6 +49,13 @@ class Parameter : public Serializable {
   }
   bool IsHidden() { return hide_; }
   void Hide(bool hide) { hide_ = hide; }
+  void SetMax(float max) {
+    max_ = max;
+    if (value_set_ > max_) {
+      value_set_ = max_;
+      set_(max_, false);
+    }
+  }
 
   float GetRaw() { return value_compute_raw_; }
   float GetRawMin() { return lfo_min_raw_; }
