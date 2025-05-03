@@ -179,7 +179,6 @@ void Display::renderLoop() {
 
           // total time in seconds
           // set the loop end to the total time
-          float endTime = startTimeDest + totalSeconds;
           params_[selected_loop].ValueSet(Parameters::PARAM_DURATION,
                                           totalSeconds, false);
           // cut to the start
