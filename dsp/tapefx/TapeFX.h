@@ -18,10 +18,10 @@ class TapeFX {
   float GetPregain() { return pregain_; }
 
  private:
-  float dc_input_l_, dc_output_l_, dc_gain_;
-  float dc_input_r_, dc_output_r_;
+  sample_t dc_input_l_, dc_output_l_, dc_gain_;
+  sample_t dc_input_r_, dc_output_r_;
   float bias_, pregain_;
   Follower follower;
-  float follow_;
+  sample_t follow_;
 };
 #endif
