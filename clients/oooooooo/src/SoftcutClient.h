@@ -19,7 +19,7 @@ namespace softcut_jack_osc {
 class SoftcutClient : public JackClient<2, 2> {
  public:
   enum { MaxBlockFrames = 2048 };
-  enum { BufFrames = 16777216 };  // 2^24
+  enum { BufFrames = 33554432 };  // 2^24
   enum { NumVoices = 8 };
   typedef enum { SourceAdc = 0 } SourceId;
   typedef Bus<2, MaxBlockFrames> StereoBus;
@@ -58,7 +58,7 @@ class SoftcutClient : public JackClient<2, 2> {
   // processors
   softcut::Softcut<NumVoices> cut;
   // main buffer
-  float buf[2][BufFrames];
+  sample_t buf[2][BufFrames];
   // buffer index for use with BufDiskWorker
   int bufIdx[2];
   // busses

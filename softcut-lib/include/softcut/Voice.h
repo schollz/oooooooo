@@ -12,6 +12,7 @@
 #include "ReadWriteHead.h"
 #include "Svf.h"
 #include "TapeFX.h"
+#include "Types.h"
 #include "Utilities.h"
 
 namespace softcut {
@@ -21,7 +22,7 @@ class Voice {
 
   void init(FadeCurves *fc);
 
-  void setBuffer(float *buf, unsigned int numFrames);
+  void setBuffer(sample_t *buf, unsigned int numFrames);
 
   void setSampleRate(float hz);
 
@@ -78,7 +79,7 @@ class Voice {
   void cutToPos(float sec);
 
   // process a single channel
-  void processBlockMono(const float *in, float *out, int numFrames);
+  void processBlockMono(const sample_t *in, sample_t *out, int numFrames);
 
   void setRecOffset(float d);
 
