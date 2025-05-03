@@ -54,25 +54,25 @@ void Voice::reset() {
   sch.init(&fadeCurves);
 }
 
-void Voice::processBlockMono(const float* in, float* out, int numFrames) {
+void Voice::processBlockMono(const sample_t* in, sample_t* out, int numFrames) {
   std::function<void(sample_t, sample_t*)> sampleFunc;
   if (playFlag) {
     if (recFlag) {
-      sampleFunc = [this](float in, float* out) {
+      sampleFunc = [this](sample_t in, sample_t* out) {
         this->sch.processSample(in, out);
       };
     } else {
-      sampleFunc = [this](float in, float* out) {
+      sampleFunc = [this](sample_t in, sample_t* out) {
         this->sch.processSampleNoWrite(in, out);
       };
     }
   } else {
     if (recFlag) {
-      sampleFunc = [this](float in, float* out) {
+      sampleFunc = [this](sample_t in, sample_t* out) {
         this->sch.processSampleNoRead(in, out);
       };
     } else {
-      sampleFunc = [](float in, float* out) {
+      sampleFunc = [](sample_t in, sample_t* out) {
         (void)in;
         // makes sure the output bus is zeroed
         *out = static_cast<sample_t>(0);
