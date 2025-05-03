@@ -59,6 +59,7 @@ void DisplayRing::RegisterClick(float mouseX, float mouseY) {
   float distance = sqrt(pow(mouseX - x_, 2) + pow(mouseY - y_, 2));
   if (distance < radius_ * 0.75f) {
     clicked_ring_ = true;
+    distance_to_center_ = distance;
   } else if (distance > radius_ * 0.9f && distance < radius_ * 1.1f) {
     clicked_radius_ = true;
     // determine the angle from the top of the circle

@@ -24,6 +24,7 @@ class DisplayRing {
   float GetClickedRadius() { return clicked_radius_angle_normalized_; }
   bool IsDragging() const { return dragging_; }
   int GetId() const { return id_; }
+  float GetDistanceToCenter() const { return distance_to_center_; }
 
  private:
   SoftcutClient *softCutClient_ = nullptr;
@@ -41,6 +42,7 @@ class DisplayRing {
   float position_;
   float thickness_;
   bool clicked_ring_ = false;
+  float distance_to_center_ = 0;
   bool dragging_ = false;
   bool clicked_radius_ = false;
   float clicked_radius_angle_normalized_ = 0;

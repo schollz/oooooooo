@@ -212,19 +212,34 @@ void Display::renderLoop() {
           dragging_bar = false;
           dragged_parameter = -1;
 
+          // create an array of all the rings with clicked radius
+          std::vector<int> clicked_rings;
+
           for (int i = 0; i < numVoices_; i++) {
             displayRings_[i].RegisterClick(e.button.x, e.button.y);
-            if (displayRings_[i].ClickedRing()) {
+            if (displayRings_[i].ClickedRing() && clicked_rings.empty()) {
               std::cout << "Clicked ring " << i << std::endl;
               selected_loop = i;
               mouse_dragging = true;
               break;
             } else if (displayRings_[i].ClickedRadius()) {
-              std::cout << "Clicked radius " << i << std::endl;
-              selected_loop = i;
-              break;
+              clicked_rings.push_back(i);
             }
           }
+
+          if (clicked_rings.size() > 1) {
+            // If multiple rings were clicked, select the one closest to the
+            // mouse
+            float min_distance = std::numeric_limits<float>::max();
+            for (int i : clicked_rings) {
+              float distance = displayRings_[i].GetDistanceToCenter();
+              if (distance < min_distance) {
+                min_distance = distance;
+                selected_loop = i;
+              }
+            }
+          }
+
           // Check if any parameter was clicked
           if (params_[selected_loop].RegisterClick(e.button.x, e.button.y,
                                                    dragging_bar)) {
