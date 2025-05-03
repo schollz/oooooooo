@@ -3,7 +3,7 @@
 
 #include "Follower.h"
 
-typedef float sample_t;
+typedef double sample_t;
 
 class TapeFX {
  public:

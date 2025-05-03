@@ -11,6 +11,7 @@
 
 #include "softcut/FadeCurves.h"
 #include "softcut/Interpolate.h"
+#include "softcut/Types.h"
 #include "softcut/Utilities.h"
 
 using namespace softcut;
@@ -93,13 +94,13 @@ void SubHead::updateFade(float inc) {
 
 #if 0
 /// test: no resampling
-void Subhead::poke(float in, float pre, float rec, int numFades) {
+void Subhead::poke(sample_t in, float pre, float rec, int numFades) {
     sample_t* p = &buf_[static_cast<unsigned int>(phase_)&bufMask_];
     *p *= pre;
     *p += (in * rec);
 }
 #else
-void SubHead::poke(float in, float pre, float rec) {
+void SubHead::poke(sample_t in, float pre, float rec) {
   // FIXME: since there's never really a reason to not push input, or to reset
   // input ringbuf, it follows that all resamplers could share an input ringbuf
   int nframes = resamp_.processFrame(in);
@@ -133,21 +134,21 @@ void SubHead::poke(float in, float pre, float rec) {
 }
 #endif
 
-float SubHead::peek() { return peek4(); }
+sample_t SubHead::peek() { return peek4(); }
 
-float SubHead::peek4() {
+sample_t SubHead::peek4() {
   int phase1 = static_cast<int>(phase_);
   int phase0 = phase1 - 1;
   int phase2 = phase1 + 1;
   int phase3 = phase1 + 2;
 
-  float y0 = buf_[wrapBufIndex(phase0)];
-  float y1 = buf_[wrapBufIndex(phase1)];
-  float y3 = buf_[wrapBufIndex(phase3)];
-  float y2 = buf_[wrapBufIndex(phase2)];
+  sample_t y0 = buf_[wrapBufIndex(phase0)];
+  sample_t y1 = buf_[wrapBufIndex(phase1)];
+  sample_t y3 = buf_[wrapBufIndex(phase3)];
+  sample_t y2 = buf_[wrapBufIndex(phase2)];
 
-  auto x = static_cast<float>(phase_ - (float)phase1);
-  return Interpolate::hermite<float>(x, y0, y1, y2, y3);
+  auto x = static_cast<sample_t>(phase_ - (sample_t)phase1);
+  return Interpolate::hermite<sample_t>(x, y0, y1, y2, y3);
 }
 
 unsigned int SubHead::wrapBufIndex(int x) {
@@ -172,7 +173,7 @@ void SubHead::setPhase(phase_t phase) {
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // **NB** buffer size must be a power of two!!!!
-void SubHead::setBuffer(float *buf, unsigned int frames) {
+void SubHead::setBuffer(sample_t *buf, unsigned int frames) {
   buf_ = buf;
   bufFrames_ = frames;
   bufMask_ = frames - 1;

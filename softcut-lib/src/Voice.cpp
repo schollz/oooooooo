@@ -80,7 +80,7 @@ void Voice::processBlockMono(const sample_t* in, sample_t* out, int numFrames) {
     }
   }
 
-  float x, y;
+  sample_t x, y;
   for (int i = 0; i < numFrames; ++i) {
     x = svfPre.getNextSample(in[i]) + in[i] * svfPreDryLevel;
     sch.setRate(rateRamp.update());

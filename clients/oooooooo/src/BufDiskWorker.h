@@ -66,7 +66,7 @@ class BufDiskWorker {
 
   // register a buffer to manage.
   // returns index to be used in work requests
-  static int registerBuffer(float *data, size_t frames);
+  static int registerBuffer(sample_t *data, size_t frames);
 
   // clear a portion of a mono buffer
   static void requestClear(size_t idx, float start = 0, float dur = -1);
