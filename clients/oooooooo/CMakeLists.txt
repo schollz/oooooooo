@@ -83,6 +83,7 @@ set(SRC
   src/SoftcutClient.cpp
   src/Commands.cpp
   src/OscInterface.cpp
+  src/HelpSystem.cpp
   src/KeyboardHandler.cpp
   src/Perlin.cpp
   src/LFO.cpp

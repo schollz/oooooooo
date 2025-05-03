@@ -12,6 +12,7 @@
 
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
+#include "HelpSystem.h"
 #include "KeyboardHandler.h"
 #include "Parameters.h"
 #include "Perlin.h"
@@ -77,6 +78,9 @@ class Display {
   // Parameters
   Parameters* params_ = nullptr;
   int param_count_ = Parameters::PARAM_COUNT;
+
+  // Help System
+  HelpSystem helpSystem_;
 };
 
 #endif  // DISPLAY_H

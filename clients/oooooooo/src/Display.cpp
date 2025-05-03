@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "AudioFile.h"
-#include "Commands.h"
 #include "DisplayFont.h"
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
@@ -144,6 +143,10 @@ void Display::renderLoop() {
         keyboardHandler_.handleKeyDown(
             e.key.keysym.sym, e.key.repeat,
             static_cast<SDL_Keymod>(e.key.keysym.mod), &selected_loop);
+
+        if (e.key.keysym.sym == SDLK_h && !e.key.repeat) {
+          helpSystem_.Toggle();
+        }
       } else if (e.type == SDL_KEYUP) {
         // Handle key up events
         keyboardHandler_.handleKeyUp(e.key.keysym.sym, selected_loop);
@@ -308,6 +311,9 @@ void Display::renderLoop() {
     // render each parameter
     params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20);
 
+    // render the help system
+    helpSystem_.Render(renderer_, width_);
+
     // Update screen
     SDL_RenderPresent(renderer_);
 
@@ -338,4 +344,7 @@ void Display::init(SoftcutClient* sc, int numVoices) {
 
   // setup keyboard handler
   keyboardHandler_.Init(softCutClient_, params_, numVoices_);
+
+  // setup help system
+  helpSystem_.Init(font);
 }

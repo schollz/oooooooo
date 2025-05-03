@@ -1,30 +1,31 @@
-// HelpSystem.h
 #ifndef HELP_SYSTEM_H
 #define HELP_SYSTEM_H
+#pragma once
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 
 #include <string>
 #include <vector>
 
-// Forward declarations
-typedef void (*LoggerFunc)(const char* format, ...);
+class HelpSystem {
+ public:
+  HelpSystem();
+  ~HelpSystem();
 
-// Initialize the help system
-void initializeHelpSystem(TTF_Font** font, LoggerFunc info_logger,
-                          LoggerFunc debug_logger);
+  void Init(TTF_Font* font);
+  void Toggle();
+  void Render(SDL_Renderer* renderer, int windowWidth);
 
-// Cleanup help system resources
-void cleanupHelpSystem();
+  bool isVisible() const { return helpVisible; }
 
-// Toggle help visibility
-void toggleHelp();
+ private:
+  TTF_Font* font;
+  bool helpVisible;
+  float fadeAlpha;   // 0.0 = fully transparent, 1.0 = fully opaque
+  float fadeTarget;  // Target alpha value
+  float fadeStep;    // Amount to change alpha per frame
 
-// Draw help text
-void drawHelpText(SDL_Renderer* renderer, int window_width, int window_height);
-
-// Update help text (for fading effects)
-void updateHelpText();
-
-#endif  // HELP_SYSTEM_H
+  std::vector<std::string> helpMessages;
+};
+#endif

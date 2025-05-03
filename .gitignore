@@ -3,3 +3,4 @@ build/*
 AppDir/*
 *.AppImage
 appimagetool*
+*.flac
