@@ -7,12 +7,12 @@ IntroAnimation::IntroAnimation()
     : animationComplete(false),
       animationRunning(false),
       animationTime(0.0f),
-      animationDuration(3.0f),  // 3 seconds animation
-      circleAngle(0.0f),
-      circleRadius(150.0f),  // Fixed radius
+      animationDuration(8.0f),  // 3 seconds animation
+      circleAngle(0.8f),
+      circleRadius(180.0f),  // Fixed radius
       centerX(0.0f),
       centerY(0.0f),
-      maxTrailLength(300),
+      maxTrailLength(380),
       rotationSpeed(1.5f),  // rotations per second
       dotSize(8),
       font(nullptr) {

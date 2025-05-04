@@ -141,6 +141,10 @@ void Display::renderLoop() {
         running_ = false;
         break;
       } else if (e.type == SDL_KEYDOWN) {
+        if (!introAnimation_.isComplete()) {
+          introAnimation_.Stop();
+          mainContentFadeAlpha_ = 0.0f;  // Reset fade alpha to start fading in
+        }
         // Handle key down events
         keyboardHandler_.handleKeyDown(
             e.key.keysym.sym, e.key.repeat,
@@ -208,6 +212,10 @@ void Display::renderLoop() {
                     << std::endl;
         }
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+        if (!introAnimation_.isComplete()) {
+          introAnimation_.Stop();
+          mainContentFadeAlpha_ = 0.0f;  // Reset fade alpha to start fading in
+        }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Reset drag flags
           mouse_dragging = false;
