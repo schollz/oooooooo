@@ -224,17 +224,13 @@ void Display::renderLoop() {
 
             for (int i = 0; i < numVoices_; i++) {
               displayRings_[i].RegisterClick(e.button.x, e.button.y);
-              if (displayRings_[i].ClickedRing() && clicked_rings.empty()) {
+              if (displayRings_[i].ClickedRing()) {
                 std::cout << "Clicked ring " << i << std::endl;
-                selected_loop = i;
-                mouse_dragging = true;
-                break;
-              } else if (displayRings_[i].ClickedRadius()) {
                 clicked_rings.push_back(i);
               }
             }
 
-            if (clicked_rings.size() > 1) {
+            if (clicked_rings.size() > 0) {
               // If multiple rings were clicked, select the one closest to the
               // mouse
               float min_distance = std::numeric_limits<float>::max();
@@ -242,6 +238,15 @@ void Display::renderLoop() {
                 float distance = displayRings_[i].GetDistanceToCenter();
                 if (distance < min_distance) {
                   min_distance = distance;
+                  selected_loop = i;
+                  mouse_dragging = true;
+                }
+              }
+            } else {
+              // check to see if radii were clicked
+              for (int i = 0; i < numVoices_; i++) {
+                if (displayRings_[i].ClickedRadius()) {
+                  std::cout << "Clicked radius " << i << std::endl;
                   selected_loop = i;
                 }
               }
@@ -252,6 +257,7 @@ void Display::renderLoop() {
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
             selected_loop < numVoices_) {
+          std::cout << "Dragging ring " << selected_loop << std::endl;
           displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
                                                   width_, height_);
         } else if (dragging_bar) {
