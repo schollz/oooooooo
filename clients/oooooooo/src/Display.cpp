@@ -294,8 +294,17 @@ void Display::renderLoop() {
 
     introAnimation_.Update();
     if (!introAnimation_.isComplete()) {
+      // Render only intro animation
       introAnimation_.Render(renderer_, width_, height_);
     } else {
+      // Fade in main content after intro completes
+      if (mainContentFadeAlpha_ < 1.0f) {
+        mainContentFadeAlpha_ += 0.02f;  // Adjust fade speed as needed
+        if (mainContentFadeAlpha_ >= 1.0f) {
+          mainContentFadeAlpha_ = 1.0f;
+        }
+      }
+
       // Update all the parameters
       if (softCutClient_) {
         for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
@@ -310,40 +319,51 @@ void Display::renderLoop() {
         }
       }
 
-      // Draw the display rings, highlight the selected one
+      // Draw the display rings with fade effect
       if (softCutClient_) {
-        // process unselected rings first
+        // Set up SDL blending mode for the fade effect
+        SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_BLEND);
+
+        // Process unselected rings first
         for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
           if (i == selected_loop) {
             continue;  // Skip the selected ring
           }
+
+          // Apply fade to the ring colors
+          Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
           if (softCutClient_->IsRecording(i)) {
-            SDL_SetRenderDrawColor(renderer_, 176, 97, 97, 0);
+            SDL_SetRenderDrawColor(renderer_, 176, 97, 97, alpha);
           } else {
-            SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
+            SDL_SetRenderDrawColor(renderer_, 120, 120, 120, alpha);
           }
           displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
         }
+
+        // Draw selected ring with fade
+        Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
         if (softCutClient_->IsRecording(selected_loop)) {
-          SDL_SetRenderDrawColor(renderer_, 176, 50, 2, 0);
+          SDL_SetRenderDrawColor(renderer_, 176, 50, 2, alpha);
         } else {
-          SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
+          SDL_SetRenderDrawColor(renderer_, 255, 255, 255, alpha);
         }
         displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
                                             &noiseTimeValue);
       }
 
-      // write ooooo at the top left
-      // draw each "o" separately
+      // Draw "ooooo" text with fade
       for (int i = 0; i < numVoices_; i++) {
-        drawText(renderer_, font, "o", 10 + i * 11, 10,
-                 selected_loop == i ? 255 : 120);
+        Uint8 textAlpha = static_cast<Uint8>((selected_loop == i ? 255 : 120) *
+                                             mainContentFadeAlpha_);
+        drawText(renderer_, font, "o", 10 + i * 11, 10, textAlpha);
       }
 
-      // render each parameter
-      params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20);
+      // Render parameters with fade
+      SDL_SetRenderDrawBlendMode(renderer_, SDL_BLENDMODE_NONE);
+      params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20,
+                                    mainContentFadeAlpha_);
 
-      // render the help system
+      // Render help system
       helpSystem_.Render(renderer_, width_);
     }
 

@@ -85,6 +85,7 @@ class Display {
 
   // Intro Animation
   IntroAnimation introAnimation_;
+  float mainContentFadeAlpha_;
 };
 
 #endif  // DISPLAY_H
