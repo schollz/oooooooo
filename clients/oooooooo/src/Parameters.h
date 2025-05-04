@@ -19,6 +19,8 @@ class Parameters : public Serializable {
     PARAM_PREGAIN,
     PARAM_BIAS,
     PARAM_REVERB,
+    PARAM_REVERB_DECAY,
+    PARAM_REVERB_DENSITY,
     PARAM_RATE,
     PARAM_DIRECTION,
     PARAM_START,
