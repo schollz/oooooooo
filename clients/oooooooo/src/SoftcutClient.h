@@ -19,9 +19,11 @@ namespace softcut_jack_osc {
 class SoftcutClient : public JackClient<2, 2> {
  public:
   enum { MaxBlockFrames = 2048 };
-  // 2^25 as long as sample_t is double,
+  // >2^24 as long as sample_t is double,
   // otherwise 2^24
-  enum { BufFrames = 134217728 };
+  enum {
+    BufFrames = 134217728
+  };  // 2^27, ~6 minutes of mono audio at 48kHz per loop
   enum { NumVoices = 8 };
   typedef enum { SourceAdc = 0 } SourceId;
   typedef Bus<2, MaxBlockFrames> StereoBus;

@@ -26,7 +26,7 @@ class Display {
   // Define a callback type for quit notification
   using QuitCallback = std::function<void()>;
 
-  Display(int width = 800, int height = 600);
+  Display(int width = 1200, int height = 900);
   ~Display();
 
   void init(SoftcutClient* sc, int numVoices);

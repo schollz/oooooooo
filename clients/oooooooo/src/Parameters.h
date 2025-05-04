@@ -29,6 +29,15 @@ class Parameters : public Serializable {
     PARAM_LEVEL_SLEW,
     PARAM_RATE_SLEW,
     PARAM_PAN_SLEW,
+    PARAM_FADE_TIME,
+    PARAM_LOOP1_FEEDBACK,
+    PARAM_LOOP2_FEEDBACK,
+    PARAM_LOOP3_FEEDBACK,
+    PARAM_LOOP4_FEEDBACK,
+    PARAM_LOOP5_FEEDBACK,
+    PARAM_LOOP6_FEEDBACK,
+    PARAM_LOOP7_FEEDBACK,
+    PARAM_LOOP8_FEEDBACK,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

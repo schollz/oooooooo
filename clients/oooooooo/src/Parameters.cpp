@@ -13,7 +13,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                         32.0f;  // -32 to +6
         param_[i].Init(
             sample_rate_, -32.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "Level",
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "level",
             "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
                         << " Level set to: " << db2amp(value) << std::endl;
@@ -33,7 +33,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, -1.0, 1.0f, 0.01f, default_value,
             fclamp(default_value - 1.0f, -1.0f, 1.0f),
-            fclamp(default_value + 1.0f, -1.0f, 1.0f), 0.1f, 12.0f, "Pan", "",
+            fclamp(default_value + 1.0f, -1.0f, 1.0f), 0.1f, 12.0f, "pan", "",
             [this, voice](float value) {
               std::cout << "Parameters::Init " << "Pan set to: " << value
                         << std::endl;
@@ -45,7 +45,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 135.0f;
         param_[i].Init(
             sample_rate_, 20.0f, 135.0f, 0.1f, default_value, 125.0f, 140.0f,
-            0.5f, 10.0f, "LPF", "", [this, voice](float value) {
+            0.5f, 10.0f, "lpf", "", [this, voice](float value) {
               float freq = midi2freq(value);
               std::cout << "Parameters::Init " << "LPF set to: " << freq
                         << std::endl;
@@ -65,7 +65,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, -32.0, 36.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "PreGain",
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "pregain",
             "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
                         << " PreGain set to: " << db2amp(value) << std::endl;
@@ -83,7 +83,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = -24.0f;
         param_[i].Init(
             sample_rate_, -32.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "Bias",
+            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "bias",
             "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
                         << " Bias set to: " << db2amp(value) << std::endl;
@@ -100,7 +100,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_REVERB:
         default_value = 0;
         param_[i].Init(sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f,
-                       0.2f, 0.1f, 10.0f, "Reverb", "%",
+                       0.2f, 0.1f, 10.0f, "reverb", "%",
                        [this, voice](float value) {
                          std::cout << "Parameters::Init "
                                    << "Reverb set to: " << value << std::endl;
@@ -125,7 +125,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_DIRECTION:
         default_value = 0.0f;
         param_[i].Init(sample_rate_, -1.0, 1.0f, 0.1f, default_value, -0.5f,
-                       0.5f, 0.1f, 10.0f, "Direction", "",
+                       0.5f, 0.1f, 10.0f, "direction", "",
                        [this, voice](float value) {
                          softCutClient_->setRateDirection(voice, value >= 0);
                        });
@@ -140,7 +140,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
-            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "Start", "s",
+            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "start", "s",
             [this, voice](float value) {
               std::cout << "Parameters::Init " << "Start set to: " << value
                         << std::endl;
@@ -157,7 +157,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 2.0f;
         param_[i].Init(
             sample_rate_, 0.0, 30.0f, 0.01f, default_value,
-            default_value - 1.0f, default_value + 1.0f, 0.1f, 10.0f, "Duration",
+            default_value - 1.0f, default_value + 1.0f, 0.1f, 10.0f, "duration",
             "s", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Duration set to: " << value
                         << std::endl;
@@ -172,7 +172,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, -48.0, 12.0f, 0.1f, default_value,
             default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
-            "Rec Level", "dB", [this, voice](float value) {
+            "rec level", "dB", [this, voice](float value) {
               std::cout << "Parameters::Init " << value
                         << " Rec Level set to: " << db2amp(value) << std::endl;
               float amp = db2amp(value);
@@ -194,7 +194,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, -48.0, 12.0f, 0.1f, default_value,
             default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
-            "Pre Level", "dB", [this, voice](float value) {
+            "rec pre level", "dB", [this, voice](float value) {
               float amp = db2amp(value);
               if (value <= -42.0f) {
                 amp = 0.0f;
@@ -213,7 +213,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "Rec Slew", "", [this, voice](float value) {
+            10.0f, "rec slew", "", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Rec Slew set to: " << value
                         << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -230,7 +230,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "Level Slew", "", [this, voice](float value) {
+            10.0f, "level slew", "", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Level Slew set to: " << value
                         << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -247,7 +247,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "Rate Slew", "", [this, voice](float value) {
+            10.0f, "rate slew", "", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Rate Slew set to: " << value
                         << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -264,7 +264,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "Pan Slew", "", [this, voice](float value) {
+            10.0f, "pan slew", "", [this, voice](float value) {
               std::cout << "Parameters::Init " << "Pan Slew set to: " << value
                         << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -275,6 +275,50 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             return sprintf_str("%2.1f s", value);
           else
             return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
+        break;
+      case PARAM_FADE_TIME:
+        default_value = 0.2f;  // seconds
+        param_[i].Init(
+            sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, "fade time", "", [this, voice](float value) {
+              std::cout << "Parameters::Init " << "Fade Time set to: " << value
+                        << std::endl;
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_FADE_TIME, voice, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 1.0f)
+            return sprintf_str("%2.1f s", value);
+          else
+            return sprintf_str("%2.0f ms", value * 1000.0f);
+        });
+        break;
+      case PARAM_LOOP1_FEEDBACK:
+      case PARAM_LOOP2_FEEDBACK:
+      case PARAM_LOOP3_FEEDBACK:
+      case PARAM_LOOP4_FEEDBACK:
+      case PARAM_LOOP5_FEEDBACK:
+      case PARAM_LOOP6_FEEDBACK:
+      case PARAM_LOOP7_FEEDBACK:
+      case PARAM_LOOP8_FEEDBACK:
+        default_value = 0.0f;
+        int srcVoice = i - PARAM_LOOP1_FEEDBACK;
+        int destVoice = voice;
+        param_[i].Init(
+            sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
+            10.0f, sprintf_str("loop %d fb", srcVoice + 1), "%",
+            [this, srcVoice, destVoice](float value) {
+              std::cout << "Parameters::Init " << "Feedback set to: " << value
+                        << " from voice: " << srcVoice
+                        << " to voice: " << destVoice << std::endl;
+              // softCutClient_->handleCommand(new
+              // Commands::CommandPacket(
+              //     Commands::Id::SET_CUT_LEVEL_CUT_CUT,
+              //     voice + i - PARAM_LOOP1_FEEDBACK, value));
+            });
+        param_[i].SetStringFunc([](float value) {
+          return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));
         });
         break;
     }
