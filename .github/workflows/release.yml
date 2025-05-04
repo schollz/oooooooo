@@ -34,7 +34,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ooooooo_${{ github.event.release.name }}.AppImage
+            oooooooo_${{ github.event.release.name }}.AppImage
 
 
   macos:
