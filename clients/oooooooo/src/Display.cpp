@@ -412,4 +412,10 @@ void Display::init(SoftcutClient* sc, int numVoices) {
   // setup intro animation
   introAnimation_.Init(font);
   introAnimation_.Start();
+
+  // set input level to 1.0 for all voices for channel 0
+  for (int i = 0; i < numVoices_; i++) {
+    softCutClient_->handleCommand(new Commands::CommandPacket(
+        Commands::Id::SET_LEVEL_IN_CUT, 0, i, 1.0f));
+  }
 }
