@@ -13,6 +13,7 @@
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
 #include "HelpSystem.h"
+#include "IntroAnimation.h"
 #include "KeyboardHandler.h"
 #include "Parameters.h"
 #include "Perlin.h"
@@ -81,6 +82,9 @@ class Display {
 
   // Help System
   HelpSystem helpSystem_;
+
+  // Intro Animation
+  IntroAnimation introAnimation_;
 };
 
 #endif  // DISPLAY_H

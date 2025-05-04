@@ -292,55 +292,60 @@ void Display::renderLoop() {
     SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
     SDL_RenderClear(renderer_);
 
-    // Update all the parameters
-    if (softCutClient_) {
-      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
-        params_[i].Update();
-      }
-    }
-
-    // Update all the display rings
-    if (softCutClient_) {
-      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
-        displayRings_[i].Update(width_, height_);
-      }
-    }
-
-    // Draw the display rings, highlight the selected one
-    if (softCutClient_) {
-      // process unselected rings first
-      for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
-        if (i == selected_loop) {
-          continue;  // Skip the selected ring
+    introAnimation_.Update();
+    if (!introAnimation_.isComplete()) {
+      introAnimation_.Render(renderer_, width_, height_);
+    } else {
+      // Update all the parameters
+      if (softCutClient_) {
+        for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+          params_[i].Update();
         }
-        if (softCutClient_->IsRecording(i)) {
-          SDL_SetRenderDrawColor(renderer_, 176, 97, 97, 0);
+      }
+
+      // Update all the display rings
+      if (softCutClient_) {
+        for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+          displayRings_[i].Update(width_, height_);
+        }
+      }
+
+      // Draw the display rings, highlight the selected one
+      if (softCutClient_) {
+        // process unselected rings first
+        for (int i = 0; i < softCutClient_->getNumVoices(); i++) {
+          if (i == selected_loop) {
+            continue;  // Skip the selected ring
+          }
+          if (softCutClient_->IsRecording(i)) {
+            SDL_SetRenderDrawColor(renderer_, 176, 97, 97, 0);
+          } else {
+            SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
+          }
+          displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
+        }
+        if (softCutClient_->IsRecording(selected_loop)) {
+          SDL_SetRenderDrawColor(renderer_, 176, 50, 2, 0);
         } else {
-          SDL_SetRenderDrawColor(renderer_, 120, 120, 120, 0);
+          SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
         }
-        displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
+        displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
+                                            &noiseTimeValue);
       }
-      if (softCutClient_->IsRecording(selected_loop)) {
-        SDL_SetRenderDrawColor(renderer_, 176, 50, 2, 0);
-      } else {
-        SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 0);
+
+      // write ooooo at the top left
+      // draw each "o" separately
+      for (int i = 0; i < numVoices_; i++) {
+        drawText(renderer_, font, "o", 10 + i * 11, 10,
+                 selected_loop == i ? 255 : 120);
       }
-      displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
-                                          &noiseTimeValue);
+
+      // render each parameter
+      params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20);
+
+      // render the help system
+      helpSystem_.Render(renderer_, width_);
     }
-
-    // write ooooo at the top left
-    // draw each "o" separately
-    for (int i = 0; i < numVoices_; i++) {
-      drawText(renderer_, font, "o", 10 + i * 11, 10,
-               selected_loop == i ? 255 : 120);
-    }
-
-    // render each parameter
-    params_[selected_loop].Render(renderer_, font, 10, 35, 85, 20);
-
-    // render the help system
-    helpSystem_.Render(renderer_, width_);
 
     // Update screen
     SDL_RenderPresent(renderer_);
@@ -375,4 +380,8 @@ void Display::init(SoftcutClient* sc, int numVoices) {
 
   // setup help system
   helpSystem_.Init(font);
+
+  // setup intro animation
+  introAnimation_.Init(font);
+  introAnimation_.Start();
 }

@@ -122,7 +122,7 @@ class Parameters : public Serializable {
   }
 
  private:
-  bool view_visible_ = true;
+  bool view_visible_ = false;
   float fade_amount_ = 1.0f;
   float fade_target_ = 1.0f;
   float fade_speed_ = 0.05f;  // Adjust this for faster/slower fade

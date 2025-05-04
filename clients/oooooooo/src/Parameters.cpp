@@ -347,6 +347,9 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         break;
     }
   }
+  view_visible_ = false;
+  fade_amount_ = 0.0f;
+  fade_target_ = 0.0f;
 }
 
 void Parameters::ToggleView() {
