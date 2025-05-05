@@ -54,6 +54,10 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
 }
 
 std::string Parameter::String() {
+  if (shared_parameter_) {
+    return shared_parameter_->String();
+  }
+
   std::string lfo_str =
       lfo_active_ ? sprintf_str("%2.1f s", lfo_period_) : "   ";
   std::string num_str = sprintf_str("%2.2f", value_compute_);
@@ -65,12 +69,22 @@ std::string Parameter::String() {
 }
 
 void Parameter::Bang() {
+  if (shared_parameter_) {
+    shared_parameter_->Bang();
+    return;
+  }
+
   if (set_callback_) {
     set_callback_(value_compute_);
   }
 }
 
 void Parameter::Update() {
+  if (shared_parameter_) {
+    shared_parameter_->Update();
+    return;
+  }
+
   if (!lfo_active_) {
     value_compute_ = value_set_;
     value_compute_raw_ = value_set_raw_;
@@ -86,6 +100,11 @@ void Parameter::Update() {
 }
 
 void Parameter::set_(float value, bool quiet) {
+  if (shared_parameter_) {
+    shared_parameter_->set_(value, quiet);
+    return;
+  }
+
   value_set_ = fclamp(value, min_, max_);
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
   if (!lfo_active_) {
@@ -99,10 +118,20 @@ void Parameter::set_(float value, bool quiet) {
 }
 
 void Parameter::ValueDelta(float delta) {
+  if (shared_parameter_) {
+    shared_parameter_->ValueDelta(delta);
+    return;
+  }
+
   set_(value_set_ + delta * inc_, false);
 }
 
 void Parameter::LFODelta(float min_delta, float max_delta) {
+  if (shared_parameter_) {
+    shared_parameter_->LFODelta(min_delta, max_delta);
+    return;
+  }
+
   lfo_min_delta_ += min_delta * lfo_inc_;
   lfo_max_delta_ += max_delta * lfo_inc_;
   if (lfo_min_delta_ < 0.0f) {
@@ -123,6 +152,12 @@ void Parameter::lfo_min_max_update() {
 
 void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
                        int width, int height, bool selected, float brightness) {
+  if (shared_parameter_) {
+    shared_parameter_->Render(renderer, font, x, y, width, height, selected,
+                              brightness);
+    return;
+  }
+
   x_ = x;
   y_ = y;
   width_ = width;
@@ -207,6 +242,10 @@ void Parameter::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
 }
 
 bool Parameter::RegisterClick(float mouseX, float mouseY, bool dragging) {
+  if (shared_parameter_) {
+    return shared_parameter_->RegisterClick(mouseX, mouseY, dragging);
+  }
+
   // Check if the click is within the bounds of the parameter bar
   if (mouseX >= x_ && mouseX <= x_ + width_ &&
       (dragging || (mouseY >= y_ && mouseY <= y_ + height_))) {
@@ -223,6 +262,11 @@ bool Parameter::RegisterClick(float mouseX, float mouseY, bool dragging) {
 }
 
 void Parameter::ValueSetRaw(float value, bool quiet) {
+  if (shared_parameter_) {
+    shared_parameter_->ValueSetRaw(value, quiet);
+    return;
+  }
+
   value_set_raw_ = fclamp(value, 0.0f, 1.0f);
   value_set_ = linlin(value_set_raw_, 0.0f, 1.0f, min_, max_);
   set_(value_set_, quiet);

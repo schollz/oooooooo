@@ -396,6 +396,18 @@ void Display::init(SoftcutClient* sc, int numVoices) {
     params_[v].Init(softCutClient_, v, 1000.0f / 16.0f);
   }
 
+  // After initializing all parameters, share global parameters
+  // For each voice after the first one, share the reverb decay parameter
+  for (int v = 1; v < numVoices_; v++) {
+    // Share reverb decay parameter from voice 0 to all other voices
+    params_[v].param_[Parameters::PARAM_REVERB_DECAY].ShareFrom(
+        &params_[0].param_[Parameters::PARAM_REVERB_DECAY]);
+
+    // Share reverb density parameter from voice 0 to all other voices
+    params_[v].param_[Parameters::PARAM_REVERB_DENSITY].ShareFrom(
+        &params_[0].param_[Parameters::PARAM_REVERB_DENSITY]);
+  }
+
   // setup display rings
   displayRings_ = new DisplayRing[numVoices_];
   for (int i = 0; i < numVoices_; i++) {

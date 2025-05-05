@@ -102,8 +102,8 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_REVERB_DECAY:
         default_value = 82.0f;
         param_[i].Init(sample_rate_, 0.0, 100.0f, 0.1f, default_value, 80.0f,
-                       90.0f, 0.5f, 10.0f, "decay", "s", [this](float value) {
-                         // set for all voices
+                       90.0f, 0.5f, 10.0f, "decay", "%", [this](float value) {
+                         std::cout << "decay: " << value << std::endl;
                          softCutClient_->setReverbDecay(value);
                        });
         param_[i].SetStringFunc(

@@ -67,11 +67,18 @@ class Parameter : public Serializable {
     Bang();
   }
 
+  // Add methods to share parameter data
+  void ShareFrom(Parameter* shared) { shared_parameter_ = shared; }
+  bool IsShared() const { return shared_parameter_ != nullptr; }
+  float GetValue() const { return value_set_; }
+
  private:
   void set_(float value, bool quiet);
   bool hide_ = false;
   std::string name_;
   std::string unit_;
+
+  Parameter* shared_parameter_ = nullptr;  // Pointer to shared parameter
 
   float x_ = 0.0f;
   float y_ = 0.0f;
