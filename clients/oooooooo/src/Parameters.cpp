@@ -103,7 +103,6 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 82.0f;
         param_[i].Init(sample_rate_, 0.0, 100.0f, 0.1f, default_value, 80.0f,
                        90.0f, 0.5f, 10.0f, "decay", "%", [this](float value) {
-                         std::cout << "decay: " << value << std::endl;
                          softCutClient_->setReverbDecay(value);
                        });
         param_[i].SetStringFunc(
@@ -228,8 +227,6 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
             10.0f, "level slew", "", [this, voice](float value) {
-              std::cout << "Parameters::Init " << "Level Slew set to: " << value
-                        << std::endl;
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LEVEL_SLEW_TIME, voice, value));
             });
@@ -298,15 +295,10 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         int destVoice = voice;
         param_[i].Init(
             sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, sprintf_str("loop %d fb", srcVoice + 1), "%",
+            10.0f, sprintf_str("loop %d input", srcVoice + 1), "%",
             [this, srcVoice, destVoice](float value) {
-              std::cout << "Parameters::Init " << "Feedback set to: " << value
-                        << " from voice: " << srcVoice
-                        << " to voice: " << destVoice << std::endl;
-              // softCutClient_->handleCommand(new
-              // Commands::CommandPacket(
-              //     Commands::Id::SET_CUT_LEVEL_CUT_CUT,
-              //     voice + i - PARAM_LOOP1_FEEDBACK, value));
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_LEVEL_CUT_CUT, srcVoice, destVoice, value));
             });
         param_[i].SetStringFunc([](float value) {
           return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));
