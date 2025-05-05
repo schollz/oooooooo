@@ -60,7 +60,7 @@ The following keys are available to control the program:
 
 - drag and drop audio files to load
 - `s` will save tape loops (not implemented)
-- `ctrl+s` will trigger audio 
+- `ctrl+s` will trigger audio saving
 
 ## Development
 

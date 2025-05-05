@@ -10,6 +10,7 @@
 #include <string>
 #include <thread>
 
+#include "DisplayMessage.h"
 #include "DisplayRing.h"
 #include "DrawFunctions.h"
 #include "HelpSystem.h"
@@ -35,6 +36,7 @@ class Display {
   void start();
   void stop();
   bool isRunning() const { return running_; }
+  void SetMessage(const std::string& message, int secondsToDisplay);
 
   // Set the callback to be called when window is closed
   void setQuitCallback(QuitCallback callback) { quitCallback_ = callback; }
@@ -86,6 +88,9 @@ class Display {
   // Intro Animation
   IntroAnimation introAnimation_;
   float mainContentFadeAlpha_;
+
+  // Display Message
+  DisplayMessage displayMessage_;
 };
 
 #endif  // DISPLAY_H

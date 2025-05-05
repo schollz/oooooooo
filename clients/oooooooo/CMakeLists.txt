@@ -85,6 +85,7 @@ set(SRC
   src/OscInterface.cpp
   src/HelpSystem.cpp
   src/KeyboardHandler.cpp
+  src/DisplayMessage.cpp
   src/IntroAnimation.cpp
   src/Perlin.cpp
   src/LFO.cpp

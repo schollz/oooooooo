@@ -198,6 +198,15 @@ void Display::renderLoop() {
           // cut to the start
           softCutClient_->handleCommand(new Commands::CommandPacket(
               Commands::Id::SET_CUT_POSITION, selected_loop, startTimeDest));
+
+          std::string fileName(e.drop.file);
+          size_t lastSlash = fileName.find_last_of("/\\");
+          if (lastSlash != std::string::npos) {
+            fileName = fileName.substr(lastSlash + 1);
+          }
+          std::string message = "loaded " + fileName + " into loop " +
+                                std::to_string(selected_loop + 1);
+          SetMessage(message, 2);
         }
 
         SDL_free(e.drop.file);  // Free the dropped file string
@@ -273,7 +282,6 @@ void Display::renderLoop() {
                 // check to see if radii were clicked
                 for (int i = 0; i < numVoices_; i++) {
                   if (displayRings_[i].ClickedRadius()) {
-                    std::cout << "Clicked radius " << i << std::endl;
                     selected_loop = i;
                   }
                 }
@@ -285,7 +293,6 @@ void Display::renderLoop() {
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
             selected_loop < numVoices_) {
-          std::cout << "Dragging ring " << selected_loop << std::endl;
           displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
                                                   width_, height_);
         } else if (dragging_bar) {
@@ -319,7 +326,6 @@ void Display::renderLoop() {
     // Clear screen
     SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
     SDL_RenderClear(renderer_);
-
     introAnimation_.Update();
     if (!introAnimation_.isComplete()) {
       // Render only intro animation
@@ -393,6 +399,9 @@ void Display::renderLoop() {
 
       // Render help system
       helpSystem_.Render(renderer_, width_);
+
+      displayMessage_.Update();
+      displayMessage_.Render(renderer_, width_, height_);
     }
 
     // Update screen
@@ -445,9 +454,16 @@ void Display::init(SoftcutClient* sc, int numVoices) {
   introAnimation_.Init(font);
   introAnimation_.Start();
 
+  // setup display message
+  displayMessage_.Init(font);
+
   // set input level to 1.0 for all voices for channel 0
   for (int i = 0; i < numVoices_; i++) {
     softCutClient_->handleCommand(new Commands::CommandPacket(
         Commands::Id::SET_LEVEL_IN_CUT, 0, i, 1.0f));
   }
+}
+
+void Display::SetMessage(const std::string& message, int secondsToDisplay) {
+  displayMessage_.SetMessage(message, secondsToDisplay);
 }
