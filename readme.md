@@ -36,28 +36,31 @@ Download [oooooooo_v0.1.3.dmg](https://github.com/schollz/oooooooo/releases/down
 
 The following keys are available to control the program:
 
-- pressing `h` will toggle help
-- pressing `1-7` will select loop 1-7
-- pressing `up/down` will navigate parameters
-- pressing `left/right` will adjust parameter
+- `h` toggle help menu
+- `m` toggles parameter menu
+- `1-8` selects loop
+- `up/down` selects parameter
+- `left/right` adjusts parameter
+
 
 ### Playing/Recording
 
-- pressing `p` will toggle play
-- pressing `r` will toggle recording
-- pressing `ctl + r` will toggle record once
+- `p` toggles play
+- `r` toggles record
+- `ctrl + r` toggles record once (not implemented)
 
 ### LFOs
 
-- pressing `l` will toggle lfo
-- pressing `:` or `,` will adjust lfo period
-- pressing `-` or `+` will increase lfo depth
-- pressing `[` or `]` will decrease lfo depth
+- `l` toggles lfo
+- `ctl+left/right` adjusts *min* lfo
+- `alt+left/right` adjusts *max* lfo
+
 
 ### Saving/Loading
 
-- drag-and-drop an audio file to load it
-- pressing `s` will save tape loops parameters. saving creates a file `tape_loops.json` in the directory where the program is running. it will also create `tape_loop_x.wav` files for each tape loop. if you drag-and-drop the `tape_loops.json` file, it will load the parameters and the audio files automatically.
+- drag and drop audio files to load
+- `s` will save tape loops (not implemented)
+- `ctrl+s` will trigger audio 
 
 ## Development
 
