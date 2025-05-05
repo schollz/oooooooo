@@ -186,22 +186,28 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
     SDL_FreeSurface(mainTextSurface);
   }
 
-  // Render "press m or h"
-  const char* subText = "press m or h";
-  SDL_Surface* subTextSurface =
-      TTF_RenderText_Blended(font, subText, textColor);
-  if (subTextSurface) {
-    SDL_Texture* subTextTexture =
-        SDL_CreateTextureFromSurface(renderer, subTextSurface);
-    if (subTextTexture) {
-      int textWidth = subTextSurface->w;
-      int textHeight = subTextSurface->h;
-      SDL_Rect subTextRect = {windowWidth / 2 - textWidth / 2,
-                              windowHeight / 2 + 10,  // Position below center
-                              textWidth, textHeight};
-      SDL_RenderCopy(renderer, subTextTexture, nullptr, &subTextRect);
-      SDL_DestroyTexture(subTextTexture);
+  // Render multiple lines of text
+  const char* subTexts[] = {"h for help", "m for menu"};
+  int numSubTexts = sizeof(subTexts) / sizeof(subTexts[0]);
+
+  for (int i = 0; i < numSubTexts; ++i) {
+    SDL_Surface* subTextSurface =
+        TTF_RenderText_Blended(font, subTexts[i], textColor);
+    if (subTextSurface) {
+      SDL_Texture* subTextTexture =
+          SDL_CreateTextureFromSurface(renderer, subTextSurface);
+      if (subTextTexture) {
+        int textWidth = subTextSurface->w;
+        int textHeight = subTextSurface->h;
+        SDL_Rect subTextRect = {
+            windowWidth / 2 - textWidth / 2,
+            windowHeight / 2 + 10 +
+                i * 20,  // Position below center with spacing
+            textWidth, textHeight};
+        SDL_RenderCopy(renderer, subTextTexture, nullptr, &subTextRect);
+        SDL_DestroyTexture(subTextTexture);
+      }
+      SDL_FreeSurface(subTextSurface);
     }
-    SDL_FreeSurface(subTextSurface);
   }
 }
