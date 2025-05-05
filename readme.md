@@ -12,20 +12,20 @@ This program requires JACK to be running. Make sure to first [download and insta
 
 ### Windows
 
-Download [oooooooo_v0.1.0.zip](https://github.com/schollz/oooooooo/releases/download/v0.1.0/oooooooo_v0.1.0.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
+Download [oooooooo_v0.1.3.zip](https://github.com/schollz/oooooooo/releases/download/v0.1.3/oooooooo_v0.1.3.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
 
 ### Linux
 
-Download [oooooooo_v0.1.0.AppImage](https://github.com/schollz/oooooooo/releases/download/v0.1.0/oooooooo_v0.1.0.AppImage) and then run the following commands:
+Download [oooooooo_v0.1.3.AppImage](https://github.com/schollz/oooooooo/releases/download/v0.1.3/oooooooo_v0.1.3.AppImage) and then run the following commands:
 
 ```bash
-chmod +x oooooooo_v0.1.0.AppImage
-./oooooooo_v0.1.0.AppImage
+chmod +x oooooooo_v0.1.3.AppImage
+./oooooooo_v0.1.3.AppImage
 ```
 
 ### macOS
 
-Download [oooooooo_v0.1.0.dmg](https://github.com/schollz/oooooooo/releases/download/v0.1.0/oooooooo_v0.1.0.dmg). Make sure to allow the app to run in System Preferences > Security & Privacy > General. Then run the `oooooooo` program in the resulting directory.
+Download [oooooooo_v0.1.3.dmg](https://github.com/schollz/oooooooo/releases/download/v0.1.3/oooooooo_v0.1.3.dmg). Make sure to allow the app to run in System Preferences > Security & Privacy > General. Then run the `oooooooo` program in the resulting directory.
 
 ## Help
 
