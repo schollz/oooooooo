@@ -12,11 +12,15 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = (static_cast<float>(rand()) / RAND_MAX) * 38.0f -
                         32.0f;  // -32 to +6
         param_[i].Init(
-            sample_rate_, -32.0, 12.0f, 0.1f, default_value,
+            sample_rate_, -48.0, 12.0f, 0.1f, default_value,
             default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "level",
             "dB", [this, voice](float value) {
+              float v = db2amp(value);
+              if (v < 0.02f) {
+                v = 0.0f;
+              }
               softCutClient_->handleCommand(new Commands::CommandPacket(
-                  Commands::Id::SET_LEVEL_CUT, voice, db2amp(value)));
+                  Commands::Id::SET_LEVEL_CUT, voice, v));
             });
         param_[i].SetStringFunc([](float value) {
           if (value > 0)
