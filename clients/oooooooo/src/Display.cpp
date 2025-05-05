@@ -222,40 +222,60 @@ void Display::renderLoop() {
           dragging_bar = false;
           dragged_parameter = -1;
 
-          if (params_[selected_loop].RegisterClick(e.button.x, e.button.y,
-                                                   dragging_bar)) {
-            // Check if any parameter was clicked
-            dragging_bar = true;
-          } else {
-            // check if any ring was clicked
-            std::vector<int> clicked_rings;
+          bool clickedOnO = false;
+          for (int i = 0; i < numVoices_; i++) {
+            // Each "o" is at position (10 + i * 11, 10)
+            // Estimate the character is about 8x16 pixels
+            int oX = 10 + i * 11;
+            int oY = 10;
+            int oWidth = 8;
+            int oHeight = 16;
 
-            for (int i = 0; i < numVoices_; i++) {
-              displayRings_[i].RegisterClick(e.button.x, e.button.y);
-              if (displayRings_[i].ClickedRing()) {
-                std::cout << "Clicked ring " << i << std::endl;
-                clicked_rings.push_back(i);
-              }
+            if (e.button.x >= oX && e.button.x <= oX + oWidth &&
+                e.button.y >= oY && e.button.y <= oY + oHeight) {
+              selected_loop = i;
+              clickedOnO = true;
+              break;
             }
+          }
+          if (!clickedOnO) {
+            // If not clicked on "o", check if any parameter was clicked
 
-            if (clicked_rings.size() > 0) {
-              // If multiple rings were clicked, select the one closest to the
-              // mouse
-              float min_distance = std::numeric_limits<float>::max();
-              for (int i : clicked_rings) {
-                float distance = displayRings_[i].GetDistanceToCenter();
-                if (distance < min_distance) {
-                  min_distance = distance;
-                  selected_loop = i;
-                  mouse_dragging = true;
+            if (params_[selected_loop].RegisterClick(e.button.x, e.button.y,
+                                                     dragging_bar)) {
+              // Check if any parameter was clicked
+              dragging_bar = true;
+            } else {
+              // check if any ring was clicked
+              std::vector<int> clicked_rings;
+
+              for (int i = 0; i < numVoices_; i++) {
+                displayRings_[i].RegisterClick(e.button.x, e.button.y);
+                if (displayRings_[i].ClickedRing()) {
+                  std::cout << "Clicked ring " << i << std::endl;
+                  clicked_rings.push_back(i);
                 }
               }
-            } else {
-              // check to see if radii were clicked
-              for (int i = 0; i < numVoices_; i++) {
-                if (displayRings_[i].ClickedRadius()) {
-                  std::cout << "Clicked radius " << i << std::endl;
-                  selected_loop = i;
+
+              if (clicked_rings.size() > 0) {
+                // If multiple rings were clicked, select the one closest to the
+                // mouse
+                float min_distance = std::numeric_limits<float>::max();
+                for (int i : clicked_rings) {
+                  float distance = displayRings_[i].GetDistanceToCenter();
+                  if (distance < min_distance) {
+                    min_distance = distance;
+                    selected_loop = i;
+                    mouse_dragging = true;
+                  }
+                }
+              } else {
+                // check to see if radii were clicked
+                for (int i = 0; i < numVoices_; i++) {
+                  if (displayRings_[i].ClickedRadius()) {
+                    std::cout << "Clicked radius " << i << std::endl;
+                    selected_loop = i;
+                  }
                 }
               }
             }
@@ -359,7 +379,7 @@ void Display::renderLoop() {
                                             &noiseTimeValue);
       }
 
-      // Draw "ooooo" text with fade
+      // Draw "oooooooo" text with fade
       for (int i = 0; i < numVoices_; i++) {
         Uint8 textAlpha = static_cast<Uint8>((selected_loop == i ? 255 : 120) *
                                              mainContentFadeAlpha_);
