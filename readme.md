@@ -2,6 +2,9 @@
 
 [![build workflow](https://github.com/schollz/oooooooo/actions/workflows/ci.yml/badge.svg)](https://github.com/schollz/oooooooo/actions/workflows/ci.yml) [![GitHub Release](https://img.shields.io/github/v/release/schollz/oooooooo)](https://github.com/schollz/oooooooo/releases/latest)
 
+
+![image](https://github.com/user-attachments/assets/b27a64ba-2dfd-45a4-a13f-7c111295dbd6)
+
 ### introduction
 
 this is a fork of [ezra's softcut JACK client](https://github.com/monome/softcut-lib/) which allows manipulating audio buffers in real time, developed at the behest of [monome](https://monome.org), originally for use with the [norns](https://monome.org/norns/) sound computer. I've forked it to port a norns script I wrote, [oooooo](https://github.com/schollz/oooooo), to be available as a standalone cross-platform application. 
