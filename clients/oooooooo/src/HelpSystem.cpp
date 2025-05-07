@@ -16,11 +16,14 @@ HelpSystem::HelpSystem()
       "1-8 selects loop",
       "up/down selects parameter",
       "left/right adjusts parameter",
+      "click edge to cut to position",
+      "click and drag middle to adjust",
+      "and pan",
       "",
       "playing/recording",
       "p toggles play",
       "r toggles record",
-      "ctl + r toggles record once",
+      "ctl + r toggles record once (NI)",
       "",
       "lfos",
       "l toggles lfo",
@@ -29,7 +32,7 @@ HelpSystem::HelpSystem()
       "",
       "saving/loading",
       "drag-and-drop audio file to load",
-      "s will save tape loops",
+      "s will save tape loops (NI)",
   };
 }
 
@@ -58,8 +61,8 @@ void HelpSystem::Render(SDL_Renderer* renderer, int windowWidth) {
   uint8_t alpha = static_cast<uint8_t>(fadeAlpha * 255);
 
   // Set up position for text on right side of screen
-  int textX = windowWidth - 450;  // 450 pixels from right edge
-  int textY = 10;                 // Start 10 pixels from top
+  int textX = windowWidth - 360;  // 450 pixels from right edge
+  int textY = 20;                 // Start 10 pixels from top
   int lineHeight = 20;            // Spacing between lines
 
   // Ensure text position is always visible
@@ -67,7 +70,7 @@ void HelpSystem::Render(SDL_Renderer* renderer, int windowWidth) {
 
   // Draw each help message
   for (const auto& message : helpMessages) {
-    SDL_Color textColor = {128, 128, 128, alpha};  // Gray with current alpha
+    SDL_Color textColor = {255, 255, 255, alpha};  // Gray with current alpha
     SDL_Surface* textSurface =
         TTF_RenderText_Blended(font, message.c_str(), textColor);
 
