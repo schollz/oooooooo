@@ -166,29 +166,9 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
   Uint8 alpha = static_cast<Uint8>(globalAlpha * 255);
   SDL_Color textColor = {255, 255, 255, alpha};  // White with fade
 
-  // Render "oooooooo"
-  const char* mainText = "oooooooo";
-  SDL_Surface* mainTextSurface =
-      TTF_RenderText_Blended(font, mainText, textColor);
-  if (mainTextSurface) {
-    SDL_Texture* mainTextTexture =
-        SDL_CreateTextureFromSurface(renderer, mainTextSurface);
-    if (mainTextTexture) {
-      int textWidth = mainTextSurface->w;
-      int textHeight = mainTextSurface->h;
-      SDL_Rect mainTextRect = {
-          windowWidth / 2 - textWidth / 2,
-          windowHeight / 2 - textHeight - 10,  // Position above center
-          textWidth, textHeight};
-      SDL_RenderCopy(renderer, mainTextTexture, nullptr, &mainTextRect);
-      SDL_DestroyTexture(mainTextTexture);
-    }
-    SDL_FreeSurface(mainTextSurface);
-  }
-
   // Render multiple lines of text
-  const char* subTexts[] = {"digital tape loops x8", "", "h for help",
-                            "m for menu"};
+  const char* subTexts[] = {"oooooooo", "", "digital tape loops x8",
+                            "v0.1.3",   "", "h for help"};
   int numSubTexts = sizeof(subTexts) / sizeof(subTexts[0]);
 
   for (int i = 0; i < numSubTexts; ++i) {
@@ -200,11 +180,9 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
       if (subTextTexture) {
         int textWidth = subTextSurface->w;
         int textHeight = subTextSurface->h;
-        SDL_Rect subTextRect = {
-            windowWidth / 2 - textWidth / 2,
-            windowHeight / 2 + 10 +
-                i * 20,  // Position below center with spacing
-            textWidth, textHeight};
+        SDL_Rect subTextRect = {windowWidth / 2 - textWidth / 2,
+                                windowHeight / 2 + i * 20 - 65, textWidth,
+                                textHeight};  // Move up by 50 pixels
         SDL_RenderCopy(renderer, subTextTexture, nullptr, &subTextRect);
         SDL_DestroyTexture(subTextTexture);
       }
