@@ -439,7 +439,7 @@ void Display::renderLoop() {
 
       // Draw the text for the VU meter
       char vuText[32];
-      snprintf(vuText, sizeof(vuText), "%.1f dB", vuLevel);
+      snprintf(vuText, sizeof(vuText), "%.0f dB", roundf(vuLevel));
 
       int textWidth, textHeight;
       TTF_SizeText(font, vuText, &textWidth, &textHeight);
@@ -458,6 +458,24 @@ void Display::renderLoop() {
       displayMessage_.Update();
       displayMessage_.Render(renderer_, width_, height_);
     }
+
+    // show the CPU usage in the top right corner
+    float cpuUsage = 0.0f;
+    if (softCutClient_) {
+      cpuUsage = softCutClient_->getCPUUsage();
+    }
+    std::string cpuText = sprintf_str("CPU: %.0f%%", roundf(cpuUsage));
+    int cpuTextWidth, cpuTextHeight;
+    TTF_SizeText(font, cpuText.c_str(), &cpuTextWidth, &cpuTextHeight);
+    SDL_Surface* cpuTextSurface = TTF_RenderText_Solid(
+        font, cpuText.c_str(), {255, 255, 255, 255});  // White text
+    SDL_Texture* cpuTextTexture =
+        SDL_CreateTextureFromSurface(renderer_, cpuTextSurface);
+    SDL_Rect cpuTextRect = {width_ - cpuTextWidth - 10, 10, cpuTextWidth,
+                            cpuTextHeight};
+    SDL_RenderCopy(renderer_, cpuTextTexture, nullptr, &cpuTextRect);
+    SDL_DestroyTexture(cpuTextTexture);
+    SDL_FreeSurface(cpuTextSurface);
 
     // Update screen
     SDL_RenderPresent(renderer_);

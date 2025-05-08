@@ -86,6 +86,12 @@ class JackClient {
  public:
   virtual void handleCommand(Commands::CommandPacket* p) = 0;
 
+  float getCPULoad() {
+    // Get the CPU load from the JACK client
+    float cpuLoad = jack_cpu_load(client);
+    return cpuLoad;
+  }
+
  private:
   //---------------------------------
   //--- static handlers for jack API

@@ -64,6 +64,7 @@ class SoftcutClient : public JackClient<2, 2> {
     }
     return -100.0f;  // Return silence for invalid voice
   }
+  float getCPUUsage() { return static_cast<float>(jack_cpu_load(client)); }
 
  private:
   // processors
