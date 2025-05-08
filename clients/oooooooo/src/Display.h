@@ -97,6 +97,7 @@ class Display {
   const float minZoomFactor_ = 0.5f;
   const float maxZoomFactor_ = 2.0f;
   const float zoomStep_ = 0.1f;
+  float mouseScaleFactor_ = 1.0f;
 };
 
 #endif  // DISPLAY_H

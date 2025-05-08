@@ -101,6 +101,7 @@ void Display::start() {
 
     // Use 1.0f for normal sizing
     zoomFactor_ = 1.0f;
+    macScaleFactor_ = dpiScale;
 
     std::cout << "Fixed zoom factor set to: " << zoomFactor_
               << " for macOS (native DPI scale was " << dpiScale << ")"
@@ -291,8 +292,8 @@ void Display::renderLoop() {
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Scale the mouse coordinates for high DPI displays
-          int scaledX = static_cast<int>(e.button.x * scaleX / zoomFactor_);
-          int scaledY = static_cast<int>(e.button.y * scaleY / zoomFactor_);
+          int scaledX = static_cast<int>(e.button.x * mouseScaleFactor_);
+          int scaledY = static_cast<int>(e.button.y * mouseScaleFactor_);
 
           // Reset drag flags
           mouse_dragging = false;
@@ -359,8 +360,8 @@ void Display::renderLoop() {
         }
       } else if (e.type == SDL_MOUSEMOTION) {
         // Scale the mouse coordinates for high DPI displays
-        int scaledX = static_cast<int>(e.motion.x * scaleX / zoomFactor_);
-        int scaledY = static_cast<int>(e.motion.y * scaleY / zoomFactor_);
+        int scaledX = static_cast<int>(e.motion.x * mouseScaleFactor_);
+        int scaledY = static_cast<int>(e.motion.y * mouseScaleFactor_);
 
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
