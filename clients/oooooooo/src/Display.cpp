@@ -87,20 +87,27 @@ void Display::start() {
     return;
   }
 
-  // Get the actual drawable size for high DPI displays
+  // Initialize zoom factor based on DPI
   int drawableWidth, drawableHeight;
   SDL_GetRendererOutputSize(renderer_, &drawableWidth, &drawableHeight);
 
-  // Adjust for DPI scaling if needed
-  if (drawableWidth != width_ || drawableHeight != height_) {
-    std::cout << "Display scaling detected: Window size is " << width_ << "x"
-              << height_ << " but drawable size is " << drawableWidth << "x"
-              << drawableHeight << std::endl;
+  int windowWidth, windowHeight;
+  SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
 
-    // Update the width and height to match the actual drawable size
-    width_ = drawableWidth;
-    height_ = drawableHeight;
+  // On macOS, automatically set initial zoom based on DPI scaling
+#ifdef __APPLE__
+  if (windowWidth > 0 && windowHeight > 0) {
+    float dpiScale = static_cast<float>(drawableWidth) / windowWidth;
+    // This makes UI elements appear the same visual size as on non-Retina
+    // displays
+    zoomFactor_ = dpiScale;
+    std::cout << "Initial zoom factor set to: " << zoomFactor_
+              << " based on DPI scale" << std::endl;
   }
+#endif
+
+  SDL_RenderSetLogicalSize(renderer_, static_cast<int>(width_ / zoomFactor_),
+                           static_cast<int>(height_ / zoomFactor_));
 
   running_ = true;
 
@@ -282,8 +289,8 @@ void Display::renderLoop() {
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Scale the mouse coordinates for high DPI displays
-          int scaledX = static_cast<int>(e.button.x * scaleX);
-          int scaledY = static_cast<int>(e.button.y * scaleY);
+          int scaledX = static_cast<int>(e.button.x * scaleX / zoomFactor_);
+          int scaledY = static_cast<int>(e.button.y * scaleY / zoomFactor_);
           // Reset drag flags
           mouse_dragging = false;
           dragging_bar = false;
