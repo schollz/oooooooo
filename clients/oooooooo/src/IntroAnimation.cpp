@@ -168,7 +168,7 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
 
   // Render multiple lines of text
   const char* subTexts[] = {"oooooooo", "", "digital tape loops x8",
-                            "v0.1.4",   "", "h for help"};
+                            "v0.1.7",   "", "h for help"};
   int numSubTexts = sizeof(subTexts) / sizeof(subTexts[0]);
 
   for (int i = 0; i < numSubTexts; ++i) {
