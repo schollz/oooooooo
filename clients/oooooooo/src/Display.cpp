@@ -118,6 +118,9 @@ void Display::start() {
 
   // 👇 RUN DIRECTLY IN MAIN THREAD
   SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+  SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
+  SDL_EventState(SDL_MOUSEBUTTONUP, SDL_ENABLE);
+  SDL_EventState(SDL_MOUSEMOTION, SDL_ENABLE);
   renderLoop();
 }
 
