@@ -400,6 +400,61 @@ void Display::renderLoop() {
       // Render help system
       helpSystem_.Render(renderer_, width_);
 
+      // Render VU Meter
+      float vuLevel = -100.0f;  // Default to minimum level
+      if (softCutClient_) {
+        vuLevel = softCutClient_->getVULevel(selected_loop);
+      }
+
+      // Define meter dimensions
+      float vuMeter_height = 20;
+      float vuMeter_width = 100;
+      float vuMeter_x = width_ - vuMeter_width - 10;
+      float vuMeter_y = height_ - vuMeter_height - 10;
+
+      // Draw background for the VU meter
+      SDL_SetRenderDrawColor(renderer_, 50, 50, 50, 255);
+      SDL_Rect vuMeterRect = {
+          static_cast<int>(vuMeter_x), static_cast<int>(vuMeter_y),
+          static_cast<int>(vuMeter_width), static_cast<int>(vuMeter_height)};
+      SDL_RenderFillRect(renderer_, &vuMeterRect);
+
+      // Convert dB level to visual meter value (normalize from -60dB to 0dB)
+      float normalizedLevel =
+          (vuLevel + 60.0f) / 60.0f;  // Map -60dB -> 0dB to 0 -> 1
+      normalizedLevel = std::max(
+          0.0f, std::min(normalizedLevel, 1.0f));  // Clamp between 0 and 1
+
+      // Draw the filled area for the VU meter
+      SDL_SetRenderDrawColor(renderer_, 200, 200, 200, 255);  // Off-white color
+      SDL_Rect vuFillRect = {static_cast<int>(vuMeter_x),
+                             static_cast<int>(vuMeter_y),
+                             static_cast<int>(vuMeter_width * normalizedLevel),
+                             static_cast<int>(vuMeter_height)};
+      SDL_RenderFillRect(renderer_, &vuFillRect);
+
+      // Draw the outline for the VU meter (white)
+      SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+      SDL_RenderDrawRect(renderer_, &vuMeterRect);
+
+      // Draw the text for the VU meter
+      char vuText[32];
+      snprintf(vuText, sizeof(vuText), "%.1f dB", vuLevel);
+
+      int textWidth, textHeight;
+      TTF_SizeText(font, vuText, &textWidth, &textHeight);
+      SDL_Surface* textSurface = TTF_RenderText_Solid(
+          font, vuText, {255, 255, 255, 255});  // White text
+      SDL_Texture* textTexture =
+          SDL_CreateTextureFromSurface(renderer_, textSurface);
+      SDL_Rect textRect = {
+          static_cast<int>(vuMeter_x + vuMeter_width / 2 - textWidth / 2),
+          static_cast<int>(vuMeter_y + vuMeter_height / 2 - textHeight / 2),
+          textWidth, textHeight};
+      SDL_RenderCopy(renderer_, textTexture, nullptr, &textRect);
+      SDL_DestroyTexture(textTexture);
+      SDL_FreeSurface(textSurface);
+
       displayMessage_.Update();
       displayMessage_.Render(renderer_, width_, height_);
     }

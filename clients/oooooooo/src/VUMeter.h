@@ -5,10 +5,14 @@
 #ifndef CRONE_VUMETER_H
 #define CRONE_VUMETER_H
 
+#include <SDL2/SDL.h>
+
 #include <atomic>
 #include <cmath>
 
-namespace softcut_jack_osc {
+#include "softcut/Types.h"
+
+using namespace softcut;
 
 class VUMeter {
  public:
@@ -24,7 +28,7 @@ class VUMeter {
   void setDecayTime(float timeInSeconds);
 
   // Process a mono buffer and update the VU level
-  void process(const double* buffer, size_t numFrames);
+  void process(const sample_t* buffer, size_t numFrames);
 
   // Get the current VU level in dB (thread-safe)
   float getLevel() const;
@@ -51,7 +55,5 @@ class VUMeter {
   // Recalculate coefficients when times change
   void updateCoefficients();
 };
-
-}  // namespace softcut_jack_osc
 
 #endif  // CRONE_VUMETER_H

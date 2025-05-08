@@ -28,8 +28,8 @@ void SoftcutClient::init() {
     rateBase[i] = 1.0f;
     rateSet[i] = 1.0f;
     vuMeters[i].setSampleRate(sampleRate);
-    vuMeters[i].setAttackTime(0.01f);
-    vuMeters[i].setDecayTime(0.3f);
+    vuMeters[i].setAttackTime(0.001f);
+    vuMeters[i].setDecayTime(0.002f);
     rateForward[i] = true;
     loopMin[i] = cutDuration * static_cast<float>(i);
     if (i >= 4) {
@@ -137,7 +137,7 @@ void SoftcutClient::clearBusses(size_t numFrames) {
 
 void SoftcutClient::mixInput(size_t numFrames) {
   for (int dst = 0; dst < NumVoices; ++dst) {
-    if (cut.getRecFlag(dst)) {
+    if (cut.getRecFlag(dst) || true) {
       for (int ch = 0; ch < 2; ++ch) {
         input[dst].mixFrom(&source[SourceAdc][ch], numFrames, inLevel[ch][dst]);
       }

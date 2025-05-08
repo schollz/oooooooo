@@ -8,8 +8,6 @@
 #include <cmath>
 #include <limits>
 
-using namespace softcut_jack_osc;
-
 VUMeter::VUMeter()
     : currentLevelDB(-100.0f)  // Start at a very low level (effectively silent)
       ,
@@ -60,7 +58,7 @@ float VUMeter::ampToDB(float amp) {
 
 float VUMeter::dBToAmp(float db) { return std::pow(10.0f, db / 20.0f); }
 
-void VUMeter::process(const double* buffer, size_t numFrames) {
+void VUMeter::process(const sample_t* buffer, size_t numFrames) {
   if (numFrames == 0) return;
 
   // Find peak in this buffer
