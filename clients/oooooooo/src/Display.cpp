@@ -99,14 +99,12 @@ void Display::start() {
   if (windowWidth > 0 && windowHeight > 0) {
     float dpiScale = static_cast<float>(drawableWidth) / windowWidth;
 
-    // On macOS with Retina display, we want a much smaller zoom factor
-    // If dpiScale is close to 2.0 (Retina), use 0.5 as the zoom factor
-    // This will counteract the high DPI scaling and make elements appear at
-    // normal size
-    zoomFactor_ = 0.5f;
+    // Use 1.0f for normal sizing
+    zoomFactor_ = 1.0f;
 
-    std::cout << "Initial zoom factor set to: " << zoomFactor_
-              << " for macOS (DPI scale was " << dpiScale << ")" << std::endl;
+    std::cout << "Fixed zoom factor set to: " << zoomFactor_
+              << " for macOS (native DPI scale was " << dpiScale << ")"
+              << std::endl;
   }
 #endif
 
