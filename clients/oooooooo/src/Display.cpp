@@ -144,6 +144,27 @@ void Display::stop() {
 void Display::renderLoop() {
   std::cout << "Render loop started" << std::endl;
 
+  // Calculate DPI scaling factors
+  float scaleX = 1.0f;
+  float scaleY = 1.0f;
+
+  // Get the drawable size for high DPI scaling
+  int drawableWidth, drawableHeight;
+  SDL_GetRendererOutputSize(renderer_, &drawableWidth, &drawableHeight);
+
+  // Get the window size (might be different from drawable size on high DPI
+  // displays)
+  int windowWidth, windowHeight;
+  SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
+
+  // Calculate scaling factors if there's a difference
+  if (windowWidth > 0 && windowHeight > 0) {
+    scaleX = static_cast<float>(drawableWidth) / windowWidth;
+    scaleY = static_cast<float>(drawableHeight) / windowHeight;
+
+    std::cout << "DPI Scaling: " << scaleX << "x" << scaleY << std::endl;
+  }
+
   // Run the loop until running_ becomes false
   while (running_) {
     // Process SDL events in a safer way
@@ -235,16 +256,24 @@ void Display::renderLoop() {
         // Handle window resize events
         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-          // Get the actual drawable size instead of the window size
-          int drawableWidth, drawableHeight;
+          // Update drawable size
           SDL_GetRendererOutputSize(renderer_, &drawableWidth, &drawableHeight);
 
-          // Update width and height to the drawable size
+          // Update window size
+          SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
+
+          // Recalculate scaling factors
+          if (windowWidth > 0 && windowHeight > 0) {
+            scaleX = static_cast<float>(drawableWidth) / windowWidth;
+            scaleY = static_cast<float>(drawableHeight) / windowHeight;
+
+            std::cout << "Window resized. New DPI Scaling: " << scaleX << "x"
+                      << scaleY << std::endl;
+          }
+
+          // Update width and height
           width_ = drawableWidth;
           height_ = drawableHeight;
-
-          std::cout << "Window resized to " << width_ << "x" << height_
-                    << " (drawable size)" << std::endl;
         }
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         if (!introAnimation_.isComplete()) {
@@ -252,6 +281,9 @@ void Display::renderLoop() {
           mainContentFadeAlpha_ = 0.0f;  // Reset fade alpha to start fading in
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
+          // Scale the mouse coordinates for high DPI displays
+          int scaledX = static_cast<int>(e.button.x * scaleX);
+          int scaledY = static_cast<int>(e.button.y * scaleY);
           // Reset drag flags
           mouse_dragging = false;
           dragging_bar = false;
@@ -266,8 +298,8 @@ void Display::renderLoop() {
             int oWidth = 8;
             int oHeight = 16;
 
-            if (e.button.x >= oX && e.button.x <= oX + oWidth &&
-                e.button.y >= oY && e.button.y <= oY + oHeight) {
+            if (scaledX >= oX && scaledX <= oX + oWidth && scaledY >= oY &&
+                scaledY <= oY + oHeight) {
               selected_loop = i;
               clickedOnO = true;
               break;
@@ -276,7 +308,7 @@ void Display::renderLoop() {
           if (!clickedOnO) {
             // If not clicked on "o", check if any parameter was clicked
 
-            if (params_[selected_loop].RegisterClick(e.button.x, e.button.y,
+            if (params_[selected_loop].RegisterClick(scaledX, scaledY,
                                                      dragging_bar)) {
               // Check if any parameter was clicked
               dragging_bar = true;
@@ -285,7 +317,7 @@ void Display::renderLoop() {
               std::vector<int> clicked_rings;
 
               for (int i = 0; i < numVoices_; i++) {
-                displayRings_[i].RegisterClick(e.button.x, e.button.y);
+                displayRings_[i].RegisterClick(scaledX, scaledY);
                 if (displayRings_[i].ClickedRing()) {
                   std::cout << "Clicked ring " << i << std::endl;
                   clicked_rings.push_back(i);
@@ -316,14 +348,17 @@ void Display::renderLoop() {
           }
         }
       } else if (e.type == SDL_MOUSEMOTION) {
+        // Scale the mouse coordinates for high DPI displays
+        int scaledX = static_cast<int>(e.motion.x * scaleX);
+        int scaledY = static_cast<int>(e.motion.y * scaleY);
+
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
             selected_loop < numVoices_) {
-          displayRings_[selected_loop].HandleDrag(e.button.x, e.button.y,
-                                                  width_, height_);
+          displayRings_[selected_loop].HandleDrag(scaledX, scaledY, width_,
+                                                  height_);
         } else if (dragging_bar) {
-          params_[selected_loop].RegisterClick(e.button.x, e.button.y,
-                                               dragging_bar);
+          params_[selected_loop].RegisterClick(scaledX, scaledY, dragging_bar);
         }
       } else if (e.type == SDL_MOUSEBUTTONUP) {
         // Stop dragging when mouse is released
