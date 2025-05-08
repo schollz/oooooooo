@@ -94,23 +94,9 @@ void Display::start() {
   int windowWidth, windowHeight;
   SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
 
-// On macOS, automatically set initial zoom based on DPI scaling
-#ifdef __APPLE__
-  if (windowWidth > 0 && windowHeight > 0) {
-    float dpiScale = static_cast<float>(drawableWidth) / windowWidth;
-
-    // Use 1.0f for normal sizing
-    zoomFactor_ = 1.0f;
-    mouseScaleFactor_ = 1.0f;
-
-    std::cout << "Fixed zoom factor set to: " << zoomFactor_
-              << " for macOS (native DPI scale was " << dpiScale << ")"
-              << std::endl;
-  }
-#endif
-
-  SDL_RenderSetLogicalSize(renderer_, static_cast<int>(width_ / zoomFactor_),
-                           static_cast<int>(height_ / zoomFactor_));
+  // On macOS, automatically set initial zoom based on DPI scaling
+  SDL_RenderSetLogicalSize(renderer_, static_cast<int>(width_),
+                           static_cast<int>(height_));
 
   running_ = true;
 
@@ -295,8 +281,8 @@ void Display::renderLoop() {
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Scale the mouse coordinates for high DPI displays
-          int scaledX = static_cast<int>(e.button.x * mouseScaleFactor_);
-          int scaledY = static_cast<int>(e.button.y * mouseScaleFactor_);
+          int scaledX = static_cast<int>(e.button.x);
+          int scaledY = static_cast<int>(e.button.y);
           std::cout << "Mouse clicked at: " << scaledX << ", " << scaledY
                     << std::endl;
           std::cout << "Mouse clicked at: " << e.button.x << ", " << e.button.y
@@ -367,8 +353,8 @@ void Display::renderLoop() {
         }
       } else if (e.type == SDL_MOUSEMOTION) {
         // Scale the mouse coordinates for high DPI displays
-        int scaledX = static_cast<int>(e.motion.x * mouseScaleFactor_);
-        int scaledY = static_cast<int>(e.motion.y * mouseScaleFactor_);
+        int scaledX = static_cast<int>(e.motion.x);
+        int scaledY = static_cast<int>(e.motion.y);
 
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
