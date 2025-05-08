@@ -36,43 +36,42 @@ jobs:
           files: |
             oooooooo_${{ github.event.release.name }}.AppImage
 
+  # macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         submodules: true
 
-  macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
+  #     - name: Install dependencies
+  #       run: |
+  #         brew update
+  #         brew install jack liblo sdl2 sdl2_ttf rtmidi libsndfile flac create-dmg fuse cmake
 
-      - name: Install dependencies
-        run: |
-          brew update
-          brew install jack liblo sdl2 sdl2_ttf rtmidi libsndfile flac create-dmg fuse cmake
+  #     - name: Set PKG_CONFIG_PATH
+  #       run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
 
-      - name: Set PKG_CONFIG_PATH
-        run: echo "PKG_CONFIG_PATH=/opt/homebrew/lib/pkgconfig" >> $GITHUB_ENV
+  #     - name: Build project
+  #       run: |
+  #         export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+  #         export CXXFLAGS="-I/opt/homebrew/include -I/usr/local/include"
+  #         export LDFLAGS="-L/opt/homebrew/lib -L/usr/local/lib"
+  #         export PATH="/opt/homebrew/bin:$PATH"
+  #         make
+  #     - name: Build macOS app
+  #       run: |
+  #         chmod +x build-macapp.sh
+  #         ./build-macapp.sh
+  #     - name: Create release artifact 
+  #       run: |
+  #         ls -lSh
+  #         cp oooooooo.dmg oooooooo_${{ github.event.release.name }}.dmg
 
-      - name: Build project
-        run: |
-          export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
-          export CXXFLAGS="-I/opt/homebrew/include -I/usr/local/include"
-          export LDFLAGS="-L/opt/homebrew/lib -L/usr/local/lib"
-          export PATH="/opt/homebrew/bin:$PATH"
-          make
-      - name: Build macOS app
-        run: |
-          chmod +x build-macapp.sh
-          ./build-macapp.sh
-      - name: Create release artifact 
-        run: |
-          ls -lSh
-          cp oooooooo.dmg oooooooo_${{ github.event.release.name }}.dmg
-
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            oooooooo_${{ github.event.release.name }}.dmg
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         files: |
+  #           oooooooo_${{ github.event.release.name }}.dmg
 
   windows:
     runs-on: windows-latest

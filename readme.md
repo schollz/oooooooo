@@ -28,7 +28,18 @@ chmod +x oooooooo_v0.1.4.AppImage
 
 ### macOS
 
-Download [oooooooo_v0.1.4.dmg](https://github.com/schollz/oooooooo/releases/download/v0.1.4/oooooooo_v0.1.4.dmg). Make sure to allow the app to run in System Preferences > Security & Privacy > General. Then run the `oooooooo` program in the resulting directory.
+Use brew to install:
+
+```bash
+brew tap schollz/tap
+brew install oooooooo
+```
+
+Then run the following command:
+
+```bash
+oooooooo
+```
 
 ## Help
 
