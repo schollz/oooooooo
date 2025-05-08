@@ -59,6 +59,12 @@ void Display::start() {
     return;
   }
 
+// Set hint for high DPI support before creating the window
+#ifdef __APPLE__
+  // Enable high DPI support on macOS
+  SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
+#endif
+
   width_ = 1080;
   height_ = 720;
   window_ = SDL_CreateWindow("oooooooo", SDL_WINDOWPOS_CENTERED,
@@ -79,6 +85,21 @@ void Display::start() {
     SDL_DestroyWindow(window_);
     SDL_Quit();
     return;
+  }
+
+  // Get the actual drawable size for high DPI displays
+  int drawableWidth, drawableHeight;
+  SDL_GetRendererOutputSize(renderer_, &drawableWidth, &drawableHeight);
+
+  // Adjust for DPI scaling if needed
+  if (drawableWidth != width_ || drawableHeight != height_) {
+    std::cout << "Display scaling detected: Window size is " << width_ << "x"
+              << height_ << " but drawable size is " << drawableWidth << "x"
+              << drawableHeight << std::endl;
+
+    // Update the width and height to match the actual drawable size
+    width_ = drawableWidth;
+    height_ = drawableHeight;
   }
 
   running_ = true;
@@ -214,11 +235,16 @@ void Display::renderLoop() {
         // Handle window resize events
         if (e.window.event == SDL_WINDOWEVENT_RESIZED ||
             e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-          // Update width and height
-          width_ = e.window.data1;
-          height_ = e.window.data2;
+          // Get the actual drawable size instead of the window size
+          int drawableWidth, drawableHeight;
+          SDL_GetRendererOutputSize(renderer_, &drawableWidth, &drawableHeight);
+
+          // Update width and height to the drawable size
+          width_ = drawableWidth;
+          height_ = drawableHeight;
+
           std::cout << "Window resized to " << width_ << "x" << height_
-                    << std::endl;
+                    << " (drawable size)" << std::endl;
         }
       } else if (e.type == SDL_MOUSEBUTTONDOWN) {
         if (!introAnimation_.isComplete()) {

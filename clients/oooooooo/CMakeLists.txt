@@ -139,6 +139,9 @@ if(WIN32)
     target_include_directories(oooooooo PRIVATE ${SDL2_INCLUDE_DIRS})
 elseif(APPLE)
     message(STATUS "Configuring for macOS")
+    # Add macOS-specific definitions
+    add_definitions(-DSDL_HIGHDPI_SUPPORT)
+    
     # Add Homebrew paths for include and library directories
     target_include_directories(oooooooo PUBLIC 
         ${HOMEBREW_PREFIX}/include
