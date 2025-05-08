@@ -294,6 +294,10 @@ void Display::renderLoop() {
           // Scale the mouse coordinates for high DPI displays
           int scaledX = static_cast<int>(e.button.x * mouseScaleFactor_);
           int scaledY = static_cast<int>(e.button.y * mouseScaleFactor_);
+          std::cout << "Mouse clicked at: " << scaledX << ", " << scaledY
+                    << std::endl;
+          std::cout << "Mouse clicked at: " << e.button.x << ", " << e.button.y
+                    << std::endl;
 
           // Reset drag flags
           mouse_dragging = false;
