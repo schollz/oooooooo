@@ -94,15 +94,19 @@ void Display::start() {
   int windowWidth, windowHeight;
   SDL_GetWindowSize(window_, &windowWidth, &windowHeight);
 
-  // On macOS, automatically set initial zoom based on DPI scaling
+// On macOS, automatically set initial zoom based on DPI scaling
 #ifdef __APPLE__
   if (windowWidth > 0 && windowHeight > 0) {
     float dpiScale = static_cast<float>(drawableWidth) / windowWidth;
-    // This makes UI elements appear the same visual size as on non-Retina
-    // displays
-    zoomFactor_ = dpiScale;
+
+    // On macOS with Retina display, we want a much smaller zoom factor
+    // If dpiScale is close to 2.0 (Retina), use 0.5 as the zoom factor
+    // This will counteract the high DPI scaling and make elements appear at
+    // normal size
+    zoomFactor_ = 0.5f;
+
     std::cout << "Initial zoom factor set to: " << zoomFactor_
-              << " based on DPI scale" << std::endl;
+              << " for macOS (DPI scale was " << dpiScale << ")" << std::endl;
   }
 #endif
 
@@ -289,8 +293,9 @@ void Display::renderLoop() {
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Scale the mouse coordinates for high DPI displays
-          int scaledX = static_cast<int>(e.button.x * scaleX / zoomFactor_);
-          int scaledY = static_cast<int>(e.button.y * scaleY / zoomFactor_);
+          int scaledX = static_cast<int>(e.motion.x * scaleX / zoomFactor_);
+          int scaledY = static_cast<int>(e.motion.y * scaleY / zoomFactor_);
+
           // Reset drag flags
           mouse_dragging = false;
           dragging_bar = false;
@@ -356,8 +361,8 @@ void Display::renderLoop() {
         }
       } else if (e.type == SDL_MOUSEMOTION) {
         // Scale the mouse coordinates for high DPI displays
-        int scaledX = static_cast<int>(e.motion.x * scaleX);
-        int scaledY = static_cast<int>(e.motion.y * scaleY);
+        int scaledX = static_cast<int>(e.motion.x * scaleX / zoomFactor_);
+        int scaledY = static_cast<int>(e.motion.y * scaleY / zoomFactor_);
 
         // Handle dragging
         if (mouse_dragging && selected_loop >= 0 &&
