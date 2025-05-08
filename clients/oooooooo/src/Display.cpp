@@ -101,7 +101,7 @@ void Display::start() {
 
     // Use 1.0f for normal sizing
     zoomFactor_ = 1.0f;
-    mouseScaleFactor_ = dpiScale;
+    mouseScaleFactor_ = 0.5f;
 
     std::cout << "Fixed zoom factor set to: " << zoomFactor_
               << " for macOS (native DPI scale was " << dpiScale << ")"
