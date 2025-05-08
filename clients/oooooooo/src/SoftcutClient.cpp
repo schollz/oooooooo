@@ -27,6 +27,9 @@ void SoftcutClient::init() {
   for (int i = 0; i < NumVoices; ++i) {
     rateBase[i] = 1.0f;
     rateSet[i] = 1.0f;
+    vuMeters[i].setSampleRate(sampleRate);
+    vuMeters[i].setAttackTime(0.01f);
+    vuMeters[i].setDecayTime(0.3f);
     rateForward[i] = true;
     loopMin[i] = cutDuration * static_cast<float>(i);
     if (i >= 4) {
@@ -103,6 +106,7 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
   mixInput(numFrames);
   // process softcuts (overwrites output bus)
   for (int v = 0; v < NumVoices; ++v) {
+    vuMeters[v].process(input[v].buf[0], numFrames);
     if (enabled[v]) {
       cut.processBlock(v, input[v].buf[0], output[v].buf[0],
                        static_cast<int>(numFrames));

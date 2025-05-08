@@ -80,6 +80,7 @@ pkg_check_modules(SNDFILE REQUIRED sndfile)
 set(SRC 
   src/main.cpp
   src/AudioFile.cpp
+  src/VUMeter.cpp
   src/SoftcutClient.cpp
   src/Commands.cpp
   src/OscInterface.cpp

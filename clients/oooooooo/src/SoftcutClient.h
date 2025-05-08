@@ -11,6 +11,7 @@
 #include "Bus.h"
 #include "JackClient.h"
 #include "Utilities.h"
+#include "VUMeter.h"
 #include "dsp/fverb/FVerb.h"
 #include "softcut/Softcut.h"
 #include "softcut/Types.h"
@@ -57,6 +58,12 @@ class SoftcutClient : public JackClient<2, 2> {
   bool IsPlaying(int i) { return cut.getPlayFlag(i); }
   void ToggleRecord(int i) { cut.setRecFlag(i, !IsRecording(i)); }
   void TogglePlay(int i) { cut.setPlayFlag(i, !IsPlaying(i)); }
+  float getVULevel(int voice) const {
+    if (voice >= 0 && voice < NumVoices) {
+      return vuMeters[voice].getLevel();
+    }
+    return -100.0f;  // Return silence for invalid voice
+  }
 
  private:
   // processors
@@ -78,6 +85,8 @@ class SoftcutClient : public JackClient<2, 2> {
   bool enabled[NumVoices];
   softcut::phase_t quantPhase[NumVoices];
   float sampleRate;
+
+  VUMeter vuMeters[NumVoices];
 
  private:
   void process(jack_nframes_t numFrames) override;
