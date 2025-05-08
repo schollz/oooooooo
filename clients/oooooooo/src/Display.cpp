@@ -291,8 +291,8 @@ void Display::renderLoop() {
         }
         if (e.button.button == SDL_BUTTON_LEFT) {
           // Scale the mouse coordinates for high DPI displays
-          int scaledX = static_cast<int>(e.motion.x * scaleX / zoomFactor_);
-          int scaledY = static_cast<int>(e.motion.y * scaleY / zoomFactor_);
+          int scaledX = static_cast<int>(e.button.x * scaleX / zoomFactor_);
+          int scaledY = static_cast<int>(e.button.y * scaleY / zoomFactor_);
 
           // Reset drag flags
           mouse_dragging = false;
