@@ -186,16 +186,37 @@ class JackClient {
                                         JackPortIsPhysical | JackPortIsOutput);
 
     if (ports == nullptr) {
-      throw std::runtime_error("no ADC ports found");
+      std::cerr << "No physical input ports found, creating silent inputs"
+                << std::endl;
+      // All inputs will remain disconnected and will be silent
+      return;
     }
 
+    // Count available physical ports
+    int available_ports = 0;
+    while (ports[available_ports] != nullptr) {
+      available_ports++;
+    }
+
+    std::cout << "Found " << available_ports << " physical input ports"
+              << std::endl;
+
+    // Connect as many ports as available
     for (int i = 0; i < NumIns; ++i) {
-      if (i > 1) {
-        break;
-      }
-      if (jack_connect(client, ports[i], jack_port_name(inPort[i]))) {
-        std::cerr << "failed to connect input port " << i << std::endl;
-        throw std::runtime_error("connectAdcPorts() failed");
+      if (i < available_ports) {
+        // Connect to available physical port
+        if (jack_connect(client, ports[i], jack_port_name(inPort[i]))) {
+          std::cerr << "Warning: failed to connect input port " << i
+                    << " to physical port " << ports[i] << std::endl;
+        } else {
+          std::cout << "Connected input " << i << " to " << ports[i]
+                    << std::endl;
+        }
+      } else {
+        // For unavailable ports, we'll leave them disconnected
+        // They will receive silence automatically
+        std::cout << "Input port " << i << " left disconnected (silent)"
+                  << std::endl;
       }
     }
     free(ports);
