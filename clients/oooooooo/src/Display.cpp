@@ -180,6 +180,7 @@ void Display::renderLoop() {
     // Process SDL events in a safer way
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
+      std::cout << "SDL Event received, type: " << e.type << std::endl;
       // Handle window close events
       if (e.type == SDL_QUIT) {
         std::cout << "Window close event received" << std::endl;
