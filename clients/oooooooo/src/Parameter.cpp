@@ -13,16 +13,59 @@ Parameter::~Parameter() = default;
 
 JSON Parameter::toJSON() const {
   JSON json;
+  json["x_"] = x_;
+  json["y_"] = y_;
+  json["width_"] = width_;
+  json["height_"] = height_;
   json["name"] = name_;
-  json["value"] = value_set_;
-  json["lfo_period"] = lfo_period_;
+  json["unit"] = unit_;
+  json["min_"] = min_;
+  json["max_"] = max_;
+  json["inc_"] = inc_;
+  json["value_set_"] = value_set_;
+  json["value_set_raw_"] = value_set_raw_;
+  json["value_compute_"] = value_compute_;
+  json["value_compute_raw_"] = value_compute_raw_;
+  json["inc_raw_"] = inc_raw_;
+  json["lfo_min_delta_"] = lfo_min_delta_;
+  json["lfo_max_delta_"] = lfo_max_delta_;
+  json["lfo_min_set_"] = lfo_min_set_;
+  json["lfo_max_set_"] = lfo_max_set_;
+  json["lfo_min_raw_"] = lfo_min_raw_;
+  json["lfo_max_raw_"] = lfo_max_raw_;
+  json["lfo_inc_"] = lfo_inc_;
+  json["lfo_period_"] = lfo_period_;
+  json["lfo_waveform_"] = lfo_waveform_;
+  json["lfo_active_"] = lfo_active_;
   return json;
 }
 void Parameter::fromJSON(const JSON& json) {
+  x_ = json["x_"];
+  y_ = json["y_"];
+  width_ = json["width_"];
+  height_ = json["height_"];
   name_ = json["name"];
-  value_set_ = json["value"];
-  lfo_period_ = json["lfo_period"];
-  set_(value_set_, true);
+  unit_ = json["unit"];
+  min_ = json["min_"];
+  max_ = json["max_"];
+  inc_ = json["inc_"];
+  value_set_ = json["value_set_"];
+  value_set_raw_ = json["value_set_raw_"];
+  value_compute_ = json["value_compute_"];
+  value_compute_raw_ = json["value_compute_raw_"];
+  inc_raw_ = json["inc_raw_"];
+  lfo_min_delta_ = json["lfo_min_delta_"];
+  lfo_max_delta_ = json["lfo_max_delta_"];
+  lfo_min_set_ = json["lfo_min_set_"];
+  lfo_max_set_ = json["lfo_max_set_"];
+  lfo_min_raw_ = json["lfo_min_raw_"];
+  lfo_max_raw_ = json["lfo_max_raw_"];
+  lfo_inc_ = json["lfo_inc_"];
+  lfo_period_ = json["lfo_period_"];
+  lfo_waveform_ = json["lfo_waveform_"];
+  lfo_active_ = json["lfo_active_"];
+  hide_ = json["hide_"];
+  lfo_.SetFreq(1.0f / lfo_period_);
 }
 
 void Parameter::Init(float sample_rate, float min, float max, float inc,
