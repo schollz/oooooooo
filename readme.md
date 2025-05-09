@@ -58,7 +58,7 @@ The following keys are available to control the program:
 
 - `p` toggles play
 - `r` toggles record
-- `ctrl + r` toggles record once (not implemented)
+- `ctrl + r` toggles record once
 
 ### LFOs
 
@@ -71,7 +71,7 @@ The following keys are available to control the program:
 
 - drag and drop audio files to load
 - `s` will save tape loops (not implemented)
-- `ctrl+s` will trigger audio saving
+- `f` will save audio output to a file (not implemented)
 
 ## Development
 

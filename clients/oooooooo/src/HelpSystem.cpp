@@ -23,7 +23,7 @@ HelpSystem::HelpSystem()
       "playing/recording",
       "p toggles play",
       "r toggles record",
-      "ctl + r toggles record once (NI)",
+      "ctl + r toggles record once",
       "",
       "lfos",
       "l toggles lfo",

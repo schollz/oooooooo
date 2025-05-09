@@ -56,7 +56,14 @@ class SoftcutClient : public JackClient<2, 2> {
   }
   bool IsRecording(int i) { return cut.getRecFlag(i); }
   bool IsPlaying(int i) { return cut.getPlayFlag(i); }
-  void ToggleRecord(int i) { cut.setRecFlag(i, !IsRecording(i)); }
+  void ToggleRecord(int i) {
+    if (!IsRecording(i)) {
+      cut.setPlayFlag(i, true);
+      cut.setRecFlag(i, true);
+    } else {
+      cut.setRecFlag(i, false);
+    }
+  }
   void ToggleRecordOnce(int i) {
     if (!IsRecording(i)) {
       cut.setPlayFlag(i, true);
