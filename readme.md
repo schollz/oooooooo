@@ -48,7 +48,7 @@ oooooooo
 The following keys are available to control the program:
 
 - `h` toggle help menu
-- `m` toggles parameter menu
+- `tab` toggles parameter menu
 - `1-8` selects loop
 - `up/down` selects parameter
 - `left/right` adjusts parameter

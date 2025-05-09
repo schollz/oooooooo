@@ -28,7 +28,7 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
     case SDLK_l:
       params_[*selectedLoop].ToggleLFO();
       break;
-    case SDLK_m:
+    case SDLK_TAB:
       for (int i = 0; i < numVoices_; i++) {
         params_[i].ToggleView();
       }

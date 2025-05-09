@@ -12,7 +12,7 @@ HelpSystem::HelpSystem()
   helpMessages = {
       "basics",
       "h toggles help",
-      "m toggles menu",
+      "tab toggles menu",
       "1-8 selects loop",
       "up/down selects parameter",
       "left/right adjusts parameter",
