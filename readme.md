@@ -63,6 +63,7 @@ The following keys are available to control the program:
 ### LFOs
 
 - `l` toggles lfo
+- `+/-` adjusts lfo peiod
 - `ctl+left/right` adjusts *min* lfo
 - `alt+left/right` adjusts *max* lfo
 

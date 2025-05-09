@@ -9,10 +9,19 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
                                     SDL_Keymod modifiers, int *selectedLoop) {
   keysHeld_[key] = true;
 
-  std::cerr << "KeyboardHandler::handleKeyDown Key pressed: "
-            << SDL_GetKeyName(key) << " " << modifiers << std::endl;
+  // std::cerr << "KeyboardHandler::handleKeyDown Key pressed: "
+  //           << SDL_GetKeyName(key) << " " << modifiers << std::endl;
 
   switch (key) {
+    // plus
+    case SDLK_PLUS:
+    case SDLK_EQUALS:
+      params_[*selectedLoop].DeltaLFOPeriod(isRepeat ? 0.5f : 0.1f);
+      break;
+    case SDLK_MINUS:
+    case SDLK_UNDERSCORE:
+      params_[*selectedLoop].DeltaLFOPeriod(isRepeat ? -0.5f : -0.1f);
+      break;
     case SDLK_p:
       if (!isRepeat) softcut_->TogglePlay(*selectedLoop);
       break;
@@ -105,6 +114,6 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
 
 void KeyboardHandler::handleKeyUp(SDL_Keycode key, int selectedLoop) {
   keysHeld_[key] = false;
-  std::cerr << "KeyboardHandler::handleKeyUp Key released: "
-            << SDL_GetKeyName(key) << " " << selectedLoop << std::endl;
+  // std::cerr << "KeyboardHandler::handleKeyUp Key released: "
+  //           << SDL_GetKeyName(key) << " " << selectedLoop << std::endl;
 }

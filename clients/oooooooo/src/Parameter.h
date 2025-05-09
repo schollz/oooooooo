@@ -35,6 +35,8 @@ class Parameter : public Serializable {
   void ValueSetRaw(float value, bool quiet);
   bool RegisterClick(float mouseX, float mouseY, bool dragging);
 
+  void DeltaLFOPeriod(float delta);
+
   void LFODelta(float min_delta, float max_delta);
   void Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y, int width,
               int height, bool selected, float brightness = 1.0f);

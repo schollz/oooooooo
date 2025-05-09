@@ -7,14 +7,16 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
   sample_rate_ = sample_rate;
   for (int i = 0; i < PARAM_COUNT; i++) {
     float default_value = 0.0f;
+    float random_lfo =
+        (static_cast<float>(rand()) / RAND_MAX) * 20.0f + 10.0f;  // 10 to 30
     switch (i) {
       case PARAM_LEVEL:
         default_value = (static_cast<float>(rand()) / RAND_MAX) * 38.0f -
                         32.0f;  // -32 to +6
         param_[i].Init(
             sample_rate_, -48.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "level",
-            "dB", [this, voice](float value) {
+            default_value - 6.0f, default_value + 6.0f, 0.5f, random_lfo,
+            "level", "dB", [this, voice](float value) {
               float v = db2amp(value);
               if (v < 0.02f) {
                 v = 0.0f;
@@ -45,7 +47,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 135.0f;
         param_[i].Init(
             sample_rate_, 20.0f, 135.0f, 0.1f, default_value, 125.0f, 140.0f,
-            0.5f, 10.0f, "lpf", "", [this, voice](float value) {
+            0.5f, random_lfo, "lpf", "", [this, voice](float value) {
               float freq = midi2freq(value);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_POST_FILTER_FC, voice, freq));
@@ -63,8 +65,8 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, -32.0, 36.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "pregain",
-            "dB", [this, voice](float value) {
+            default_value - 6.0f, default_value + 6.0f, 0.5f, random_lfo,
+            "pregain", "dB", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_TAPE_PREGAIN, voice, db2amp(value)));
             });
@@ -79,8 +81,8 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = -24.0f;
         param_[i].Init(
             sample_rate_, -32.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f, "bias",
-            "dB", [this, voice](float value) {
+            default_value - 6.0f, default_value + 6.0f, 0.5f, random_lfo,
+            "bias", "dB", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_TAPE_BIAS, voice, db2amp(value)));
             });
@@ -94,7 +96,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_REVERB:
         default_value = 0;
         param_[i].Init(sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f,
-                       0.2f, 0.1f, 10.0f, "reverb", "%",
+                       0.2f, 0.1f, random_lfo, "reverb", "%",
                        [this, voice](float value) {
                          softCutClient_->setReverbEnabled(true);
                          softCutClient_->setReverbSend(voice, value);
@@ -105,17 +107,18 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         break;
       case PARAM_REVERB_DECAY:
         default_value = 82.0f;
-        param_[i].Init(sample_rate_, 0.0, 100.0f, 0.1f, default_value, 80.0f,
-                       90.0f, 0.5f, 10.0f, "decay", "%", [this](float value) {
-                         softCutClient_->setReverbDecay(value);
-                       });
+        param_[i].Init(
+            sample_rate_, 0.0, 100.0f, 0.1f, default_value, 80.0f, 90.0f, 0.5f,
+            random_lfo, "decay", "%",
+            [this](float value) { softCutClient_->setReverbDecay(value); });
         param_[i].SetStringFunc(
             [](float value) { return sprintf_str("%2.0f", value); });
         break;
       case PARAM_REVERB_DENSITY:
         default_value = 80.0f;
         param_[i].Init(sample_rate_, 0.0, 100.0f, 0.1f, default_value, 70.0f,
-                       90.0f, 0.5f, 10.0f, "density", "%", [this](float value) {
+                       90.0f, 0.5f, random_lfo, "density", "%",
+                       [this](float value) {
                          softCutClient_->setReverbTailDensity(value);
                        });
         param_[i].SetStringFunc(
@@ -125,7 +128,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 1.0f;
         param_[i].Init(
             sample_rate_, 0.0, 2.0f, 0.01f, default_value, 0.99f, 1.01f, 0.1f,
-            10.0f, "rate", "", [this, voice](float value) {
+            random_lfo, "rate", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_RATE, voice, value));
             });
@@ -133,7 +136,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_DIRECTION:
         default_value = 0.0f;
         param_[i].Init(sample_rate_, -1.0, 1.0f, 0.1f, default_value, -0.5f,
-                       0.5f, 0.1f, 10.0f, "direction", "",
+                       0.5f, 0.1f, random_lfo, "direction", "",
                        [this, voice](float value) {
                          softCutClient_->setRateDirection(voice, value >= 0);
                        });
@@ -148,7 +151,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
-            default_value, 0.0f, 0.2f, 0.1f, 10.0f, "start", "s",
+            default_value, 0.0f, 0.2f, 0.1f, random_lfo, "start", "s",
             [this, voice](float value) {
               float loop_duration = softCutClient_->getDuration(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
@@ -163,8 +166,8 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 2.0f;
         param_[i].Init(
             sample_rate_, 0.0, 30.0f, 0.01f, default_value,
-            default_value - 1.0f, default_value + 1.0f, 0.1f, 10.0f, "duration",
-            "s", [this, voice](float value) {
+            default_value - 1.0f, default_value + 1.0f, 0.1f, random_lfo,
+            "duration", "s", [this, voice](float value) {
               float start = softCutClient_->getLoopStart(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LOOP_END, voice, value + start));
@@ -175,7 +178,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.0f;
         param_[i].Init(
             sample_rate_, -48.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, random_lfo,
             "rec level", "dB", [this, voice](float value) {
               float amp = db2amp(value);
               if (value <= -42.0f) {
@@ -195,7 +198,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = -48.0f;
         param_[i].Init(
             sample_rate_, -48.0, 12.0f, 0.1f, default_value,
-            default_value - 6.0f, default_value + 6.0f, 0.5f, 10.0f,
+            default_value - 6.0f, default_value + 6.0f, 0.5f, random_lfo,
             "rec pre level", "dB", [this, voice](float value) {
               float amp = db2amp(value);
               if (value <= -42.0f) {
@@ -215,7 +218,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "rec slew", "", [this, voice](float value) {
+            random_lfo, "rec slew", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_RECPRE_SLEW_TIME, voice, value));
             });
@@ -230,7 +233,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "level slew", "", [this, voice](float value) {
+            random_lfo, "level slew", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LEVEL_SLEW_TIME, voice, value));
             });
@@ -245,7 +248,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "rate slew", "", [this, voice](float value) {
+            random_lfo, "rate slew", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_RATE_SLEW_TIME, voice, value));
             });
@@ -260,7 +263,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "pan slew", "", [this, voice](float value) {
+            random_lfo, "pan slew", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_PAN_SLEW_TIME, voice, value));
             });
@@ -275,7 +278,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         default_value = 0.2f;  // seconds
         param_[i].Init(
             sample_rate_, 0.0, 4.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, "fade time", "", [this, voice](float value) {
+            random_lfo, "fade time", "", [this, voice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_FADE_TIME, voice, value));
             });
@@ -299,7 +302,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         int destVoice = voice;
         param_[i].Init(
             sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f, 1.0f, 0.1f,
-            10.0f, sprintf_str("loop %d input", srcVoice + 1), "%",
+            random_lfo, sprintf_str("loop %d input", srcVoice + 1), "%",
             [this, srcVoice, destVoice](float value) {
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_LEVEL_CUT_CUT, srcVoice, destVoice, value));

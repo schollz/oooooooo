@@ -65,16 +65,6 @@ class JackClient {
       sink[i][1] =
           static_cast<float*>(jack_port_get_buffer(outPort[j++], numFrames));
     }
-
-    // Check if it's time to log CPU usage
-    auto now = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsedSeconds = now - lastCpuLogTime;
-
-    if (elapsedSeconds.count() >= CPU_LOG_INTERVAL_SECONDS) {
-      float cpuLoad = jack_cpu_load(client);
-      std::cout << "JACK CPU Load: " << cpuLoad << "%" << std::endl;
-      lastCpuLogTime = now;
-    }
   }
 
   // process using our source and sink pointers.

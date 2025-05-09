@@ -90,6 +90,7 @@ class Parameters : public Serializable {
   float GetRawMin(ParameterName p) { return param_[p].GetRawMin(); }
   float GetRawMax(ParameterName p) { return param_[p].GetRawMax(); }
   void SetMax(ParameterName p, float max) { param_[p].SetMax(max); }
+  void DeltaLFOPeriod(float delta) { param_[selected_].DeltaLFOPeriod(delta); }
 
   void SetSelected(int selected) { selected_ = selected; }
   int GetSelected() const { return selected_; }

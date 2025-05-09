@@ -137,9 +137,8 @@ void Display::stop() {
 
   // Quit SDL only after all resources are cleaned up
   SDL_Quit();
-
-  std::cout << "SDL Display stopped" << std::endl;
 }
+
 void Display::renderLoop() {
   std::cout << "Render loop started" << std::endl;
 
@@ -323,7 +322,7 @@ void Display::renderLoop() {
               for (int i = 0; i < numVoices_; i++) {
                 displayRings_[i].RegisterClick(scaledX, scaledY);
                 if (displayRings_[i].ClickedRing()) {
-                  std::cout << "Clicked ring " << i << std::endl;
+                  // std::cout << "Clicked ring " << i << std::endl;
                   clicked_rings.push_back(i);
                 }
               }

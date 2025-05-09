@@ -46,11 +46,17 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
   lfo_max_delta_ = std::abs(default_value - lfo_max);
   lfo_min_max_update();
   lfo_inc_ = lfo_inc;
+  lfo_period_ = lfo_period;
   lfo_.Init(sample_rate);
   lfo_.SetFreq(1.0f / lfo_period);
 
   set_callback_ = std::move(set_callback);
   Bang();
+}
+
+void Parameter::DeltaLFOPeriod(float delta) {
+  lfo_period_ = fclamp(lfo_period_ + delta * lfo_inc_, 0.01f, 1200.0f);
+  lfo_.SetFreq(1.0f / lfo_period_);
 }
 
 std::string Parameter::String() {
