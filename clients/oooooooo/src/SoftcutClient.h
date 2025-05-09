@@ -57,6 +57,16 @@ class SoftcutClient : public JackClient<2, 2> {
   bool IsRecording(int i) { return cut.getRecFlag(i); }
   bool IsPlaying(int i) { return cut.getPlayFlag(i); }
   void ToggleRecord(int i) { cut.setRecFlag(i, !IsRecording(i)); }
+  void ToggleRecordOnce(int i) {
+    if (!IsRecording(i)) {
+      cut.setPlayFlag(i, true);
+      float pos = getLoopStart(i);
+      Commands::softcutCommands.post(Commands::Id::SET_CUT_POSITION, i, pos);
+      cut.setRecOnceFlag(i, true);
+    } else {
+      cut.setRecFlag(i, false);
+    }
+  }
   void TogglePlay(int i) { cut.setPlayFlag(i, !IsPlaying(i)); }
   float getVULevel(int voice) const {
     if (voice >= 0 && voice < NumVoices) {
