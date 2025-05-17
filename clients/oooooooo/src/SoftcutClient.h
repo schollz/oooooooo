@@ -64,6 +64,16 @@ class SoftcutClient : public JackClient<2, 2> {
       cut.setRecFlag(i, false);
     }
   }
+  void ToggleRecord(int i, bool rec) {
+    if (rec) {
+      cut.setPlayFlag(i, true);
+      cut.setRecFlag(i, true);
+    } else {
+      cut.setRecFlag(i, false);
+    }
+  }
+  void TogglePrime(int i) { isPrimed[i] = !isPrimed[i]; }
+  bool IsPrimed(int i) { return isPrimed[i]; }
   void ToggleRecordOnce(int i) {
     if (!IsRecording(i)) {
       cut.setPlayFlag(i, true);
@@ -105,6 +115,8 @@ class SoftcutClient : public JackClient<2, 2> {
   float sampleRate;
 
   VUMeter vuMeters[NumVoices];
+  sample_t blockRMS[NumVoices];
+  bool isPrimed[NumVoices];
 
  private:
   void process(jack_nframes_t numFrames) override;

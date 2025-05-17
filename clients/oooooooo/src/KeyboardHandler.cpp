@@ -29,6 +29,13 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       if (!isRepeat) {
         if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
           softcut_->ToggleRecordOnce(*selectedLoop);
+        } else if (keysHeld_[SDLK_LSHIFT] || keysHeld_[SDLK_RSHIFT]) {
+          softcut_->TogglePrime(*selectedLoop);
+          if (softcut_->IsPrimed(*selectedLoop)) {
+            // increase the duration
+            params_[*selectedLoop].ValueSet(Parameters::PARAM_DURATION, 30.0f,
+                                            false);
+          }
         } else {
           softcut_->ToggleRecord(*selectedLoop);
         }
