@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 #include "DrawFunctions.h"
 #include "Utilities.h"
@@ -154,8 +155,12 @@ void Parameter::set_(float value, bool quiet) {
     return;
   }
 
+  std::cerr << "set_ " << value << std::endl;
+
   value_set_ = fclamp(value, min_, max_);
+  std::cerr << "value_set_ " << value_set_ << std::endl;
   value_set_raw_ = linlin(value_set_, min_, max_, 0, 1);
+  std::cerr << "value_set_raw_ " << value_set_raw_ << std::endl;
   if (!lfo_active_) {
     value_compute_ = value_set_;
     value_compute_raw_ = value_set_raw_;

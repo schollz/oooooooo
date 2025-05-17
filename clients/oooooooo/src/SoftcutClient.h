@@ -62,6 +62,8 @@ class SoftcutClient : public JackClient<2, 2> {
       cut.setRecFlag(i, true);
     } else {
       cut.setRecFlag(i, false);
+      doneRecordingPrimed[i] = wasPrimed[i];
+      wasPrimed[i] = false;
     }
   }
   void ToggleRecord(int i, bool rec) {
@@ -70,10 +72,28 @@ class SoftcutClient : public JackClient<2, 2> {
       cut.setRecFlag(i, true);
     } else {
       cut.setRecFlag(i, false);
+      doneRecordingPrimed[i] = wasPrimed[i];
+      wasPrimed[i] = false;
     }
   }
-  void TogglePrime(int i) { isPrimed[i] = !isPrimed[i]; }
+  void TogglePrime(int i) {
+    isPrimed[i] = !isPrimed[i];
+    if (isPrimed[i]) {
+      wasPrimed[i] = true;
+    } else {
+      wasPrimed[i] = false;
+    }
+  }
   bool IsPrimed(int i) { return isPrimed[i]; }
+  bool WasPrimed(int i) { return wasPrimed[i]; }
+  void SetWasPrimed(int i, bool was) { wasPrimed[i] = was; }
+  bool IsDoneRecordingPrimed(int i) {
+    if (doneRecordingPrimed[i]) {
+      doneRecordingPrimed[i] = false;
+      return true;
+    }
+    return false;
+  }
   void ToggleRecordOnce(int i) {
     if (!IsRecording(i)) {
       cut.setPlayFlag(i, true);
@@ -85,6 +105,7 @@ class SoftcutClient : public JackClient<2, 2> {
     }
   }
   void TogglePlay(int i) { cut.setPlayFlag(i, !IsPlaying(i)); }
+  void TogglePlay(int i, bool play) { cut.setPlayFlag(i, play); }
   float getVULevel(int voice) const {
     if (voice >= 0 && voice < NumVoices) {
       return vuMeters[voice].getLevel();
@@ -117,6 +138,8 @@ class SoftcutClient : public JackClient<2, 2> {
   VUMeter vuMeters[NumVoices];
   sample_t blockRMS[NumVoices];
   bool isPrimed[NumVoices];
+  bool wasPrimed[NumVoices];
+  bool doneRecordingPrimed[NumVoices];
 
  private:
   void process(jack_nframes_t numFrames) override;

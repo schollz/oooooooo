@@ -32,9 +32,17 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
         } else if (keysHeld_[SDLK_LSHIFT] || keysHeld_[SDLK_RSHIFT]) {
           softcut_->TogglePrime(*selectedLoop);
           if (softcut_->IsPrimed(*selectedLoop)) {
+            std::cerr << "primed" << std::endl;
             // increase the duration
+            params_[*selectedLoop].SetMax(Parameters::PARAM_DURATION, 60.0f);
             params_[*selectedLoop].ValueSet(Parameters::PARAM_DURATION, 30.0f,
                                             false);
+            // set playing to off
+            softcut_->TogglePlay(*selectedLoop, false);
+            // set position to 0
+            softcut_->handleCommand(new Commands::CommandPacket(
+                Commands::Id::SET_CUT_POSITION, *selectedLoop,
+                softcut_->getLoopStart(*selectedLoop)));
           }
         } else {
           softcut_->ToggleRecord(*selectedLoop);

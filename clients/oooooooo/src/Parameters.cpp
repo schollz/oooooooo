@@ -5,6 +5,7 @@
 void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
   softCutClient_ = sc;
   sample_rate_ = sample_rate;
+  voice_ = voice;
   for (int i = 0; i < PARAM_COUNT; i++) {
     float default_value = 0.0f;
     float random_lfo =
@@ -153,6 +154,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
             default_value, 0.0f, 0.2f, 0.1f, random_lfo, "start", "s",
             [this, voice](float value) {
+              std::cerr << "start: " << value << std::endl;
               float loop_duration = softCutClient_->getDuration(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LOOP_START, voice,
@@ -165,9 +167,10 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
       case PARAM_DURATION:
         default_value = 2.0f;
         param_[i].Init(
-            sample_rate_, 0.0, 30.0f, 0.01f, default_value,
+            sample_rate_, 0.0, 60.0f, 0.01f, default_value,
             default_value - 1.0f, default_value + 1.0f, 0.1f, random_lfo,
             "duration", "s", [this, voice](float value) {
+              std::cerr << "duration: " << value << std::endl;
               float start = softCutClient_->getLoopStart(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LOOP_END, voice, value + start));
@@ -327,6 +330,18 @@ void Parameters::Update() {
   UpdateFade();  // Add this line
   for (int i = 0; i < PARAM_COUNT; i++) {
     param_[i].Update();
+  }
+  if (softCutClient_->IsDoneRecordingPrimed(voice_)) {
+    softCutClient_->SetWasPrimed(voice_, false);
+    // get position and start
+    float pos = softCutClient_->getSavedPosition(voice_);
+    float loop_start = softCutClient_->getLoopStart(voice_);
+    // set duration to pos - loop_start
+    float duration = pos - loop_start;
+    if (duration < 0.0f) {
+      duration = 0.1f;
+    }
+    param_[PARAM_DURATION].ValueSet(duration, false);
   }
 }
 

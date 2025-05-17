@@ -113,28 +113,24 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
       cut.processBlock(v, input[v].buf[0], output[v].buf[0],
                        static_cast<int>(numFrames));
     }
-    if (isPrimed[v]) {
-      // compute blockRMS
-      sample_t rms = 0;
-      for (size_t i = 0; i < numFrames; i++) {
-        rms += input[v].buf[0][i] * input[v].buf[0][i];
-      }
-      rms = sqrt(rms / static_cast<float>(numFrames));
-      if (rms < 1e-6) {
-        rms = 1e-6;
-      }
-      if (blockRMS[v] < 1e-6) {
-        blockRMS[v] = 1e-6;
-      }
-      float rmsRatio = rms / blockRMS[v];
-      std::cerr << "RMS: " << rms << " blockRMS: " << blockRMS[v]
-                << " rmsRatio: " << rmsRatio << std::endl;
-      if (rmsRatio > 20.0) {
-        isPrimed[v] = false;
-        ToggleRecord(v, true);
-      }
-      blockRMS[v] = rms;
+    // compute blockRMS
+    sample_t rms = 0;
+    for (size_t i = 0; i < numFrames; i++) {
+      rms += input[v].buf[0][i] * input[v].buf[0][i];
     }
+    rms = sqrt(rms / static_cast<float>(numFrames));
+    if (rms < 1e-6) {
+      rms = 1e-6;
+    }
+    if (blockRMS[v] < 1e-6) {
+      blockRMS[v] = 1e-6;
+    }
+    float rmsRatio = rms / blockRMS[v];
+    if (rmsRatio > 20.0 && isPrimed[v]) {
+      isPrimed[v] = false;
+      ToggleRecord(v, true);
+    }
+    blockRMS[v] = rms;
   }
   mixOutput(numFrames);
   mix.copyTo(sink[0], numFrames);
