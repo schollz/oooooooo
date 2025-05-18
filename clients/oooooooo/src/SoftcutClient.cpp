@@ -119,7 +119,7 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
       rms += input[v].buf[0][i] * input[v].buf[0][i];
     }
     rms = sqrt(rms / static_cast<float>(numFrames));
-    if (amp2db(rms) > -50.0f && isPrimed[v]) {
+    if (amp2db(rms) > primeSensitivity[v] && isPrimed[v]) {
       ToggleRecord(v, true);
     }
     blockRMS[v] = rms;

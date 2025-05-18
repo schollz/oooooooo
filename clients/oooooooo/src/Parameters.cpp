@@ -292,6 +292,21 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             return sprintf_str("%2.0f ms", value * 1000.0f);
         });
         break;
+      case PARAM_PRIME_SENSITIVITY:
+        default_value = -50.0f;
+        param_[i].Init(sample_rate_, -96.0, 0.0f, 1.0f, default_value, -50.0f,
+                       -40.0f, 0.5f, random_lfo, "prime tol", "dB",
+                       [this, voice](float value) {
+                         softCutClient_->SetPrimeSensitivity(voice, value);
+                       });
+        param_[i].SetStringFunc([](float value) {
+          if (value > 0)
+            return sprintf_str("+%2.1f", value);
+          else
+            return sprintf_str("%2.1f", value);
+        });
+
+        break;
       case PARAM_LOOP1_FEEDBACK:
       case PARAM_LOOP2_FEEDBACK:
       case PARAM_LOOP3_FEEDBACK:
@@ -372,7 +387,8 @@ void Parameters::Render(SDL_Renderer* renderer, TTF_Font* font, int x, int y,
   for (int i = 0; i < PARAM_COUNT; i++) {
     if (param_[i].IsHidden()) continue;
     param_[i].Render(renderer, font, x, y + j * (height + 5), width, height,
-                     selected_ == i, effective_brightness);  // Pass brightness
+                     selected_ == i,
+                     effective_brightness);  // Pass brightness
     j++;
   }
 }

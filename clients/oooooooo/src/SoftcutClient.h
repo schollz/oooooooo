@@ -112,6 +112,11 @@ class SoftcutClient : public JackClient<2, 2> {
     return -100.0f;  // Return silence for invalid voice
   }
   float getCPUUsage() { return static_cast<float>(jack_cpu_load(client)); }
+  void SetPrimeSensitivity(int i, float sensitivity) {
+    if (i >= 0 && i < NumVoices) {
+      primeSensitivity[i] = sensitivity;
+    }
+  }
 
  private:
   // processors
@@ -139,6 +144,7 @@ class SoftcutClient : public JackClient<2, 2> {
   bool isPrimed[NumVoices];
   bool wasPrimed[NumVoices];
   bool doneRecordingPrimed[NumVoices];
+  float primeSensitivity[NumVoices];
 
  private:
   void process(jack_nframes_t numFrames) override;
