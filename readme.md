@@ -59,6 +59,7 @@ The following keys are available to control the program:
 - `p` toggles play
 - `r` toggles record
 - `ctrl + r` toggles record once
+- `shift + r` toggles priming of recording
 
 ### LFOs
 

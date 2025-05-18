@@ -24,6 +24,7 @@ HelpSystem::HelpSystem()
       "p toggles play",
       "r toggles record",
       "ctl + r toggles record once",
+      "shift + r toggles priming rec",
       "",
       "lfos",
       "l toggles lfo",
