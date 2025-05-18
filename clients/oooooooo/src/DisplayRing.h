@@ -18,7 +18,8 @@ class DisplayRing {
   void HandleDrag(float mouseX, float mouseY, float width, float height);
   void StopDrag();
   void Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
-              float *noiseTimeValue);
+              float *noiseTimeValue, float mainContentFadeAlpha_,
+              bool isSelected);
   bool ClickedRing();
   bool ClickedRadius();
   float GetClickedRadius() { return clicked_radius_angle_normalized_; }

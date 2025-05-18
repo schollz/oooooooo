@@ -428,25 +428,13 @@ void Display::renderLoop() {
             continue;  // Skip the selected ring
           }
 
-          // Apply fade to the ring colors
-          Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
-          if (softCutClient_->IsRecording(i)) {
-            SDL_SetRenderDrawColor(renderer_, 176, 97, 97, alpha);
-          } else {
-            SDL_SetRenderDrawColor(renderer_, 120, 120, 120, alpha);
-          }
-          displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue);
+          displayRings_[i].Render(renderer_, &perlinGenerator, &noiseTimeValue,
+                                  mainContentFadeAlpha_, false);
         }
 
-        // Draw selected ring with fade
-        Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
-        if (softCutClient_->IsRecording(selected_loop)) {
-          SDL_SetRenderDrawColor(renderer_, 176, 50, 2, alpha);
-        } else {
-          SDL_SetRenderDrawColor(renderer_, 255, 255, 255, alpha);
-        }
         displayRings_[selected_loop].Render(renderer_, &perlinGenerator,
-                                            &noiseTimeValue);
+                                            &noiseTimeValue,
+                                            mainContentFadeAlpha_, true);
       }
 
       // Draw "oooooooo" text with fade

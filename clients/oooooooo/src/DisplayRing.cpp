@@ -31,7 +31,27 @@ void DisplayRing::Update(float width_, float height_) {
 }
 
 void DisplayRing::Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
-                         float *noiseTimeValue) {
+                         float *noiseTimeValue, float mainContentFadeAlpha_,
+                         bool isSelected) {
+  Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
+  if (isSelected) {
+    // Draw selected ring with fade
+    if (softCutClient_->IsRecording(id_)) {
+      SDL_SetRenderDrawColor(renderer, 176, 50, 2, alpha);
+    } else {
+      SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+    }
+  } else {
+    if (softCutClient_->IsPrimed(id_)) {
+      // TODO: breath between colors
+    } else {
+      if (softCutClient_->IsRecording(id_)) {
+        SDL_SetRenderDrawColor(renderer, 176, 97, 97, alpha);
+      } else {
+        SDL_SetRenderDrawColor(renderer, 120, 120, 120, alpha);
+      }
+    }
+  }
   drawRing(renderer, perlinGenerator, id_, x_, y_, radius_, position_,
            thickness_, noiseTimeValue, true, true);
 }
