@@ -32,6 +32,30 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
         }
       }
       break;
+    case SDLK_c:
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          voiceToCopy_ = *selectedLoop;
+        }
+      }
+      break;
+    case SDLK_v:
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          if (voiceToCopy_ != -1) {
+            JSON json = params_[voiceToCopy_].toJSON();
+            params_[*selectedLoop].fromJSON(json);
+            softcut_->copyBufferFromLoopToLoop(voiceToCopy_, *selectedLoop);
+            // set the Duration
+            params_[*selectedLoop].ValueSet(
+                Parameters::PARAM_DURATION,
+                params_[voiceToCopy_].GetValue(Parameters::PARAM_DURATION),
+                false);
+            voiceToCopy_ = -1;
+          }
+        }
+      }
+      break;
     case SDLK_r:
       if (!isRepeat) {
         if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
@@ -58,6 +82,52 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
 
         } else {
           softcut_->ToggleRecord(*selectedLoop);
+        }
+      }
+      break;
+    case SDLK_s:
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          // save every buffer
+          for (int i = 0; i < numVoices_; i++) {
+            softcut_->dumpBufferFromLoop(i);
+          }
+        } else {
+          // save the parameters
+          JSON json;
+          for (int i = 0; i < numVoices_; i++) {
+            json["loop" + std::to_string(i)] = params_[i].toJSON();
+          }
+          std::cerr << "Saving parameters to file" << std::endl;
+          // write it to a file
+          std::ofstream file("parameters.json");
+          if (file.is_open()) {
+            file << json.dump(4);
+            file.close();
+            std::cerr << "Parameters saved to parameters.json" << std::endl;
+          } else {
+            std::cerr << "Error opening file for writing" << std::endl;
+          }
+        }
+      }
+      break;
+    case SDLK_o:
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+        } else {
+          // load the parameters
+          JSON json;
+          std::ifstream file("parameters.json");
+          if (file.is_open()) {
+            file >> json;
+            file.close();
+            std::cerr << "Parameters loaded from parameters.json" << std::endl;
+            for (int i = 0; i < numVoices_; i++) {
+              params_[i].fromJSON(json["loop" + std::to_string(i)]);
+            }
+          } else {
+            std::cerr << "Error opening file for reading" << std::endl;
+          }
         }
       }
       break;

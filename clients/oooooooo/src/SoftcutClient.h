@@ -152,6 +152,7 @@ class SoftcutClient : public JackClient<2, 2> {
   inline size_t secToFrame(float sec) {
     return static_cast<size_t>(sec * jack_get_sample_rate(JackClient::client));
   }
+  float getLoopDuration();
 
  public:
   /// FIXME: the "commands" structure shouldn't really be necessary.
@@ -184,6 +185,46 @@ class SoftcutClient : public JackClient<2, 2> {
 
   void writeBufferStereo(const std::string &path, float start, float dur) {
     BufDiskWorker::requestWriteStereo(bufIdx[0], bufIdx[1], path, start, dur);
+  }
+
+  void copyBufferFromLoopToLoop(int loopSrc, int loopDst) {
+    // total seconds
+    float cutDuration = getLoopDuration();
+    int bufSrc = loopSrc < 4 ? 0 : 1;
+    int bufDst = loopDst < 4 ? 0 : 1;
+    float startSrc = loopMin[loopSrc];
+    float startDst = loopMin[loopDst];
+    // generate random file name
+    std::string path = "/tmp/softcut_" + std::to_string(rand()) + ".wav";
+    // write buffer to file
+    writeBufferMono(path, startSrc, cutDuration, bufSrc);
+    // read buffer from file
+    readBufferMono(path, 0.f, startDst, cutDuration, bufSrc, bufDst);
+    std::cerr << "copyBufferFromLoopToLoop: " << path << std::endl;
+    // delete file
+    remove(path.c_str());
+  }
+
+  void dumpBufferFromLoop(int loop) {
+    // total seconds
+    float cutDuration = getLoopDuration();
+    int bufSrc = loop < 4 ? 0 : 1;
+    float startSrc = loopMin[loop];
+    // generate random file name
+    std::string path = "loop_" + std::to_string(loop) + ".wav";
+    // write buffer to file
+    writeBufferMono(path, startSrc, cutDuration, bufSrc);
+    std::cerr << "dumpBufferFromLoop: " << path << std::endl;
+  }
+
+  void loadBufferToLoop(const std::string &path, int loop) {
+    // total seconds
+    float cutDuration = getLoopDuration();
+    int bufSrc = loop < 4 ? 0 : 1;
+    float startSrc = loopMin[loop];
+    // read buffer from file
+    readBufferMono(path, 0.f, startSrc, cutDuration, bufSrc, bufSrc);
+    std::cerr << "loadBufferToLoop: " << path << std::endl;
   }
 
   void clearBuffer(int chan, float start = 0.f, float dur = -1) {

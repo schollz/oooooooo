@@ -38,6 +38,7 @@ JSON Parameter::toJSON() const {
   json["lfo_period_"] = lfo_period_;
   json["lfo_waveform_"] = lfo_waveform_;
   json["lfo_active_"] = lfo_active_;
+  json["hide_"] = hide_;
   return json;
 }
 void Parameter::fromJSON(const JSON& json) {

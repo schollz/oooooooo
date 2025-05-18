@@ -18,11 +18,16 @@ static inline void clamp(size_t &x, const size_t a) {
   }
 }
 
-void SoftcutClient::init() {
-  // set each loop to be 2 seconds long, equally spaced across the buffer
+float SoftcutClient::getLoopDuration() {
   float totalSeconds = static_cast<float>(BufFrames) / sampleRate;
   float cutDuration = totalSeconds / static_cast<float>(NumVoices / 2);
+  return cutDuration;
+}
+
+void SoftcutClient::init() {
+  // set each loop to be 2 seconds long, equally spaced across the buffer
   // initialize seed
+  float cutDuration = getLoopDuration();
   srand(static_cast<unsigned int>(time(nullptr)));
   for (int i = 0; i < NumVoices; ++i) {
     rateBase[i] = 1.0f;

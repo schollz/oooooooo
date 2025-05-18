@@ -30,6 +30,7 @@ class KeyboardHandler {
   SoftcutClient* softcut_;
   Parameters* params_;
   int numVoices_;
+  int voiceToCopy_ = -1;
 
   std::unordered_map<SDL_Keycode, bool> keysHeld_;
 };

@@ -89,6 +89,7 @@ class Parameters : public Serializable {
   void Update();
 
   float GetRaw(ParameterName p) { return param_[p].GetRaw(); }
+  float GetValue(ParameterName p) { return param_[p].GetValue(); }
   float GetRawMin(ParameterName p) { return param_[p].GetRawMin(); }
   float GetRawMax(ParameterName p) { return param_[p].GetRawMax(); }
   void SetMax(ParameterName p, float max) { param_[p].SetMax(max); }

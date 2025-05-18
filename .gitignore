@@ -1,3 +1,4 @@
+*.json
 build/*
 *.wav
 AppDir/*
