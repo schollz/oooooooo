@@ -389,6 +389,7 @@ void Display::renderLoop() {
 
     // Clear screen
     SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);  // Black background
+    SDL_RenderSetLogicalSize(renderer_, width_, height_);
     SDL_RenderClear(renderer_);
     introAnimation_.Update();
     if (!introAnimation_.isComplete()) {
@@ -560,6 +561,14 @@ void Display::init(SoftcutClient* sc, int numVoices) {
     // Share reverb density parameter from voice 0 to all other voices
     params_[v].param_[Parameters::PARAM_REVERB_DENSITY].ShareFrom(
         &params_[0].param_[Parameters::PARAM_REVERB_DENSITY]);
+
+    // share prime sensitivity parameter from voice 0 to all other voices
+    params_[v].param_[Parameters::PARAM_PRIME_SENSITIVITY].ShareFrom(
+        &params_[0].param_[Parameters::PARAM_PRIME_SENSITIVITY]);
+
+    // share prime quantize parameter from voice 0 to all other voices
+    params_[v].param_[Parameters::PARAM_PRIME_QUANTIZE].ShareFrom(
+        &params_[0].param_[Parameters::PARAM_PRIME_QUANTIZE]);
   }
 
   // setup display rings

@@ -41,6 +41,7 @@ class Parameters : public Serializable {
     PARAM_LOOP7_FEEDBACK,
     PARAM_LOOP8_FEEDBACK,
     PARAM_PRIME_SENSITIVITY,
+    PARAM_PRIME_QUANTIZE,
     PARAM_COUNT  // Holds the number of parameters
   };
   Parameter param_[PARAM_COUNT];

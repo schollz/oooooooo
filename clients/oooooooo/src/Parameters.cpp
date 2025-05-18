@@ -294,6 +294,17 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             return sprintf_str("%2.0f ms", value * 1000.0f);
         });
         break;
+      case PARAM_PRIME_QUANTIZE:
+        default_value = 0.0f;
+        param_[i].Init(sample_rate_, 0.0, 200.0f, 1.0f, default_value, 0.0f,
+                       1.0f, 0.1f, random_lfo, "prime quant", "bpm", nullptr);
+        param_[i].SetStringFunc([](float value) {
+          if (value > 10.0f)
+            return sprintf_str("%2.0f", value);
+          else
+            return sprintf_str("no quantize", value);
+        });
+        break;
       case PARAM_PRIME_SENSITIVITY:
         default_value = -50.0f;
         param_[i].Init(sample_rate_, -96.0, 0.0f, 1.0f, default_value, -50.0f,
@@ -355,6 +366,13 @@ void Parameters::Update() {
     float loop_start = softCutClient_->getLoopStart(voice_);
     // set duration to pos - loop_start
     float duration = pos - loop_start - param_[PARAM_FADE_TIME].GetValue();
+    if (param_[PARAM_PRIME_QUANTIZE].GetValue() > 10.0f) {
+      // quantize to the nearest beat
+      int quant_bpm = static_cast<int>(param_[PARAM_PRIME_QUANTIZE].GetValue());
+      // quantize to the nearest beat
+      float quant = roundf(duration * static_cast<float>(quant_bpm) / 60.0f);
+      duration = quant * 60.0f / static_cast<float>(quant_bpm);
+    }
     if (duration < 0.0f) {
       duration = 0.1f;
     }
