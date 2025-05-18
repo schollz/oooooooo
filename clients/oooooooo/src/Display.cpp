@@ -230,10 +230,10 @@ void Display::renderLoop() {
 
           // total time in seconds
           // set the loop end to the total time
-          params_[selected_loop].ValueSet(Parameters::PARAM_START,
-                                          startTimeDest, false);
+          params_[selected_loop].SetMax(Parameters::PARAM_START, totalSeconds);
           params_[selected_loop].SetMax(Parameters::PARAM_DURATION,
                                         totalSeconds);
+          params_[selected_loop].ValueSet(Parameters::PARAM_START, 0, false);
           params_[selected_loop].ValueSet(Parameters::PARAM_DURATION,
                                           totalSeconds, false);
 

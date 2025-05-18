@@ -102,6 +102,7 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
           for (int i = 0; i < numVoices_; i++) {
             softcut_->dumpBufferFromLoop(i);
           }
+          display_->SetMessage("Audio saved to oooooooo folder", 3);
         } else {
           // save the parameters
           JSON json;
@@ -121,6 +122,7 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             file << json.dump(4);
             file.close();
             std::cerr << "Parameters saved to parameters.json" << std::endl;
+            display_->SetMessage("Parameters saved to oooooooo folder", 3);
           } else {
             std::cerr << "Error opening file for writing" << std::endl;
           }

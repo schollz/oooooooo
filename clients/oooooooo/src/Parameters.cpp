@@ -156,15 +156,19 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             sample_rate_, 0.0, softCutClient_->getLoopEnd(voice), 0.01f,
             default_value, 0.0f, 0.2f, 0.1f, random_lfo, "start", "s",
             [this, voice](float value) {
+              float loop_duration = softCutClient_->getDuration(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LOOP_START, voice,
                   value + softCutClient_->getLoopMin(voice)));
+              softCutClient_->handleCommand(new Commands::CommandPacket(
+                  Commands::Id::SET_CUT_LOOP_END, voice,
+                  value + softCutClient_->getLoopMin(voice) + loop_duration));
             });
         break;
       case PARAM_DURATION:
         default_value = 2.0f;
         param_[i].Init(
-            sample_rate_, 0.0, 600.0f, 0.01f, default_value,
+            sample_rate_, 0.0, 60.0f, 0.01f, default_value,
             default_value - 1.0f, default_value + 1.0f, 0.1f, random_lfo,
             "duration", "s", [this, voice](float value) {
               float start = softCutClient_->getLoopStart(voice);
