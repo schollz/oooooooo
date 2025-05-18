@@ -320,6 +320,16 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         });
 
         break;
+      case PARAM_BASE_RATE:
+        default_value = 1.0f;
+        param_[i].Init(sample_rate_, 0.0, 2.0f, 0.01f, default_value, 0.99f,
+                       1.01f, 0.1f, random_lfo, "base rate", "",
+                       [this, voice](float value) {
+                         softCutClient_->setBaseRate(voice, value);
+                       });
+        // hide
+        param_[i].Hide(true);
+        break;
       case PARAM_LOOP1_FEEDBACK:
       case PARAM_LOOP2_FEEDBACK:
       case PARAM_LOOP3_FEEDBACK:

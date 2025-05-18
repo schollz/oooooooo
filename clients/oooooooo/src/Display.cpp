@@ -215,7 +215,8 @@ void Display::renderLoop() {
           // fix the sample rate mismatch
           float baseRate =
               audioFile.getSampleRate() / softCutClient_->getSampleRate();
-          softCutClient_->setBaseRate(selected_loop, baseRate);
+          params_[selected_loop].ValueSet(Parameters::PARAM_BASE_RATE, baseRate,
+                                          false);
 
           // load in the file
           int bufNum = selected_loop < 4 ? 0 : 1;
