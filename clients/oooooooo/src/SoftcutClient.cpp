@@ -119,20 +119,7 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
       rms += input[v].buf[0][i] * input[v].buf[0][i];
     }
     rms = sqrt(rms / static_cast<float>(numFrames));
-    if (rms < 1e-6) {
-      rms = 1e-6;
-    }
-    if (blockRMS[v] < 1e-6) {
-      blockRMS[v] = 1e-6;
-    }
-    float rmsRatio = rms / blockRMS[v];
-    if (v == 0) {
-      std::cerr << "RMS: " << rms << " blockRMS: " << blockRMS[v]
-                << " rmsRatio: " << amp2db(rms) << std::endl;
-    }
     if (amp2db(rms) > -50.0f && isPrimed[v]) {
-      isPrimed[v] = false;
-      wasPrimed[v] = true;
       ToggleRecord(v, true);
     }
     blockRMS[v] = rms;

@@ -337,7 +337,7 @@ void Parameters::Update() {
     float pos = softCutClient_->getSavedPosition(voice_);
     float loop_start = softCutClient_->getLoopStart(voice_);
     // set duration to pos - loop_start
-    float duration = pos - loop_start;
+    float duration = pos - loop_start - param_[PARAM_FADE_TIME].GetValue();
     if (duration < 0.0f) {
       duration = 0.1f;
     }

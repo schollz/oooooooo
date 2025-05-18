@@ -59,6 +59,7 @@ class Parameter : public Serializable {
     }
   }
 
+  float GetValue() { return value_compute_; }
   float GetRaw() { return value_compute_raw_; }
   float GetRawMin() { return lfo_min_raw_; }
   float GetRawMax() { return lfo_max_raw_; }

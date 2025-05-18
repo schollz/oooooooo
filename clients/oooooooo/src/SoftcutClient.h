@@ -56,33 +56,27 @@ class SoftcutClient : public JackClient<2, 2> {
   }
   bool IsRecording(int i) { return cut.getRecFlag(i); }
   bool IsPlaying(int i) { return cut.getPlayFlag(i); }
-  void ToggleRecord(int i) {
-    if (!IsRecording(i)) {
-      cut.setPlayFlag(i, true);
-      cut.setRecFlag(i, true);
-    } else {
-      cut.setRecFlag(i, false);
-      doneRecordingPrimed[i] = wasPrimed[i];
-      wasPrimed[i] = false;
-    }
-  }
+  void ToggleRecord(int i) { ToggleRecord(i, !IsRecording(i)); }
   void ToggleRecord(int i, bool rec) {
     if (rec) {
       cut.setPlayFlag(i, true);
       cut.setRecFlag(i, true);
+      if (isPrimed[i]) {
+        wasPrimed[i] = true;
+        isPrimed[i] = false;
+      }
     } else {
       cut.setRecFlag(i, false);
       doneRecordingPrimed[i] = wasPrimed[i];
-      wasPrimed[i] = false;
+      if (wasPrimed[i]) {
+        doneRecordingPrimed[i] = true;
+      }
     }
   }
   void TogglePrime(int i) {
+    wasPrimed[i] = false;
+    doneRecordingPrimed[i] = false;
     isPrimed[i] = !isPrimed[i];
-    if (isPrimed[i]) {
-      wasPrimed[i] = true;
-    } else {
-      wasPrimed[i] = false;
-    }
   }
   bool IsPrimed(int i) { return isPrimed[i]; }
   bool WasPrimed(int i) { return wasPrimed[i]; }
@@ -104,7 +98,12 @@ class SoftcutClient : public JackClient<2, 2> {
       cut.setRecFlag(i, false);
     }
   }
-  void TogglePlay(int i) { cut.setPlayFlag(i, !IsPlaying(i)); }
+  void TogglePlay(int i) {
+    cut.setPlayFlag(i, !IsPlaying(i));
+    isPrimed[i] = false;
+    wasPrimed[i] = false;
+    doneRecordingPrimed[i] = false;
+  }
   void TogglePlay(int i, bool play) { cut.setPlayFlag(i, play); }
   float getVULevel(int voice) const {
     if (voice >= 0 && voice < NumVoices) {

@@ -43,7 +43,12 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             softcut_->handleCommand(new Commands::CommandPacket(
                 Commands::Id::SET_CUT_POSITION, *selectedLoop,
                 softcut_->getLoopStart(*selectedLoop)));
+
+            // clear the buffer
+            softcut_->clearBuffer(*selectedLoop < 4 ? 0 : 1,
+                                  softcut_->getLoopStart(*selectedLoop), 60.0f);
           }
+
         } else {
           softcut_->ToggleRecord(*selectedLoop);
         }
