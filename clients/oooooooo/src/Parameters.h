@@ -89,6 +89,12 @@ class Parameters : public Serializable {
 
   void Update();
 
+  void Bang() {
+    for (int i = 0; i < PARAM_COUNT; i++) {
+      param_[i].Bang();
+    }
+  }
+
   float GetRaw(ParameterName p) { return param_[p].GetRaw(); }
   float GetValue(ParameterName p) { return param_[p].GetValue(); }
   float GetRawMin(ParameterName p) { return param_[p].GetRawMin(); }

@@ -99,8 +99,14 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             json["loop" + std::to_string(i)] = params_[i].toJSON();
           }
           std::cerr << "Saving parameters to file" << std::endl;
+          // create folder oooooooo if it doesn't exist
+          std::string folder = "oooooooo";
+          if (!std::filesystem::exists(folder)) {
+            std::filesystem::create_directory(folder);
+          }
+
           // write it to a file
-          std::ofstream file("parameters.json");
+          std::ofstream file("oooooooo/parameters.json");
           if (file.is_open()) {
             file << json.dump(4);
             file.close();
@@ -114,16 +120,25 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
     case SDLK_o:
       if (!isRepeat) {
         if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          // load every loop audio folder
+          for (int i = 0; i < numVoices_; i++) {
+            std::string path = "oooooooo/loop_" + std::to_string(i) + ".wav";
+            softcut_->loadBufferToLoop(path, i);
+          }
         } else {
           // load the parameters
           JSON json;
-          std::ifstream file("parameters.json");
+          std::ifstream file("oooooooo/parameters.json");
           if (file.is_open()) {
             file >> json;
             file.close();
             std::cerr << "Parameters loaded from parameters.json" << std::endl;
             for (int i = 0; i < numVoices_; i++) {
               params_[i].fromJSON(json["loop" + std::to_string(i)]);
+            }
+            // bang parameters
+            for (int i = 0; i < numVoices_; i++) {
+              params_[i].Bang();
             }
           } else {
             std::cerr << "Error opening file for reading" << std::endl;

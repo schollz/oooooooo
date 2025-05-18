@@ -5,6 +5,7 @@
 #ifndef CRONE_CUTCLIENT_H
 #define CRONE_CUTCLIENT_H
 
+#include <filesystem>
 #include <iostream>
 
 #include "BufDiskWorker.h"
@@ -210,8 +211,13 @@ class SoftcutClient : public JackClient<2, 2> {
     float cutDuration = getLoopDuration();
     int bufSrc = loop < 4 ? 0 : 1;
     float startSrc = loopMin[loop];
+    // create folder oooooooo if it doesn't exist
+    std::string folder = "oooooooo";
+    if (!std::filesystem::exists(folder)) {
+      std::filesystem::create_directory(folder);
+    }
     // generate random file name
-    std::string path = "loop_" + std::to_string(loop) + ".wav";
+    std::string path = "oooooooo/loop_" + std::to_string(loop) + ".wav";
     // write buffer to file
     writeBufferMono(path, startSrc, cutDuration, bufSrc);
     std::cerr << "dumpBufferFromLoop: " << path << std::endl;
