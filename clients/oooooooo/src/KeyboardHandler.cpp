@@ -70,14 +70,10 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       }
       break;
     case SDLK_UP:
-      for (int i = 0; i < numVoices_; i++) {
-        params_[i].SelectedDelta(isRepeat ? -2 : -1);
-      }
+      params_[0].SelectedDelta(isRepeat ? -2 : -1);
       break;
     case SDLK_DOWN:
-      for (int i = 0; i < numVoices_; i++) {
-        params_[i].SelectedDelta(isRepeat ? 2 : 1);
-      }
+      params_[0].SelectedDelta(isRepeat ? 2 : 1);
       break;
     case SDLK_LEFT:
       if (keysHeld_[SDLK_LALT] || keysHeld_[SDLK_RALT]) {

@@ -2,6 +2,8 @@
 
 #include "Utilities.h"
 
+int Parameters::selected_ = 0;
+
 void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
   softCutClient_ = sc;
   sample_rate_ = sample_rate;

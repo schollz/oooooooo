@@ -131,7 +131,7 @@ class Parameters : public Serializable {
   float fade_speed_ = 0.05f;  // Adjust this for faster/slower fade
 
   SoftcutClient* softCutClient_ = nullptr;
-  int selected_ = 0;
+  static int selected_;
   float sample_rate_ = 0.0f;
 };
 
