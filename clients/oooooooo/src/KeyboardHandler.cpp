@@ -23,7 +23,14 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       params_[*selectedLoop].DeltaLFOPeriod(isRepeat ? -0.5f : -0.1f);
       break;
     case SDLK_p:
-      if (!isRepeat) softcut_->TogglePlay(*selectedLoop);
+      if (!isRepeat) {
+        if (softcut_->WasPrimed(*selectedLoop) &&
+            softcut_->IsRecording(*selectedLoop)) {
+          softcut_->ToggleRecord(*selectedLoop);
+        } else {
+          softcut_->TogglePlay(*selectedLoop);
+        }
+      }
       break;
     case SDLK_r:
       if (!isRepeat) {

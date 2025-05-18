@@ -11,6 +11,7 @@ void DisplayRing::Init(SoftcutClient *softCutClient, Parameters *p, int i) {
   softCutClient_ = softCutClient;
   params_ = p;
   id_ = i;
+  breath_time_ = 0.0f;
 }
 
 void DisplayRing::Update(float width_, float height_) {
@@ -28,6 +29,11 @@ void DisplayRing::Update(float width_, float height_) {
   }
   position_ = (pos_ - start_) / dur_;
   thickness_ = 2.5f;
+  float frame_time = 1.0f / 60.0f;  // Assuming 60 FPS, adjust as needed
+  breath_time_ += frame_time;
+  if (breath_time_ > 3.0f) {
+    breath_time_ = 0.0f;  // Reset after 3 seconds (full cycle)
+  }
 }
 
 void DisplayRing::Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
@@ -36,14 +42,37 @@ void DisplayRing::Render(SDL_Renderer *renderer, PerlinNoise *perlinGenerator,
   Uint8 alpha = static_cast<Uint8>(255 * mainContentFadeAlpha_);
   if (isSelected) {
     // Draw selected ring with fade
-    if (softCutClient_->IsRecording(id_)) {
-      SDL_SetRenderDrawColor(renderer, 176, 50, 2, alpha);
+    if (softCutClient_->IsPrimed(id_)) {
+      // Implement breathing effect between colors
+      // Calculate breath factor (0.0 to 1.0 and back)
+      float breath_factor = sin(breath_time_ * M_PI / 1.0f) * 0.5f + 0.5f;
+
+      // Interpolate between red (176, 97, 97) and white (255, 255, 255)
+      Uint8 r = static_cast<Uint8>(176 + (255 - 176) * breath_factor);
+      Uint8 g = static_cast<Uint8>(50 + (255 - 50) * breath_factor);
+      Uint8 b = static_cast<Uint8>(50 + (255 - 50) * breath_factor);
+
+      SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
     } else {
-      SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+      if (softCutClient_->IsRecording(id_)) {
+        SDL_SetRenderDrawColor(renderer, 176, 50, 2, alpha);
+      } else {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+      }
     }
   } else {
     if (softCutClient_->IsPrimed(id_)) {
-      // TODO: breath between colors
+      std::cerr << "primed" << std::endl;
+      // Implement breathing effect between colors
+      // Calculate breath factor (0.0 to 1.0 and back)
+      float breath_factor = sin(breath_time_ * M_PI / 1.0f) * 0.5f + 0.5f;
+
+      // Interpolate between red (176, 97, 97) and white (255, 255, 255)
+      Uint8 r = static_cast<Uint8>(176 + (255 - 176) * breath_factor);
+      Uint8 g = static_cast<Uint8>(97 + (255 - 97) * breath_factor);
+      Uint8 b = static_cast<Uint8>(97 + (255 - 97) * breath_factor);
+
+      SDL_SetRenderDrawColor(renderer, r, g, b, alpha);
     } else {
       if (softCutClient_->IsRecording(id_)) {
         SDL_SetRenderDrawColor(renderer, 176, 97, 97, alpha);

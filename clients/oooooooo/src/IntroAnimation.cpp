@@ -167,8 +167,16 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
   SDL_Color textColor = {255, 255, 255, alpha};  // White with fade
 
   // Render multiple lines of text
-  const char* subTexts[] = {"oooooooo", "", "digital tape loops x8",
-                            "v0.2.0",   "", "h for help"};
+  const char* subTexts[] = {
+      "oooooooo",
+      "",
+      "by infinite digits"
+      "",
+      "digital tape loops x8",
+      "v0.2.0",
+      "",
+      "h for help",
+  };
   int numSubTexts = sizeof(subTexts) / sizeof(subTexts[0]);
 
   for (int i = 0; i < numSubTexts; ++i) {

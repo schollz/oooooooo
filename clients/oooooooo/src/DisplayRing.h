@@ -47,4 +47,5 @@ class DisplayRing {
   bool dragging_ = false;
   bool clicked_radius_ = false;
   float clicked_radius_angle_normalized_ = 0;
+  float breath_time_ = 0.0f;  // Track time for breathing animation
 };
