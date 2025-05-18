@@ -11,15 +11,19 @@
 #include "Parameters.h"
 #include "SoftcutClient.h"
 
+class Display;
+
 class KeyboardHandler {
  public:
   KeyboardHandler() = default;
   ~KeyboardHandler() = default;
 
-  void Init(SoftcutClient* sc, Parameters* params, int numVoices) {
+  void Init(SoftcutClient* sc, Parameters* params, int numVoices,
+            Display* display) {
     softcut_ = sc;
     params_ = params;
     numVoices_ = numVoices;
+    display_ = display;
   }
 
   void handleKeyDown(SDL_Keycode key, bool isRepeat, SDL_Keymod modifiers,
@@ -31,6 +35,7 @@ class KeyboardHandler {
   Parameters* params_;
   int numVoices_;
   int voiceToCopy_ = -1;
+  Display* display_;
 
   std::unordered_map<SDL_Keycode, bool> keysHeld_;
 };

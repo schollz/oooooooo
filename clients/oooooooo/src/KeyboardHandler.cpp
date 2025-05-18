@@ -1,12 +1,22 @@
+
 #include "KeyboardHandler.h"
 
+#include <chrono>
+#include <ctime>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+
+#include "Display.h"
 #include "Parameters.h"
 #include "SoftcutClient.h"
 
 using namespace softcut_jack_osc;
 
 void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
-                                    SDL_Keymod modifiers, int *selectedLoop) {
+                                    SDL_Keymod modifiers [[maybe_unused]],
+                                    int *selectedLoop) {
   keysHeld_[key] = true;
 
   // std::cerr << "KeyboardHandler::handleKeyDown Key pressed: "
@@ -125,10 +135,33 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             std::string path = "oooooooo/loop_" + std::to_string(i) + ".wav";
             softcut_->loadBufferToLoop(path, i);
           }
+
+          std::filesystem::path filePath("oooooooo/loop_0.wav");
+          if (std::filesystem::exists(filePath)) {
+            auto ftime = std::filesystem::last_write_time(filePath);
+            // Convert file_time_type to system_clock::time_point
+            auto sctp = std::chrono::time_point_cast<
+                std::chrono::system_clock::duration>(
+                ftime - decltype(ftime)::clock::now() +
+                std::chrono::system_clock::now());
+            // Convert to time_t
+            std::time_t cftime = std::chrono::system_clock::to_time_t(sctp);
+            // Format time
+            char timeStr[100];
+            std::strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S",
+                          std::localtime(&cftime));
+
+            display_->SetMessage(
+                "Audio loaded from "
+                "modified: " +
+                    std::string(timeStr),
+                3);
+          }
         } else {
           // load the parameters
           JSON json;
           std::ifstream file("oooooooo/parameters.json");
+          // get the last-modified date from the file
           if (file.is_open()) {
             file >> json;
             file.close();
@@ -140,6 +173,26 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
             for (int i = 0; i < numVoices_; i++) {
               params_[i].Bang();
             }
+
+            std::filesystem::path filePath("oooooooo/parameters.json");
+            auto ftime = std::filesystem::last_write_time(filePath);
+            // Convert file_time_type to system_clock::time_point
+            auto sctp = std::chrono::time_point_cast<
+                std::chrono::system_clock::duration>(
+                ftime - decltype(ftime)::clock::now() +
+                std::chrono::system_clock::now());
+            // Convert to time_t
+            std::time_t cftime = std::chrono::system_clock::to_time_t(sctp);
+            // Format time
+            char timeStr[100];
+            std::strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S",
+                          std::localtime(&cftime));
+
+            display_->SetMessage(
+                "Parameters loaded from "
+                "modified: " +
+                    std::string(timeStr),
+                3);
           } else {
             std::cerr << "Error opening file for reading" << std::endl;
           }
@@ -220,7 +273,8 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
   }
 }
 
-void KeyboardHandler::handleKeyUp(SDL_Keycode key, int selectedLoop) {
+void KeyboardHandler::handleKeyUp(SDL_Keycode key,
+                                  int selectedLoop [[maybe_unused]]) {
   keysHeld_[key] = false;
   // std::cerr << "KeyboardHandler::handleKeyUp Key released: "
   //           << SDL_GetKeyName(key) << " " << selectedLoop << std::endl;

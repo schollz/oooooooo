@@ -91,7 +91,7 @@ void DisplayMessage::Render(SDL_Renderer* renderer, int windowWidth,
   }
   // Position the message in the bottom-right corner with some padding
   int padding = 10;
-  int x = windowWidth - surface->w - padding;
+  int x = padding;
   int y = windowHeight - surface->h - padding;
 
   SDL_Rect destRect = {x, y, surface->w, surface->h};

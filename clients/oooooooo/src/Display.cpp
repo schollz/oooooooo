@@ -581,7 +581,7 @@ void Display::init(SoftcutClient* sc, int numVoices) {
   }
 
   // setup keyboard handler
-  keyboardHandler_.Init(softCutClient_, params_, numVoices_);
+  keyboardHandler_.Init(softCutClient_, params_, numVoices_, this);
 
   // setup help system
   helpSystem_.Init(font);
