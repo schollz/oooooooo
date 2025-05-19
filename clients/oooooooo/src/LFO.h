@@ -9,6 +9,7 @@ https://opensource.org/licenses/MIT.
 #pragma once
 #ifndef DSY_LFO_H
 #define DSY_LFO_H
+#include <math.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -52,9 +53,12 @@ class LFO {
     freq_ = 100.0f;
     amp_ = 1.0f;
     pw_ = 0.5f;
-    phase_ = 0.0f;
+    // generate random number between 0 and 2pi
+    phase_ = static_cast<float>(rand()) /
+             (static_cast<float>(RAND_MAX / (2.0f * M_PI)));
     phase_inc_ = CalcPhaseInc(freq_);
     waveform_ = WAVE_SIN;
+
     eoc_ = true;
     eor_ = true;
   }
