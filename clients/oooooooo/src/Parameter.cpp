@@ -9,6 +9,8 @@
 
 using namespace softcut_jack_osc;
 
+float Parameter::bpm_quantize_ = 0.0f;
+
 Parameter::Parameter() = default;
 Parameter::~Parameter() = default;
 
@@ -99,6 +101,16 @@ void Parameter::Init(float sample_rate, float min, float max, float inc,
   Bang();
 }
 
+void Parameter::SetInc(float inc) {
+  if (shared_parameter_) {
+    shared_parameter_->SetInc(inc);
+    return;
+  }
+
+  inc_ = fclamp(inc, min_, max_);
+  inc_raw_ = linlin(inc_, min_, max_, 0.0f, 1.0f);
+}
+
 void Parameter::DeltaLFOPeriod(float delta) {
   lfo_period_ = fclamp(lfo_period_ + delta * lfo_inc_, 0.01f, 1200.0f);
   lfo_.SetFreq(1.0f / lfo_period_);
@@ -151,6 +163,10 @@ void Parameter::Update() {
 }
 
 void Parameter::set_(float value, bool quiet) {
+  if (is_quantizable_ && bpm_quantize_ > 0.0f) {
+    value = roundf(value / bpm_quantize_ * 4) * bpm_quantize_ / 4;
+  }
+
   if (shared_parameter_) {
     shared_parameter_->set_(value, quiet);
     return;
@@ -173,8 +189,15 @@ void Parameter::ValueDelta(float delta) {
     shared_parameter_->ValueDelta(delta);
     return;
   }
+  float increase = inc_;
+  if (is_quantizable_ && bpm_quantize_ > 0.0f) {
+    increase = roundf(increase / bpm_quantize_) * bpm_quantize_;
+    if (increase == 0) {
+      increase = bpm_quantize_ / 4.0f;
+    }
+  }
 
-  set_(value_set_ + delta * inc_, false);
+  set_(value_set_ + delta * increase, false);
 }
 
 void Parameter::LFODelta(float min_delta, float max_delta) {
@@ -321,4 +344,12 @@ void Parameter::ValueSetRaw(float value, bool quiet) {
   value_set_raw_ = fclamp(value, 0.0f, 1.0f);
   value_set_ = linlin(value_set_raw_, 0.0f, 1.0f, min_, max_);
   set_(value_set_, quiet);
+}
+
+void Parameter::SetBPM(float bpm) {
+  if (bpm > 0.0f) {
+    bpm_quantize_ = 60.0f / bpm;
+  } else {
+    bpm_quantize_ = 0.0f;
+  }
 }

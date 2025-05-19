@@ -58,6 +58,13 @@ class Parameter : public Serializable {
       set_(max_, false);
     }
   }
+  void SetInc(float inc);
+  void SetBPM(float bpm);
+  void SetIsQuantizable(bool is_quantizable) {
+    is_quantizable_ = is_quantizable;
+  }
+  bool IsQuantized() { return is_quantizable_ && bpm_quantize_ > 0.0f; }
+  float GetSecPerBeat() { return bpm_quantize_; }
 
   float GetValue() { return value_compute_; }
   float GetRaw() { return value_compute_raw_; }
@@ -108,6 +115,8 @@ class Parameter : public Serializable {
   void lfo_min_max_update();
   std::function<void(float)> set_callback_ = nullptr;
   std::function<std::string(float)> string_func_ = nullptr;
+  static float bpm_quantize_;
+  bool is_quantizable_ = false;
 
   LFO lfo_;
 };

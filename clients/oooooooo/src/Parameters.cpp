@@ -170,11 +170,23 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         param_[i].Init(
             sample_rate_, 0.0, 60.0f, 0.01f, default_value,
             default_value - 1.0f, default_value + 1.0f, 0.1f, random_lfo,
-            "duration", "s", [this, voice](float value) {
+            "duration", "", [this, voice](float value) {
               float start = softCutClient_->getLoopStart(voice);
               softCutClient_->handleCommand(new Commands::CommandPacket(
                   Commands::Id::SET_CUT_LOOP_END, voice, value + start));
             });
+        param_[i].SetStringFunc([this, i](float value) {
+          if (this->param_[i].IsQuantized()) {
+            return sprintf_str("%2.2f beats",
+                               value / (this->param_[i].GetSecPerBeat()));
+          } else {
+            if (value > 1.0f)
+              return sprintf_str("%2.1f s", value);
+            else
+              return sprintf_str("%2.0f ms", value * 1000.0f);
+          }
+        });
+        param_[i].SetIsQuantizable(true);
         break;
       case PARAM_REC_LEVEL:
         default_value = 0.0f;
@@ -293,13 +305,23 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         break;
       case PARAM_PRIME_QUANTIZE:
         default_value = 0.0f;
-        param_[i].Init(sample_rate_, 0.0, 200.0f, 1.0f, default_value, 0.0f,
-                       1.0f, 0.1f, random_lfo, "prime quant", "bpm", nullptr);
+        param_[i].Init(
+            sample_rate_, 0.0, 200.0f, 1.0f, default_value, 0.0f, 1.0f, 0.1f,
+            random_lfo, "quantize", "", [this, voice](float value) {
+              value = roundf(value);
+              // set duration increment to the nearest beat
+              if (value > 10.0f) {
+                param_[PARAM_DURATION].SetBPM(value);
+              } else {
+                param_[PARAM_DURATION].SetBPM(0.0f);
+              }
+              std::cerr << "quantize: " << voice << " " << value << std::endl;
+            });
         param_[i].SetStringFunc([](float value) {
           if (value > 10.0f)
-            return sprintf_str("%2.0f", value);
+            return sprintf_str("%2.0f bpm", value);
           else
-            return sprintf_str("no quantize", value);
+            return sprintf_str("none", value);
         });
         break;
       case PARAM_PRIME_SENSITIVITY:
