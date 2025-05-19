@@ -32,6 +32,20 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
     case SDLK_UNDERSCORE:
       params_[*selectedLoop].DeltaLFOPeriod(isRepeat ? -0.5f : -0.1f);
       break;
+    case SDLK_a:
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          float value = params_[*selectedLoop].GetValue(
+              static_cast<Parameters::ParameterName>(
+                  params_[*selectedLoop].GetSelected()));
+          for (int i = 0; i < numVoices_; i++) {
+            params_[i].ValueSet(static_cast<Parameters::ParameterName>(
+                                    params_[i].GetSelected()),
+                                value, false);
+          }
+        }
+      }
+      break;
     case SDLK_p:
       if (!isRepeat) {
         if (softcut_->WasPrimed(*selectedLoop) &&

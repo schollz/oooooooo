@@ -16,6 +16,7 @@ HelpSystem::HelpSystem()
       "1-8 selects loop",
       "up/down selects parameter",
       "left/right adjusts parameter",
+      "ctrl + a copies parameter to all",
       "click edge to cut to position",
       "click and drag middle to adjust",
       "and pan",

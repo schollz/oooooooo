@@ -181,7 +181,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                                value / (this->param_[i].GetSecPerBeat()));
           } else {
             if (value > 1.0f)
-              return sprintf_str("%2.1f s", value);
+              return sprintf_str("%2.2f s", value);
             else
               return sprintf_str("%2.0f ms", value * 1000.0f);
           }

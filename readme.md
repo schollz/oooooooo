@@ -55,6 +55,7 @@ The following keys are available to control the program:
 - `1-8` selects loop
 - `up/down` selects parameter
 - `left/right` adjusts parameter
+- `ctrl+a` copies parameter to all
 
 
 ### Playing/Recording
