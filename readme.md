@@ -7,7 +7,10 @@
 
 ### introduction
 
-this is a fork of [ezra's softcut JACK client](https://github.com/monome/softcut-lib/) which allows manipulating audio buffers in real time, developed at the behest of [monome](https://monome.org), originally for use with the [norns](https://monome.org/norns/) sound computer. I've forked it to port a norns script I wrote, [oooooo](https://github.com/schollz/oooooo), to be available as a standalone cross-platform application. 
+
+i call this script "oooooooo" because it is composed of eight loops. they are like digital tape loops - each loop can be can leveled, paned, slowed, sped up, shortened, lengthened, overdubed, destroyed, warbled. 
+
+this is a fork of [softcut JACK client](https://github.com/monome/softcut-lib/) from [monome](https://monome.org), originally for use with the [norns](https://monome.org/norns/) sound computer. I've forked it to port a norns script I wrote, [oooooo](https://github.com/schollz/oooooo), to be available as a standalone cross-platform application. 
 
 ## Quickstart
 
