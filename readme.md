@@ -15,15 +15,15 @@ This program requires JACK to be running. Make sure to first [download and insta
 
 ### Windows
 
-Download [oooooooo_v0.2.0.zip](https://github.com/schollz/oooooooo/releases/download/v0.2.0/oooooooo_v0.2.0.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
+Download [oooooooo_v1.0.0.zip](https://github.com/schollz/oooooooo/releases/download/v1.0.0/oooooooo_v1.0.0.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
 
 ### Linux
 
-Download [oooooooo_v0.2.0.AppImage](https://github.com/schollz/oooooooo/releases/download/v0.2.0/oooooooo_v0.2.0.AppImage) and then run the following commands:
+Download [oooooooo_v1.0.0.AppImage](https://github.com/schollz/oooooooo/releases/download/v1.0.0/oooooooo_v1.0.0.AppImage) and then run the following commands:
 
 ```bash
-chmod +x oooooooo_v0.2.0.AppImage
-./oooooooo_v0.2.0.AppImage
+chmod +x oooooooo_v1.0.0.AppImage
+./oooooooo_v1.0.0.AppImage
 ```
 
 ### macOS

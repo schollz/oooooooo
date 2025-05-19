@@ -173,7 +173,7 @@ void IntroAnimation::renderCenterText(SDL_Renderer* renderer, int windowWidth,
       "by infinite digits"
       "",
       "digital tape loops x8",
-      "v0.2.0",
+      "v1.0.0",
       "",
       "h for help",
   };
