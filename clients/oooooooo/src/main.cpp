@@ -39,6 +39,13 @@ static void signalHandler(int sig) {
   if (g_display) {
     g_display->requestShutdown();
   }
+
+  // create a thread timer to terminate everything in two seconds
+  std::thread([&]() {
+    sleep(1000);
+    std::cout << "Force quitting..." << std::endl;
+    exit(1);
+  }).detach();
 }
 
 // Function to set the quit flag when window is closed

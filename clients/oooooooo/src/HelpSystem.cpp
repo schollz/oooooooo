@@ -28,6 +28,7 @@ HelpSystem::HelpSystem()
       "",
       "lfos",
       "l toggles lfo",
+      "ctrl + l toggles lfo on all",
       "+/- adjusts lfo period",
       "ctrl+left/right adjusts min lfo",
       "alt+left/right adjusts max lfo",

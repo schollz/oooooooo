@@ -67,8 +67,9 @@ void DisplayMessage::Update() {
   }
 }
 
-void DisplayMessage::Render(SDL_Renderer* renderer, int windowWidth,
-                            int windowHeight) {
+void DisplayMessage::Render(SDL_Renderer* renderer,
+                            int windowWidth [[maybe_unused]],
+                            int windowHeight [[maybe_unused]]) {
   if (state_ == State::IDLE || alpha_ <= 0.0f || currentMessage_.empty() ||
       !font_) {
     return;

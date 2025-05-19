@@ -202,7 +202,17 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       }
       break;
     case SDLK_l:
-      params_[*selectedLoop].ToggleLFO();
+      if (!isRepeat) {
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          // load every loop audio folder
+          for (int i = 0; i < numVoices_; i++) {
+            params_[i].ToggleLFO();
+          }
+        } else {
+          // toggle LFO
+          params_[*selectedLoop].ToggleLFO();
+        }
+      }
       break;
     case SDLK_TAB:
       for (int i = 0; i < numVoices_; i++) {
