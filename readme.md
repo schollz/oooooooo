@@ -2,8 +2,8 @@
 
 [![build workflow](https://github.com/schollz/oooooooo/actions/workflows/ci.yml/badge.svg)](https://github.com/schollz/oooooooo/actions/workflows/ci.yml) [![GitHub Release](https://img.shields.io/github/v/release/schollz/oooooooo)](https://github.com/schollz/oooooooo/releases/latest)
 
+![output](https://github.com/user-attachments/assets/1ea7dadb-491c-4786-85e0-29a07b8a003e)
 
-![image](https://github.com/user-attachments/assets/b27a64ba-2dfd-45a4-a13f-7c111295dbd6)
 
 ### introduction
 
