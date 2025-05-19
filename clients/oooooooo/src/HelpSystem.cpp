@@ -34,7 +34,10 @@ HelpSystem::HelpSystem()
       "",
       "saving/loading",
       "drag-and-drop audio file to load",
-      "s will save tape loops (NI)",
+      "s saves parameters",
+      "ctrl+s saves audio",
+      "o loads parameters",
+      "ctrl+o loads audio",
   };
 }
 

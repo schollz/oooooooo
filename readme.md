@@ -72,7 +72,10 @@ The following keys are available to control the program:
 ### Saving/Loading
 
 - drag and drop audio files to load
-- `s` will save tape loops (not implemented)
+- `s` saves parameters
+- `ctrl+s` saves audio
+- `o` loads parameters
+- `ctrl+o` loads audio
 - `f` will save audio output to a file (not implemented)
 
 ## Development
