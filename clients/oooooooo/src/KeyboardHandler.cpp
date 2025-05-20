@@ -83,14 +83,12 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
     case SDLK_r:
       if (!isRepeat) {
         if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
-          softcut_->ToggleRecordOnce(*selectedLoop);
-        } else if (keysHeld_[SDLK_LSHIFT] || keysHeld_[SDLK_RSHIFT]) {
           softcut_->TogglePrime(*selectedLoop);
           if (softcut_->IsPrimed(*selectedLoop)) {
             std::cerr << "primed" << std::endl;
             // increase the duration
-            params_[*selectedLoop].SetMax(Parameters::PARAM_DURATION, 60.0f);
-            params_[*selectedLoop].ValueSet(Parameters::PARAM_DURATION, 30.0f,
+            params_[*selectedLoop].SetMax(Parameters::PARAM_DURATION, 61.0f);
+            params_[*selectedLoop].ValueSet(Parameters::PARAM_DURATION, 60.0f,
                                             false);
             // set playing to off
             softcut_->TogglePlay(*selectedLoop, false);
@@ -104,6 +102,8 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
                                   softcut_->getLoopStart(*selectedLoop), 60.0f);
           }
 
+        } else if (keysHeld_[SDLK_LSHIFT] || keysHeld_[SDLK_RSHIFT]) {
+          softcut_->ToggleRecordOnce(*selectedLoop);
         } else {
           softcut_->ToggleRecord(*selectedLoop);
         }

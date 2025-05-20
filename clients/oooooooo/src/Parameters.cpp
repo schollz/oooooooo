@@ -325,9 +325,9 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
         });
         break;
       case PARAM_PRIME_SENSITIVITY:
-        default_value = -50.0f;
+        default_value = -30.0f;
         param_[i].Init(sample_rate_, -96.0, 0.0f, 1.0f, default_value, -50.0f,
-                       -40.0f, 0.5f, random_lfo, "prime tol", "dB",
+                       -10.0f, 0.5f, random_lfo, "prime tol", "dB",
                        [this, voice](float value) {
                          softCutClient_->SetPrimeSensitivity(voice, value);
                        });
