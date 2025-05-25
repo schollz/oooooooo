@@ -48,11 +48,21 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       break;
     case SDLK_p:
       if (!isRepeat) {
-        if (softcut_->WasPrimed(*selectedLoop) &&
-            softcut_->IsRecording(*selectedLoop)) {
-          softcut_->ToggleRecord(*selectedLoop);
+        if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
+          // pause and set to 0
+          softcut_->TogglePlay(*selectedLoop, false);
+          float startTimeDest = softcut_->getLoopStart(*selectedLoop);
+          // cut to the start
+          softcut_->handleCommand(new Commands::CommandPacket(
+              Commands::Id::SET_CUT_POSITION, *selectedLoop, startTimeDest));
+
         } else {
-          softcut_->TogglePlay(*selectedLoop);
+          if (softcut_->WasPrimed(*selectedLoop) &&
+              softcut_->IsRecording(*selectedLoop)) {
+            softcut_->ToggleRecord(*selectedLoop);
+          } else {
+            softcut_->TogglePlay(*selectedLoop);
+          }
         }
       }
       break;
@@ -103,7 +113,7 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
           }
 
         } else if (keysHeld_[SDLK_LSHIFT] || keysHeld_[SDLK_RSHIFT]) {
-          softcut_->ToggleRecordOnce(*selectedLoop);
+          softcut_->TogglePrimeToRecordOnce(*selectedLoop);
         } else {
           softcut_->ToggleRecord(*selectedLoop);
         }

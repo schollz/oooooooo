@@ -79,7 +79,16 @@ class SoftcutClient : public JackClient<2, 2> {
     doneRecordingPrimed[i] = false;
     isPrimed[i] = !isPrimed[i];
   }
+  void TogglePrimeToRecordOnce(int i) {
+    wasPrimed[i] = false;
+    doneRecordingPrimed[i] = false;
+    isPrimed[i] = !isPrimed[i];
+    isPrimedToRecordOnce[i] = isPrimed[i];
+  }
   bool IsPrimed(int i) { return isPrimed[i]; }
+  bool IsPrimedToRecordOnce(int i) {
+    return isPrimed[i] && isPrimedToRecordOnce[i];
+  }
   bool WasPrimed(int i) { return wasPrimed[i]; }
   void SetWasPrimed(int i, bool was) { wasPrimed[i] = was; }
   bool IsDoneRecordingPrimed(int i) {
@@ -102,6 +111,7 @@ class SoftcutClient : public JackClient<2, 2> {
   void TogglePlay(int i) {
     cut.setPlayFlag(i, !IsPlaying(i));
     isPrimed[i] = false;
+    isPrimedToRecordOnce[i] = false;
     wasPrimed[i] = false;
     doneRecordingPrimed[i] = false;
   }
@@ -114,9 +124,11 @@ class SoftcutClient : public JackClient<2, 2> {
   }
   float getCPUUsage() { return static_cast<float>(jack_cpu_load(client)); }
   void SetPrimeSensitivity(int i, float sensitivity) {
-    if (i >= 0 && i < NumVoices) {
-      primeSensitivity[i] = sensitivity;
+    for (int j = 0; j < NumVoices; ++j) {
+      primeSensitivity[j] = sensitivity;
     }
+    std::cerr << "SetPrimeSensitivity: " << i << " to " << primeSensitivity[i]
+              << std::endl;
   }
 
  private:
@@ -143,6 +155,7 @@ class SoftcutClient : public JackClient<2, 2> {
   VUMeter vuMeters[NumVoices];
   sample_t blockRMS[NumVoices];
   bool isPrimed[NumVoices];
+  bool isPrimedToRecordOnce[NumVoices];
   bool wasPrimed[NumVoices];
   bool doneRecordingPrimed[NumVoices];
   float primeSensitivity[NumVoices];

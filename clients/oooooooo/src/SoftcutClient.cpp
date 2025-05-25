@@ -124,8 +124,18 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
       rms += input[v].buf[0][i] * input[v].buf[0][i];
     }
     rms = sqrt(rms / static_cast<float>(numFrames));
+    if (isPrimed[v]) {
+      std::cerr << "primed: " << v << " rms: " << amp2db(rms)
+                << " sensitivity: " << primeSensitivity[v] << std::endl;
+    }
     if (amp2db(rms) > primeSensitivity[v] && isPrimed[v]) {
-      ToggleRecord(v, true);
+      if (isPrimedToRecordOnce[v]) {
+        ToggleRecordOnce(v);
+        isPrimedToRecordOnce[v] = false;
+        isPrimed[v] = false;
+      } else {
+        ToggleRecord(v, true);
+      }
     }
     blockRMS[v] = rms;
   }
