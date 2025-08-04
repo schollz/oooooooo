@@ -18,15 +18,15 @@ This program requires JACK to be running. Make sure to first [download and insta
 
 ### Windows
 
-Download [oooooooo_v1.0.1.zip](https://github.com/schollz/oooooooo/releases/download/v1.0.1/oooooooo_v1.0.1.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
+Download [oooooooo_v1.0.3.zip](https://github.com/schollz/oooooooo/releases/download/v1.0.3/oooooooo_v1.0.3.zip). Unzip it and then run the `oooooooo.exe` program in the resulting directory.
 
 ### Linux
 
-Download [oooooooo_v1.0.1.AppImage](https://github.com/schollz/oooooooo/releases/download/v1.0.1/oooooooo_v1.0.1.AppImage) and then run the following commands:
+Download [oooooooo_v1.0.3.AppImage](https://github.com/schollz/oooooooo/releases/download/v1.0.3/oooooooo_v1.0.3.AppImage) and then run the following commands:
 
 ```bash
-chmod +x oooooooo_v1.0.1.AppImage
-./oooooooo_v1.0.1.AppImage
+chmod +x oooooooo_v1.0.3.AppImage
+./oooooooo_v1.0.3.AppImage
 ```
 
 ### macOS
