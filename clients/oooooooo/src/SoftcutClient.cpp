@@ -140,6 +140,21 @@ void SoftcutClient::process(jack_nframes_t numFrames) {
     blockRMS[v] = rms;
   }
   mixOutput(numFrames);
+
+  // Capture audio for session recording
+  if (sessionRecorder_.isRecording()) {
+    // Capture main mix (stereo)
+    sessionRecorder_.captureMainMix(mix.buf[0], mix.buf[1], numFrames);
+
+    // Capture individual voices (stereo, after panning and level adjustment)
+    for (int v = 0; v < NumVoices; ++v) {
+      if (cut.getPlayFlag(v)) {
+        sessionRecorder_.captureVoice(v, voiceOutputBus[v].buf[0],
+                                      voiceOutputBus[v].buf[1], numFrames);
+      }
+    }
+  }
+
   mix.copyTo(sink[0], numFrames);
 }
 
@@ -180,12 +195,18 @@ void SoftcutClient::mixInput(size_t numFrames) {
 void SoftcutClient::mixOutput(size_t numFrames) {
   reverbBus.clear(numFrames);
 
+  // Clear and process each voice into its own stereo bus
   for (int v = 0; v < NumVoices; ++v) {
+    voiceOutputBus[v].clear(numFrames);
+
     if (cut.getPlayFlag(v)) {
-      mix.panMixEpFrom(output[v], numFrames, outLevel[v], outPan[v]);
+      // Pan this voice into its own stereo bus
+      voiceOutputBus[v].panMixEpFrom(output[v], numFrames, outLevel[v], outPan[v]);
+
+      // Mix the voice output into the main mix
+      mix.addFrom(voiceOutputBus[v], numFrames);
 
       // Send to reverb bus with the same panning as the main output
-      // This preserves the stereo field in the reverb
       reverbBus.panMixEpFrom(output[v], numFrames, reverbSend[v], outPan[v]);
     }
   }
