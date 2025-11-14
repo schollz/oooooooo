@@ -47,6 +47,7 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
       }
       break;
     case SDLK_p:
+    case SDLK_SPACE:
       if (!isRepeat) {
         if (keysHeld_[SDLK_LCTRL] || keysHeld_[SDLK_RCTRL]) {
           // pause and set to 0
