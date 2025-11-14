@@ -15,9 +15,9 @@ class Parameters : public Serializable {
   enum ParameterName {
     PARAM_LEVEL,
     PARAM_PAN,
-    PARAM_LPF,
     PARAM_PREGAIN,
     PARAM_BIAS,
+    PARAM_LPF,
     PARAM_REVERB,
     PARAM_REVERB_DECAY,
     PARAM_REVERB_DENSITY,
