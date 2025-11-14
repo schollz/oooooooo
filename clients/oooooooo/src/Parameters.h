@@ -32,6 +32,7 @@ class Parameters : public Serializable {
     PARAM_RATE_SLEW,
     PARAM_PAN_SLEW,
     PARAM_FADE_TIME,
+    PARAM_MIC_INPUT,
     PARAM_LOOP1_FEEDBACK,
     PARAM_LOOP2_FEEDBACK,
     PARAM_LOOP3_FEEDBACK,

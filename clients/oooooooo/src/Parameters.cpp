@@ -303,6 +303,18 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
             return sprintf_str("%2.0f ms", value * 1000.0f);
         });
         break;
+      case PARAM_MIC_INPUT:
+        default_value = 1.0f;
+        param_[i].Init(sample_rate_, 0.0, 1.0f, 0.01f, default_value, 0.0f,
+                       1.0f, 0.1f, random_lfo, "mic input", "%",
+                       [this, voice](float value) {
+                         softCutClient_->handleCommand(new Commands::CommandPacket(
+                             Commands::Id::SET_LEVEL_IN_CUT, 0, voice, value));
+                       });
+        param_[i].SetStringFunc([](float value) {
+          return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));
+        });
+        break;
       case PARAM_PRIME_QUANTIZE:
         default_value = 0.0f;
         param_[i].Init(
