@@ -40,6 +40,7 @@ HelpSystem::HelpSystem()
       "ctrl+s saves audio",
       "o loads parameters",
       "ctrl+o loads audio",
+      "y toggles session recording",
   };
 }
 
