@@ -102,7 +102,7 @@ void Parameters::Init(SoftcutClient* sc, int voice, float sample_rate) {
                        0.2f, 0.1f, random_lfo, "reverb", "%",
                        [this, voice](float value) {
                          softCutClient_->setReverbEnabled(true);
-                         softCutClient_->setReverbSend(voice, value);
+                         softCutClient_->setReverbSend(voice, value * 0.1f);
                        });
         param_[i].SetStringFunc([](float value) {
           return sprintf_str("%d", static_cast<int>(roundf(value * 100.0f)));

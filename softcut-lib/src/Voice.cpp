@@ -87,7 +87,7 @@ void Voice::processBlockMono(const sample_t* in, sample_t* out, int numFrames) {
     sch.setPre(preRamp.update());
     sch.setRec(recRamp.update());
     sampleFunc(x, &y);
-    out[i] = svfPost.getNextSample(y) + y * svfPostDryLevel;
+    out[i] = y;
     updateQuantPhase();
   }
 
@@ -102,8 +102,13 @@ void Voice::processBlockMono(const sample_t* in, sample_t* out, int numFrames) {
     }
   }
 
-  // add tape fx
+  // add tape fx (bias, pregain)
   tapeFx.ProcessMono(out, numFrames);
+
+  // add post filter (lpf) after tape fx
+  for (int i = 0; i < numFrames; ++i) {
+    out[i] = svfPost.getNextSample(out[i]) + out[i] * svfPostDryLevel;
+  }
 }
 
 void Voice::setSampleRate(float hz) {
