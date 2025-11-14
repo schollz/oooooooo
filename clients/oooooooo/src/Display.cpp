@@ -66,7 +66,7 @@ void Display::start() {
 #endif
 
   width_ = 1080;
-  height_ = 790;
+  height_ = 815;
   window_ = SDL_CreateWindow("oooooooo", SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED, width_, height_,
                              SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
