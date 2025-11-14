@@ -86,6 +86,11 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
                 Parameters::PARAM_DURATION,
                 params_[voiceToCopy_].GetValue(Parameters::PARAM_DURATION),
                 false);
+            // set the Base Rate to trigger the callback
+            params_[*selectedLoop].ValueSet(
+                Parameters::PARAM_BASE_RATE,
+                params_[voiceToCopy_].GetValue(Parameters::PARAM_BASE_RATE),
+                false);
             voiceToCopy_ = -1;
           }
         }
