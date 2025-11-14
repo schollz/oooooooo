@@ -50,13 +50,11 @@ void SessionRecorder::startRecording(int numVoices, float sampleRate) {
   sampleRate_ = sampleRate;
   sessionTimestamp_ = generateTimestamp();
 
-  std::cout << "Starting session recording: " << sessionTimestamp_ << std::endl;
-
   // Initialize main mix buffer (stereo)
   initializeBuffer(mainMixBuffer_, 2);
-  std::string mainFilename = generateFilename("all");
+  mainMixBuffer_.filename = generateFilename("all");
   mainMixBuffer_.file = std::make_unique<SndfileHandle>(
-      mainFilename, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, 2,
+      mainMixBuffer_.filename, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, 2,
       static_cast<int>(sampleRate_));
 
   if (mainMixBuffer_.file->error()) {
@@ -69,9 +67,9 @@ void SessionRecorder::startRecording(int numVoices, float sampleRate) {
   voiceBuffers_.resize(numVoices_);
   for (int i = 0; i < numVoices_; i++) {
     initializeBuffer(voiceBuffers_[i], 2);
-    std::string voiceFilename = generateFilename(std::to_string(i));
+    voiceBuffers_[i].filename = generateFilename(std::to_string(i));
     voiceBuffers_[i].file = std::make_unique<SndfileHandle>(
-        voiceFilename, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, 2,
+        voiceBuffers_[i].filename, SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, 2,
         static_cast<int>(sampleRate_));
 
     if (voiceBuffers_[i].file->error()) {
@@ -86,16 +84,12 @@ void SessionRecorder::startRecording(int numVoices, float sampleRate) {
   // Start writer thread
   writerThread_ =
       std::make_unique<std::thread>(&SessionRecorder::writerThreadFunc, this);
-
-  std::cout << "Session recording started" << std::endl;
 }
 
 void SessionRecorder::stopRecording() {
   if (!recording_.load()) {
     return;
   }
-
-  std::cout << "Stopping session recording..." << std::endl;
 
   recording_.store(false);
   writerRunning_.store(false);
@@ -119,18 +113,15 @@ void SessionRecorder::stopRecording() {
   // Delete files for voices that had no audio
   for (int i = 0; i < numVoices_; i++) {
     if (!voiceBuffers_[i].hasAudio.load()) {
-      std::string filename = generateFilename(std::to_string(i));
-      std::filesystem::remove(filename);
+      std::filesystem::remove(voiceBuffers_[i].filename);
     }
   }
 
   voiceBuffers_.clear();
-
-  std::cout << "Session recording stopped" << std::endl;
 }
 
-void SessionRecorder::captureMainMix(const sample_t* left, const sample_t* right,
-                                     size_t numFrames) {
+void SessionRecorder::captureMainMix(const sample_t* left,
+                                     const sample_t* right, size_t numFrames) {
   if (!recording_.load()) {
     return;
   }
@@ -213,16 +204,16 @@ size_t SessionRecorder::writeAvailableData(VoiceBuffer& buffer) {
 
   buffer.readPos.store(readPos, std::memory_order_release);
 
-  if (totalWritten > 0) {
-    std::cout << "Wrote " << totalWritten << " frames" << std::endl;
+  // Log the filename the first time we actually write data
+  if (totalWritten > 0 && !buffer.hasLogged.load()) {
+    buffer.hasLogged.store(true);
+    std::cout << "Recording to: " << buffer.filename << std::endl;
   }
 
   return totalWritten;
 }
 
 void SessionRecorder::writerThreadFunc() {
-  std::cout << "Writer thread started" << std::endl;
-
   while (writerRunning_.load()) {
     // Write main mix
     writeAvailableData(mainMixBuffer_);
@@ -237,6 +228,4 @@ void SessionRecorder::writerThreadFunc() {
     // Sleep to avoid busy-waiting
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
-
-  std::cout << "Writer thread stopped" << std::endl;
 }
