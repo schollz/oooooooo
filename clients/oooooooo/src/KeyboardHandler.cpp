@@ -244,6 +244,16 @@ void KeyboardHandler::handleKeyDown(SDL_Keycode key, bool isRepeat,
         params_[i].ToggleView();
       }
       break;
+    case SDLK_y:
+      if (!isRepeat) {
+        softcut_->toggleSessionRecording();
+        if (softcut_->isSessionRecording()) {
+          display_->SetMessage("Session recording started", 2);
+        } else {
+          display_->SetMessage("Session recording stopped", 2);
+        }
+      }
+      break;
     case SDLK_UP:
       params_[0].SelectedDelta(isRepeat ? -2 : -1);
       break;

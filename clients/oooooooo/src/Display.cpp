@@ -534,19 +534,21 @@ void Display::renderLoop() {
     SDL_DestroyTexture(cpuTextTexture);
     SDL_FreeSurface(cpuTextSurface);
 
-    // show the help text in the bottom left corner
-    std::string helpText = "Tab: toggle menu, h: toggle help";
-    int helpTextWidth, helpTextHeight;
-    TTF_SizeText(font, helpText.c_str(), &helpTextWidth, &helpTextHeight);
-    SDL_Surface* helpTextSurface = TTF_RenderText_Solid(
-        font, helpText.c_str(), {40, 40, 40, 255});  // Dark gray text
-    SDL_Texture* helpTextTexture =
-        SDL_CreateTextureFromSurface(renderer_, helpTextSurface);
-    SDL_Rect helpTextRect = {10, height_ - helpTextHeight - 10, helpTextWidth,
-                             helpTextHeight};
-    SDL_RenderCopy(renderer_, helpTextTexture, nullptr, &helpTextRect);
-    SDL_DestroyTexture(helpTextTexture);
-    SDL_FreeSurface(helpTextSurface);
+    // show recording indicator if session recording is active
+    if (softCutClient_ && softCutClient_->isSessionRecording()) {
+      std::string recText = "REC";
+      int recTextWidth, recTextHeight;
+      TTF_SizeText(font, recText.c_str(), &recTextWidth, &recTextHeight);
+      SDL_Surface* recTextSurface = TTF_RenderText_Solid(
+          font, recText.c_str(), {255, 0, 0, 255});  // Red text
+      SDL_Texture* recTextTexture =
+          SDL_CreateTextureFromSurface(renderer_, recTextSurface);
+      SDL_Rect recTextRect = {width_ - cpuTextWidth - recTextWidth - 20, 10,
+                              recTextWidth, recTextHeight};
+      SDL_RenderCopy(renderer_, recTextTexture, nullptr, &recTextRect);
+      SDL_DestroyTexture(recTextTexture);
+      SDL_FreeSurface(recTextSurface);
+    }
 
     // Update screen
     SDL_RenderPresent(renderer_);

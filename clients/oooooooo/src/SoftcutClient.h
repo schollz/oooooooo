@@ -11,6 +11,7 @@
 #include "BufDiskWorker.h"
 #include "Bus.h"
 #include "JackClient.h"
+#include "SessionRecorder.h"
 #include "Utilities.h"
 #include "VUMeter.h"
 #include "dsp/fverb/FVerb.h"
@@ -296,6 +297,17 @@ class SoftcutClient : public JackClient<2, 2> {
     reverb.SetInputDiffision2(diffusion);
   }
 
+  // Session recording methods
+  void toggleSessionRecording() {
+    if (sessionRecorder_.isRecording()) {
+      sessionRecorder_.stopRecording();
+    } else {
+      sessionRecorder_.startRecording(NumVoices, sampleRate);
+    }
+  }
+
+  bool isSessionRecording() const { return sessionRecorder_.isRecording(); }
+
  private:
   FVerb reverb;
   bool reverbEnabled = false;
@@ -306,6 +318,8 @@ class SoftcutClient : public JackClient<2, 2> {
   float loopMin[NumVoices];
   bool rateForward[NumVoices];
   StereoBus reverbBus;
+  StereoBus voiceOutputBus[NumVoices];  // Stereo output for each voice
+  SessionRecorder sessionRecorder_;
   void clearBusses(size_t numFrames);
   void mixInput(size_t numFrames);
   void mixOutput(size_t numFrames);

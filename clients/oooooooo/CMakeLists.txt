@@ -115,6 +115,7 @@ set(SRC
     src/DisplayRing.cpp
     src/DrawFunctions.cpp
     src/BufDiskWorker.cpp
+    src/SessionRecorder.cpp
     src/Window.cpp
 )
 
