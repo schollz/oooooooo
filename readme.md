@@ -80,7 +80,7 @@ The following keys are available to control the program:
 - `ctrl+s` saves audio
 - `o` loads parameters
 - `ctrl+o` loads audio
-- `f` will save audio output to a file (not implemented)
+- `y` toggles session recording (records main mix + individual loops to timestamped WAV files)
 
 ## Development
 
