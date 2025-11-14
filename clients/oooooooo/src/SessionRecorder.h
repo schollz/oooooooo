@@ -46,14 +46,18 @@ class SessionRecorder {
     std::atomic<size_t> readPos;
     std::unique_ptr<SndfileHandle> file;
     std::atomic<bool> hasAudio;
+    std::atomic<bool> hasLogged;
+    std::string filename;
 
-    VoiceBuffer() : writePos(0), readPos(0), hasAudio(false) {}
+    VoiceBuffer() : writePos(0), readPos(0), hasAudio(false), hasLogged(false) {}
     VoiceBuffer(VoiceBuffer&& other) noexcept
         : buffer(std::move(other.buffer)),
           writePos(other.writePos.load()),
           readPos(other.readPos.load()),
           file(std::move(other.file)),
-          hasAudio(other.hasAudio.load()) {}
+          hasAudio(other.hasAudio.load()),
+          hasLogged(other.hasLogged.load()),
+          filename(std::move(other.filename)) {}
     VoiceBuffer& operator=(VoiceBuffer&& other) noexcept {
       if (this != &other) {
         buffer = std::move(other.buffer);
@@ -61,6 +65,8 @@ class SessionRecorder {
         readPos.store(other.readPos.load());
         file = std::move(other.file);
         hasAudio.store(other.hasAudio.load());
+        hasLogged.store(other.hasLogged.load());
+        filename = std::move(other.filename);
       }
       return *this;
     }
