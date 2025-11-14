@@ -66,7 +66,7 @@ void Display::start() {
 #endif
 
   width_ = 1080;
-  height_ = 780;
+  height_ = 790;
   window_ = SDL_CreateWindow("oooooooo", SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED, width_, height_,
                              SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE);
@@ -284,10 +284,12 @@ void Display::renderLoop() {
           // Scale the mouse coordinates for high DPI displays
           int scaledX = static_cast<int>(e.button.x);
           int scaledY = static_cast<int>(e.button.y);
+          /*
           std::cout << "Mouse clicked at: " << scaledX << ", " << scaledY
                     << std::endl;
           std::cout << "Mouse clicked at: " << e.button.x << ", " << e.button.y
                     << std::endl;
+          */
 
           // Reset drag flags
           mouse_dragging = false;
@@ -531,6 +533,20 @@ void Display::renderLoop() {
     SDL_RenderCopy(renderer_, cpuTextTexture, nullptr, &cpuTextRect);
     SDL_DestroyTexture(cpuTextTexture);
     SDL_FreeSurface(cpuTextSurface);
+
+    // show the help text in the bottom left corner
+    std::string helpText = "Tab: toggle menu, h: toggle help";
+    int helpTextWidth, helpTextHeight;
+    TTF_SizeText(font, helpText.c_str(), &helpTextWidth, &helpTextHeight);
+    SDL_Surface* helpTextSurface = TTF_RenderText_Solid(
+        font, helpText.c_str(), {40, 40, 40, 255});  // Dark gray text
+    SDL_Texture* helpTextTexture =
+        SDL_CreateTextureFromSurface(renderer_, helpTextSurface);
+    SDL_Rect helpTextRect = {10, height_ - helpTextHeight - 10, helpTextWidth,
+                             helpTextHeight};
+    SDL_RenderCopy(renderer_, helpTextTexture, nullptr, &helpTextRect);
+    SDL_DestroyTexture(helpTextTexture);
+    SDL_FreeSurface(helpTextSurface);
 
     // Update screen
     SDL_RenderPresent(renderer_);
