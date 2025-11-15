@@ -65,7 +65,7 @@ void Display::start() {
   SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, "0");
 #endif
 
-  width_ = 1080;
+  width_ = 1450;
   height_ = 815;
   window_ = SDL_CreateWindow("oooooooo", SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED, width_, height_,
@@ -267,8 +267,9 @@ void Display::renderLoop() {
             scaleX = static_cast<float>(drawableWidth) / windowWidth;
             scaleY = static_cast<float>(drawableHeight) / windowHeight;
 
-            std::cout << "Window resized. New DPI Scaling: " << scaleX << "x"
-                      << scaleY << std::endl;
+            std::cout << "Window resized to: " << windowWidth << "x" << windowHeight
+                      << " (drawable: " << drawableWidth << "x" << drawableHeight
+                      << ", DPI scaling: " << scaleX << "x" << scaleY << ")" << std::endl;
           }
 
           // Update width and height
