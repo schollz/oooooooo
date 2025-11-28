@@ -76,7 +76,7 @@ The "record once" feature (`shift + r`) records exactly one full loop cycle, the
   - The fade curves apply to both the pre-existing content level and the new recording level
   - There's a small record offset (-8 samples by default) that positions the write head slightly ahead of the read position
 
-This means recording naturally handles the fade region at loop boundaries without requiring you to record past the loop end point - the crossfade mechanism ensures smooth loops.
+This means recording naturally handles the fade region at loop boundaries. You don't need to record past the loop end point - the crossfade mechanism ensures smooth loops automatically.
 
 ### LFOs
 
