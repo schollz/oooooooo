@@ -65,6 +65,19 @@ The following keys are available to control the program:
 - `ctrl + r` toggles priming of recording
 - `shift + r` toggles record once
 
+#### Record Once Behavior
+
+The "record once" feature (`shift + r`) records exactly one full loop cycle, then automatically stops recording. Here's how it works:
+
+- **Duration**: Record once does not set a specific number of seconds. It uses the existing loop start/end points that you've configured. The recording duration is determined by `loop end - loop start`.
+
+- **Fade handling**: The recording system uses crossfading subheads with fade curves to ensure smooth loop transitions. When the playhead reaches a loop boundary:
+  - A crossfade occurs between two internal subheads
+  - The fade curves apply to both the pre-existing content level and the new recording level
+  - There's a small record offset (-8 samples by default) that positions the write head slightly ahead of the read position
+
+This means recording naturally handles the fade region at loop boundaries without requiring you to record past the loop end point - the crossfade mechanism ensures smooth loops.
+
 ### LFOs
 
 - `l` toggles lfo

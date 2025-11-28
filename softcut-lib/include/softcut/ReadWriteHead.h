@@ -34,6 +34,11 @@ class ReadWriteHead {
   void setFadeTime(float secs);
   void setLoopFlag(bool val);
 
+  /// Record-once functionality: records exactly one full loop cycle then stops.
+  /// The duration is determined by the current loop start/end points (not a fixed time).
+  /// Recording uses crossfading subheads with fade curves for smooth loop transitions,
+  /// so there's no need to record past the loop end for fade - the crossfade mechanism
+  /// handles this automatically.
   void setRecOnceFlag(bool val);
   bool getRecOnceDone();
   bool getRecOnceActive();

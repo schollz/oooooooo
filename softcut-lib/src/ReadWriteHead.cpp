@@ -190,6 +190,10 @@ void ReadWriteHead::setBuffer(sample_t *b, uint32_t bf) {
 
 void ReadWriteHead::setLoopFlag(bool val) { loopFlag = val; }
 
+// Record-once: When enabled, records exactly one loop cycle then signals completion.
+// Duration is determined by the loop start/end points (end - start).
+// The crossfading subhead mechanism handles fade at loop boundaries automatically,
+// so no extra recording past the end point is needed.
 void ReadWriteHead::setRecOnceFlag(bool val) {
   recOnceFlag = val;
   recOnceDone = false;
