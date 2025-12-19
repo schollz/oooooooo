@@ -53,7 +53,11 @@ namespace softcut_jack_osc {
     private:
         typedef void(*Handler)(lo_arg **argv, int argc);
         static void handleLoError(int num, const char *m, const char *path) {
-            std::cerr << "liblo error: " << num << "; " << m << "; " << path << std::endl;
+            // liblo may pass null strings here; guard before printing to avoid crash
+            const char *msg = m ? m : "(null)";
+            const char *p = path ? path : "(null)";
+            std::cerr << "liblo error: " << num << "; " << msg << "; " << p
+                      << std::endl;
         }
 
         static void addServerMethod(const char* path, const char* format, Handler handler);
